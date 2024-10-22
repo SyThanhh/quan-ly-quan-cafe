@@ -1,0 +1,113 @@
+body {
+    background-color: #f8f9fa;
+}
+.header {
+    background-color: #f8f9fa;
+    padding: 5px;
+    border-bottom: 1px solid #dee2e6;
+}
+.sidebar {
+    background-color: #343a40;
+    color: #fff;
+    min-height: 100vh;
+}
+.sidebar a {
+    color: #fff;
+}
+
+.btn{
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.table-header {
+    background-color: #007bff;
+    color: white;
+}
+
+.quantity-display {
+    width: 30px; /* Độ rộng cho hiển thị số lượng */
+    text-align: center; /* Căn giữa số lượng */
+}
+.button-container {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cột */
+    gap: 10px; /* Khoảng cách giữa các sản phẩm */
+    max-height: 300px; /* Chiều cao tối đa của danh sách sản phẩm */
+    overflow-y: auto; /* Cuộn dọc */
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+}
+.product-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    text-align: center;
+    cursor: pointer;
+}
+.product-item img {
+    max-width: 100%;
+    height: auto;
+}
+.invoice {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+.quantity-display {
+    width: 50px; /* Đặt chiều rộng cho ô input */
+    text-align: center; /* Căn giữa số lượng */
+    margin: 0 5px; /* Thêm khoảng cách giữa ô input và nút */
+}
+
+.btn-custome {
+    padding: 8px 12px;
+    border: none;
+    background-color: #dc3545;  
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-remove:hover {
+    background-color: #dc3545;
+}
+.btn-change {
+    border: none;
+    background-color: #afabab;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.product-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    text-align: center;
+}
+
+.product-item img {
+    width: 100px;
+    height: 100px;
+}
+
+.total, .product-stock {
+    margin-top: 10px;
+}
+
+.product-list {
+    /* display: flex; */
+    flex-wrap: wrap;
+}
