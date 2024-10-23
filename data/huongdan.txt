@@ -22,5 +22,11 @@ Trang chủ
 - Khuyến mãi
 - Thanh viên
 - Liên hệ
+- user 
+ + đăng nhập
+ + đăng ký 
 Giao diện khách hàng
--
+- thông tin cá nhân
+- khách hàng thành viên
+- Sản phẩm đã đánh giá
+- đăng xuất
