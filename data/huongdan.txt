@@ -15,3 +15,12 @@ Config (Tạo account)
  tên database = "db_ql3scoffee";
  tên account = "admin";
  password = "123456";
+
+Giao diện
+- Trang chủ
+- Menu
+- Khuyến mãi
+- Thanh viên
+- Liên hệ
+Giao diện khách hàng
+-
