@@ -1,5 +1,5 @@
 
-Hướng dẫn :
+Hướng dẫn : helloo
 Cách 1 :
 - lấy file dữ liệu "db_ql3scoffee.sql"
 - tạo cở sở dữ liệu tên "db_ql3scoffee"
