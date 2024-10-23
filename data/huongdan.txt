@@ -17,7 +17,7 @@ Config (Tạo account)
  password = "123456";
 
 Giao diện
-- Trang chủ
+Trang chủ
 - Menu
 - Khuyến mãi
 - Thanh viên
