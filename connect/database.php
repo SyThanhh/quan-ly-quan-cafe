@@ -26,8 +26,6 @@
                 if (!$this->conn) {
                     throw new Exception("Connection failed: " . mysqli_connect_error());
                 }
-    
-                echo "Kết nối thành công!";
                 return $this->conn;
     
             } catch (Exception $e) {
@@ -41,7 +39,6 @@
         public function close() {
             if ($this->conn) {
                 mysqli_close($this->conn);
-                echo "Kết nối đã được đóng.<br>";
             }
         }
 
