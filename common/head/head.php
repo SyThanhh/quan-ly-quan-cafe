@@ -19,10 +19,10 @@
         <link rel="stylesheet" href="./assets/css/bootstrap/bootstrap.min.css">
 
         <!--Link jquery-->
-        <script src="./assets/js/jquery/jquery-v3.7.1.js"></script>
+        <script src="./lib/jquery/jquery-v3.7.1.js"></script>
 
         <!--Link Bootstrap js-->
-        <script src="./assets/js/bootstrap.min.js"></script>
+        <script src="./lib/js/bootstrap.min.js"></script>
 
 
         <!--Link font-->

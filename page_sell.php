@@ -7,10 +7,19 @@
         include_once('./common/head/head.php')    
     ?>
     
-    <link rel="stylesheet" href="./assets/css/thanhtoan.css">
+    <link rel="stylesheet" href="./assets/css/sell.css">
+    <link rel="stylesheet" href="./assets/css/alertNotification.css">
+    <style>
+        .button:hover {
+            background-color: #0056b3; /* Màu nền giảm nhẹ */
+            border-color: #ffffff; /* Viền sáng lên */
+        }
+    </style>
 </head>
 
 <body id="page-top">
+  
+
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -241,20 +250,20 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="phone">Số điện thoại</label>
-                                    <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại">
+                                    <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại" value=0823820302>
                                     <button type="button" class="btn btn-primary btn-add">Thêm mới</button>
                                     <button type="button" class="btn btn-primary btn-search">search</button>
                                     <button type="button" class="btn btn-primary btn-clear">Clear</button>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="customerName">Tên khách hàng</label>
-                                    <input type="text" class="form-control" id="customerName" placeholder="Nhập tên khách hàng">
+                                    <input type="text" class="form-control" id="customerName" placeholder="Nhập tên khách hàng" value="thanh">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="points">Điểm</label>
-                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy">
+                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="50">
                                     <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -452,6 +461,7 @@
     </div>
     <!-- End of Page Wrapper -->
 
+  
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>

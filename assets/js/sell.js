@@ -37,7 +37,7 @@ $(document).ready(function() {
                 const totalPrice = quantity * product.price;
                 $existingRow.find('.total-price').text(totalPrice.toLocaleString());
             } else {
-                alert('Số lượng sản phẩm đã đạt tối đa tồn kho.');
+                showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
             }
         } else {
             const $row = $(`
@@ -60,13 +60,14 @@ $(document).ready(function() {
             const $quantityInput = $row.find('.quantity-display');
             const stock = product.stock;
 
-            $quantityInput.on('input', function() {
+            $quantityInput.on('input', function(e) {
+                e.preventDefault();
                 let quantity = parseInt($(this).val());
                 if (isNaN(quantity) || quantity < 1) {
                     $(this).val(1);
                     quantity = 1;
                 } else if (quantity > stock) {
-                    alert('Số lượng vượt quá tồn kho!');
+                    showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                     $(this).val(stock);
                     quantity = stock;
                 }
@@ -75,7 +76,8 @@ $(document).ready(function() {
                 updateGrandTotal();
             });
 
-            $row.find('.btn-plus').on('click', function() {
+            $row.find('.btn-plus').on('click', function(e) {
+                e.preventDefault();
                 let quantity = parseInt($quantityInput.val());
                 if (quantity < stock) {
                     quantity++;
@@ -84,11 +86,12 @@ $(document).ready(function() {
                     $row.find('.total-price').text(totalPrice.toLocaleString());
                     updateGrandTotal();
                 } else {
-                    alert('Số lượng sản phẩm đã đạt tối đa tồn kho.');
+                    showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
             });
 
-            $row.find('.btn-minus').on('click', function() {
+            $row.find('.btn-minus').on('click', function(e) {
+                 e.preventDefault();
                 let quantity = parseInt($quantityInput.val());
                 if (quantity > 1) {
                     quantity--;
@@ -155,10 +158,11 @@ $(document).ready(function() {
         if (isCash) {
             const cashAmount = $('#cashAmount').val();
             const amountReturn = $('#amountReturn').val();
-            alert('Thanh toán tiền mặt với số tiền: ' + cashAmount + ' VNĐ. Tiền thối lại: ' + amountReturn + ' VNĐ.');
+          
+            showAlert('warning','Thanh toán tiền mặt với số tiền: ' + cashAmount + ' VNĐ. Tiền thối lại: ' + amountReturn + ' VNĐ.');
         } else {
             const accountInfo = $('#accountInfo').val();
-            alert('Thanh toán bằng chuyển khoản với thông tin tài khoản: ' + accountInfo);
+            showAlert('warning','Thanh toán bằng chuyển khoản với thông tin tài khoản: ' + accountInfo);
         }
         // Đóng modal sau khi xác nhận
         $('#paymentModal').modal('hide');
@@ -168,4 +172,31 @@ $(document).ready(function() {
     $('#paymentModal').on('shown.bs.modal', function() {
         togglePaymentFields();
     });
+
+    // alert notifiction
+   
+    function hideAlert() {
+        $('#alert').remove();
+    }
+    function showAlert(type, message) {
+        const alertTypes = {
+            'error': 'alert-error',
+            'warning': 'alert-warning',
+            'success': 'alert-success'
+        };
+    
+        const $alert = $(`
+            <div class="alert ${alertTypes[type]}" id="alert" role="alert">
+                <i class="fas fa-${type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'check-circle'}"></i>
+                <span>${message}</span>
+                <span class="close" data-dismiss="alert" aria-label="Close">&times;</span>
+            </div>
+        `);
+    
+        $('body').append($alert);
+    
+        setTimeout(function() {
+            hideAlert();
+        }, 3000);
+    }
 });
