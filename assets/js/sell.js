@@ -1,7 +1,7 @@
 $(document).ready(function() {
     const $invoiceListBody = $('#invoice-list-body');
     const $totalAmountDisplay = $('#total-amount');
-
+    let isCheck = false;
 
    
     $('.btn-primary[data-toggle="modal"]').on('click', function() {
@@ -11,6 +11,9 @@ $(document).ready(function() {
 
 
     function convertToNumber(priceString) {
+        if (typeof priceString !== 'string') {
+            priceString = String(priceString); // Chuyển đổi thành chuỗi
+        }
         return parseInt(priceString.replace(/,/g, '')); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
     }
 
@@ -126,52 +129,76 @@ $(document).ready(function() {
     $('input[name="paymentMethod"]').on('change', togglePaymentFields);
     togglePaymentFields();  // Khởi động với phương thức thanh toán mặc định
 
-    function calculateChange() {
-        const $cashAmountInput = $('#cashAmount');
-        const $totalAmountInput = $('#total-amount');
-        const $amountReturnInput = $('#amountReturn');
-        const $cashAmountError = $('#cashAmountError');
-
-        // Lấy giá trị và chuyển đổi thành số
-        const cashAmount = parseFloat($cashAmountInput.val());
-        const totalAmount = parseFloat($totalAmountInput.text().replace(/,/g, '')) || 0;
-
-        // Reset thông báo lỗi
-        $cashAmountError.hide().text('');
-
-        // Kiểm tra xem cashAmount có phải là một số hợp lệ và không âm
-        if (isNaN(cashAmount) || cashAmount < 0) {
-            $cashAmountError.show().text('Vui lòng nhập số tiền hợp lệ (khác chữ và > 0).');
-            $amountReturnInput.val('');
-            return;
-        }
-
-        // Tính toán số tiền thối lại
-        const amountReturn = cashAmount - totalAmount;
-
-        // Cập nhật giá trị tiền thối lại
-        $amountReturnInput.val(amountReturn >= 0 ? amountReturn : 0);
-    }
-
-    function processPayment() {
+   
+    $('#processPayment').on("click", function() {
         const isCash = $('#cash').is(':checked');
-        if (isCash) {
-            const cashAmount = $('#cashAmount').val();
-            const amountReturn = $('#amountReturn').val();
-          
-            showAlert('warning','Thanh toán tiền mặt với số tiền: ' + cashAmount + ' VNĐ. Tiền thối lại: ' + amountReturn + ' VNĐ.');
-        } else {
-            const accountInfo = $('#accountInfo').val();
-            showAlert('warning','Thanh toán bằng chuyển khoản với thông tin tài khoản: ' + accountInfo);
+        if(isCheck) {
+            if (isCash) {
+                const cashAmount = $('#cashAmount').val();
+                const amountReturn = $('#amountReturn').val();
+              
+                showAlert('success','Thanh toán tiền mặt với số tiền: ' + cashAmount + ' VNĐ. Tiền thối lại: ' + amountReturn + ' VNĐ.');
+            } else {
+                const accountInfo = $('#accountInfo').val();
+                showAlert('success','Thanh toán bằng chuyển khoản với thông tin tài khoản: ' + accountInfo);
+            }
+            
+            $('#paymentModal').modal('hide');
+            setTimeout(function() {
+                $('.modal-backdrop').remove();
+            }, 300); 
         }
-        // Đóng modal sau khi xác nhận
-        $('#paymentModal').modal('hide');
-    }
+        
+    });
 
     // Gắn sự kiện cho các nút trong modal
     $('#paymentModal').on('shown.bs.modal', function() {
+        $(this).find("#total-amount").val($totalAmountDisplay.text());
+
+        let totalAmount = parseFloat($(this).find("#total-amount").val().replace(/,/g, ''));
+
+        $('#cashAmount').off('change').on('change', function() {
+                let cashAmount = $(this).val();
+                cashAmount = parseFloat(cashAmount.replace(/,/g, ''));
+                let errorSpan = $(this).closest(".modal").find("#cashAmountError");
+
+                // Reset thông báo lỗi
+                errorSpan.text('').hide();
+
+                // Kiểm tra giá trị nhập vào
+                if (!cashAmount) {
+                    errorSpan.html('Vui lòng nhập số tiền.<br>').show();
+                    $(this).val(''); // Xóa giá trị trong input
+                    return;
+                }
+                if (cashAmount < totalAmount) {
+                    errorSpan.html('Vui lòng nhập số tiền > Số tiền phải trả.<br>').show();
+                    $(this).val(''); 
+                    return;
+                }
+
+                
+            if (isNaN(cashAmount)) {
+                    errorSpan.html('Số tiền phải là một số hợp lệ.<br>').show();
+                    $(this).val(''); // Xóa giá trị trong input
+                    return;
+                }
+                if (cashAmount < 0) {
+                    errorSpan.html('Số tiền không được âm.<br>').show();
+                    $(this).val(''); // Xóa giá trị trong input
+                    return;
+                }
+
+                // Tính toán tiền trả lại
+                const amountReturn = convertToNumber(cashAmount) - convertToNumber(totalAmount);
+                isCheck = true;
+                // Cập nhật giá trị tiền thối lại
+                $(this).closest(".modal").find("#amountReturn").val(amountReturn.toLocaleString() + " ₫");
+            });
+
         togglePaymentFields();
     });
+
 
     // alert notifiction
    
