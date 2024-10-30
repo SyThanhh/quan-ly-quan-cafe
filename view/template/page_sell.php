@@ -6,7 +6,7 @@
     <?php
         include_once('./common/head/head.php')    
     ?>
-    
+ 
     <link rel="stylesheet" href="./assets/css/sell.css">
     <link rel="stylesheet" href="./assets/css/alertNotification.css">
     <style>
@@ -19,8 +19,6 @@
 
 <body id="page-top">
   
-
-
     <!-- Page Wrapper -->
     <div id="wrapper">
 
@@ -452,9 +450,13 @@
     <!--Thanh toán-->
    <script>
         <?php include_once('./assets/js/sell.js') ?>
+        
     </script>
+    
     <!-- Bootstrap core JavaScript-->
-    <?php include_once('./common/script/default.php')?>
+    <?php 
+    include_once('./common/script/default.php')
+    ?>
 
 
 </body>

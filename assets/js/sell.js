@@ -1,4 +1,5 @@
 $(document).ready(function() {
+   
     const $invoiceListBody = $('#invoice-list-body');
     const $totalAmountDisplay = $('#total-amount');
     let isCheck = false;
