@@ -5,7 +5,7 @@
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');    
-        include_once('./connect/ddatabase.php'); // Đường dẫn vào file kết nối database
+        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
