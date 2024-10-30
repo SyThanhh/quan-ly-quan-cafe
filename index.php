@@ -18,6 +18,7 @@
            include($page_directory . '404.php'); 
        }
    } else {
-        include('./view/template/home.php');
-   }   
+        include("./view/template/home.php");
+   }
+
 ?>
