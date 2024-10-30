@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="./assets/font/fontawesome-free-5.15.4-web/css/all.min.css">
 
     <!-- Libraries Stylesheet -->
-    <link href="./lib/owlcarousel/asssets/owl.carousel.min.css" rel="stylesheet">
+    <link href="./lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="./lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
