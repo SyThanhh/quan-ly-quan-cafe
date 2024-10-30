@@ -12,3 +12,4 @@
 
 <script src="./lib/demo/chart-area-demo.js"></script>
 <script src="./lib/demo/chart-pie-demo.js"></script>
+<script src="./lib/demo/column-chart.js"></script>
