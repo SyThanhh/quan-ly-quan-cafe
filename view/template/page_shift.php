@@ -11,7 +11,7 @@
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
     ?>
-    <link rel="stylesheet" href="./assets/css/page_employee.css">
+    <link rel="stylesheet" href="./assets/css/employee_shift.css">
 </head>
 
 <body>
@@ -218,7 +218,6 @@
                                 </a>
                             </div>
                         </li>
-
                     </ul>
                 </nav>
 
@@ -227,14 +226,14 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="header text-left">
-                                <h4>QUẢN LÝ THÔNG TIN NHÂN VIÊN</h4>
+                                <h4>QUẢN LÝ LỊCH LÀM VIỆC</h4>
                             </div>
                             
                             <div class="col-md-12 text-center">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="name-search" placeholder="Tìm nhân viên theo tên">
+                                        <input type="date" class="form-control" id="name-search" placeholder="Tìm lịch theo ngày">
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary search-button m-0" type="button">
                                                     <i class="fas fa-search"></i>
@@ -243,7 +242,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-primary btn-add">Thêm nhân viên mới</button>
+                                        <button type="button" class="btn btn-primary btn-add">Thêm lịch mới</button>
                                     </div>
                                 </div>
                             </div>
@@ -252,58 +251,40 @@
                             <!-- Danh sách nhân viên -->
                             <div class="mt-8">
                                 <table class="table table-bordered">
-                                    <thead>
+                                    <thead align="center">
                                         <tr>
                                             <th>Mã</th>
-                                            <th>Tên</th>
-                                            <th>Họ</th>
-                                            <th>Email</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Vai trò</th>
-                                            <th>Trạng thái</th>
-                                            <th colspan='2'>Thao tác</th>
+                                            <th>Loại ca</th>
+                                            <th>Ngày bắt đầu</th>
+                                            <th>Ngày kết thúc</th>
+                                            <th colspan='3'>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                             // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
+                                            $shifts = $database->select("SELECT * FROM workshift");
 
                                             // Hiển thị danh sách nhân viên
-                                            if ($employees) {
-                                                while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
+                                            if ($shifts) {
+                                                while ($row = $shifts->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
                                                     echo "<tr>";
-                                                    echo "<td>{$row['EmployeeID']}</td>";
-                                                    echo "<td>{$row['FirstName']}</td>";
-                                                    echo "<td>{$row['LastName']}</td>";
-                                                    echo "<td>{$row['Email']}</td>";
-                                                    echo "<td>{$row['PhoneNumber']}</td>";
-                                                    // Thay đổi giá trị của cột Roles dựa trên điều kiện
-                                                    $role = '';
-                                                    if ($row['Roles'] == 1) {
-                                                        $role = "Quản lý";
-                                                    } elseif ($row['Roles'] == 2) {
-                                                        $role = "Nhân viên đứng quầy";
-                                                    } elseif ($row['Roles'] == 3) {
-                                                        $role = "Nhân viên kế toán";
-                                                    } elseif ($row['Roles'] == 4) {
-                                                        $role = "Nhân viên pha chế";
-                                                    }
-                                                    echo "<td>{$role}</td>";
-                                                    // Thay đổi giá trị của cột Status dựa trên điều kiện
-                                                    $status = ($row['Status'] == 1) ? "Đang làm việc" : "Đã nghỉ việc";
-                                                    echo "<td>{$status}</td>";
+                                                    echo "<td>{$row['ShiftID']}</td>";
+                                                    echo "<td>{$row['ShiftType']}</td>";
+                                                    echo "<td>{$row['StartDate']}</td>";
+                                                    echo "<td>{$row['EndDate']}</td>";
+                                                    echo "<td><a href='#'>Xem chi tiết</a></td>";
                                                     echo "<td>
                                                         <button type='button' class='btn btn-success'>
                                                             <i class='fas fa-edit'></i>
-                                                        </button> </td> <td>
+                                                        </button></td> <td>
                                                         <button type='button' class='btn btn-danger'>
                                                             <i class='fas fa-trash'></i>
                                                         </button>
                                                     </td>";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
+                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
                                             }                                            
                                         ?>
                                     </tbody>

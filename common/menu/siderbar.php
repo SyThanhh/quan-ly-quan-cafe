@@ -77,7 +77,7 @@
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
             <a class="collapse-item" href="index.php?page=page_employee">Quản lý thông tin nhân viên</a>
-            <a class="collapse-item" href="utilities-border.html">Quản lý lịch làm việc</a>
+            <a class="collapse-item" href="index.php?page=page_shift">Quản lý lịch làm việc</a>
         </div>
     </div>
 </li>
