@@ -26,6 +26,8 @@
     Interface
 </div>
 
+
+
 <!-- Nav Item - Pages Collapse Menu -->
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
@@ -37,10 +39,10 @@
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Components:</h6>
             <a class="collapse-item" href="index.php?page=page_sell">Bán hàng</a>
-         
         </div>
     </div>
 </li>
+
 
 <!-- Nav Item - Utilities Collapse Menu -->
 
@@ -74,7 +76,7 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="index.php?page=page_employee.php">Quản lý thông tin nhân viên</a>
+            <a class="collapse-item" href="index.php?page=page_employee">Quản lý thông tin nhân viên</a>
             <a class="collapse-item" href="utilities-border.html">Quản lý lịch làm việc</a>
         </div>
     </div>
