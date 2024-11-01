@@ -242,7 +242,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-primary btn-add">Thêm lịch mới</button>
+                                        <button type="button" class="btn btn-primary btn-add"><a style="color:white" href="index.php?page=page_add_shift">Thêm lịch mới</a></button>
                                     </div>
                                 </div>
                             </div>

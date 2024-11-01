@@ -222,93 +222,104 @@
                     </ul>
                 </nav>
 
-                <!--  Nội dung trang  -->
-                <div class="container-fluid">
+                <!-- Nội dung trang -->
+                <?php
+                    // Lấy mã ca làm sắp tới (MAX + 1) từ database
+                    $result = $conn->query("SELECT MAX(ShiftID) AS max_id FROM workshift");
+                    $row = $result->fetch_assoc();
+                    $nextShiftID = $row['max_id'] + 1;
+
+                    // Lấy danh sách nhân viên đứng quầy
+                    $cashierEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 2");
+                    // Lấy danh sách nhân viên kế toán
+                    $accountingEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 3");
+                    // Lấy danh sách nhân viên pha chế
+                    $baristaEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 4");
+                ?>
+                <div class="container-fluid" align="center">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ THÔNG TIN NHÂN VIÊN</h4>
+                            <div>
+                                <h4>THÊM LỊCH MỚI</h4>
+                                </br>   
                             </div>
-                            
-                            <div class="col-md-12 text-center">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="name-search" placeholder="Tìm nhân viên theo tên">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-primary btn-add"><a style="color:white" href="index.php?page=page_add_employee">Thêm nhân viên mới</a></button>
-                                    </div>
-                                </div>
-                            </div>
-                            </br>
-
-                            <!-- Danh sách nhân viên -->
-                            <div class="mt-8">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Mã</th>
-                                            <th>Họ</th>
-                                            <th>Tên</th>
-                                            <th>Email</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Vai trò</th>
-                                            <th>Trạng thái</th>
-                                            <th colspan='2'>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
-
-                                            // Hiển thị danh sách nhân viên
-                                            if ($employees) {
-                                                while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['EmployeeID']}</td>";
-                                                    echo "<td>{$row['FirstName']}</td>";
-                                                    echo "<td>{$row['LastName']}</td>";
-                                                    echo "<td>{$row['Email']}</td>";
-                                                    echo "<td>{$row['PhoneNumber']}</td>";
-                                                    // Thay đổi giá trị của cột Roles dựa trên điều kiện
-                                                    $role = '';
-                                                    if ($row['Roles'] == 1) {
-                                                        $role = "Quản lý";
-                                                    } elseif ($row['Roles'] == 2) {
-                                                        $role = "Nhân viên đứng quầy";
-                                                    } elseif ($row['Roles'] == 3) {
-                                                        $role = "Nhân viên kế toán";
-                                                    } elseif ($row['Roles'] == 4) {
-                                                        $role = "Nhân viên pha chế";
-                                                    }
-                                                    echo "<td>{$role}</td>";
-                                                    // Thay đổi giá trị của cột Status dựa trên điều kiện
-                                                    $status = ($row['Status'] == 1) ? "Đang làm việc" : "Đã nghỉ việc";
-                                                    echo "<td>{$status}</td>";
-                                                    echo "<td>
-                                                        <button type='button' class='btn btn-success'>
-                                                            <i class='fas fa-edit'></i>
-                                                        </button> </td> <td>
-                                                        <button type='button' class='btn btn-danger'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
+                            <form action="" method="post">
+                                <table>
+                                    <tr>
+                                        <th><label for="shiftID">Mã Ca Làm:</label></th>
+                                        <td><input type="text" class="form-control" id="shiftID" name="shiftID" value="<?php echo $nextShiftID; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="shiftType">Loại Ca Làm:</label></th>
+                                        <td>
+                                            <select id="shiftType" class="form-control" name="shiftType" required>
+                                                <option value="Sáng">Ca Sáng</option>
+                                                <option value="Chiều">Ca Chiều</option>
+                                                <option value="Tối">Ca Tối</option>
+                                                <option value="Đêm">Ca Đêm</option>
+                                                <option value="Linh Hoạt">Ca Linh Hoạt</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label>Thời Gian Áp Dụng:</label></th>
+                                    <tr>    
+                                    </tr>
+                                        <td>
+                                            <label for="startDate">Ngày bắt đầu:</label>
+                                        </td>
+                                        <td>
+                                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                                        </td>                                
+                                    </tr> 
+                                    <tr>  
+                                        <td>
+                                            <label for="endDate">Ngày kết thúc:</label>
+                                        </td>
+                                        <td>
+                                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="cashier">Nhân Viên Đứng Quầy:</label></th>
+                                        <td>
+                                            <select id="cashier" class="form-control" name="cashier" required>
+                                                <?php while ($employee = $cashierEmployees->fetch_assoc()) {
+                                                    echo "<option value='{$employee['EmployeeID']}'>{$employee['FullName']}</option>";
+                                                } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="accountant">Nhân Viên Kế Toán:</label></th>
+                                        <td>
+                                            <select id="accountant" class="form-control" name="accountant" required>
+                                                <?php while ($employee = $accountingEmployees->fetch_assoc()) {
+                                                    echo "<option value='{$employee['EmployeeID']}'>{$employee['FullName']}</option>";
+                                                } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="barista">Nhân Viên Pha Chế:</label></th>
+                                        <td>
+                                            <select id="barista" class="form-control" name="barista" required>
+                                                <?php while ($employee = $baristaEmployees->fetch_assoc()) {
+                                                    echo "<option value='{$employee['EmployeeID']}'>{$employee['FullName']}</option>";
+                                                } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
                                 </table>
-                            </div>
+
+                                <!-- Button section -->
+                                <div class="button-group">
+                                    </br>
+                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
+                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
+                                    <button type="submit" class="btn btn-primary btn-add">Thêm Lịch</button>
+                                </div>
+                            </form>        
                         </div>
                     </div>
                 </div>

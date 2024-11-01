@@ -223,92 +223,77 @@
                 </nav>
 
                 <!--  Nội dung trang  -->
-                <div class="container-fluid">
+                <?php
+                    // Lấy mã nhân viên sắp tới (MAX + 1) từ database
+                    $result = $conn->query("SELECT MAX(EmployeeID) AS max_id FROM employee");
+                    $row = $result->fetch_assoc();
+                    $nextEmployeeID = $row['max_id'] + 1;
+                    // Lấy danh sách vị trí làm việc trừ giá trị 1
+                    $positions = $conn->query("SELECT Roles FROM employee WHERE Roles > 1");
+                ?>
+                <div class="container-fluid" align="center">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ THÔNG TIN NHÂN VIÊN</h4>
+                            <div>
+                                <h4>THÊM NHÂN VIÊN</h4>
+                                </br>   
                             </div>
-                            
-                            <div class="col-md-12 text-center">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="name-search" placeholder="Tìm nhân viên theo tên">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-primary btn-add"><a style="color:white" href="index.php?page=page_add_employee">Thêm nhân viên mới</a></button>
-                                    </div>
-                                </div>
-                            </div>
-                            </br>
-
-                            <!-- Danh sách nhân viên -->
-                            <div class="mt-8">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Mã</th>
-                                            <th>Họ</th>
-                                            <th>Tên</th>
-                                            <th>Email</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Vai trò</th>
-                                            <th>Trạng thái</th>
-                                            <th colspan='2'>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
-
-                                            // Hiển thị danh sách nhân viên
-                                            if ($employees) {
-                                                while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['EmployeeID']}</td>";
-                                                    echo "<td>{$row['FirstName']}</td>";
-                                                    echo "<td>{$row['LastName']}</td>";
-                                                    echo "<td>{$row['Email']}</td>";
-                                                    echo "<td>{$row['PhoneNumber']}</td>";
-                                                    // Thay đổi giá trị của cột Roles dựa trên điều kiện
-                                                    $role = '';
-                                                    if ($row['Roles'] == 1) {
-                                                        $role = "Quản lý";
-                                                    } elseif ($row['Roles'] == 2) {
-                                                        $role = "Nhân viên đứng quầy";
-                                                    } elseif ($row['Roles'] == 3) {
-                                                        $role = "Nhân viên kế toán";
-                                                    } elseif ($row['Roles'] == 4) {
-                                                        $role = "Nhân viên pha chế";
+                            <form action="" method="post" >
+                                <table>
+                                    <tr>
+                                        <th><label for="employeeID">Mã Nhân Viên:</label></th>
+                                        <td><input type="text" class="form-control" id="employeeID" name="employeeID" value="<?php echo $nextEmployeeID; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="lastName">Họ:</label></th>
+                                        <td><input type="text" class="form-control" id="lastName" name="lastName" required></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="firstName">Tên:</label></th>
+                                        <td><input type="text" class="form-control" id="firstName" name="firstName" required></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="phoneNumber">Số Điện Thoại:</label></th>
+                                        <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="position">Vị Trí Làm Việc:</label></th>
+                                        <td>
+                                            <select id="position" class="form-control" name="position" required>
+                                                <?php
+                                                while ($position = $positions->fetch_assoc()) {
+                                                    $positionLabel = '';
+                                                    switch ($position['Roles']) {
+                                                        case 2:
+                                                            $positionLabel = 'Nhân viên đứng quầy';
+                                                            break;
+                                                        case 3:
+                                                            $positionLabel = 'Nhân viên kế toán';
+                                                            break;
+                                                        case 4:
+                                                            $positionLabel = 'Nhân viên pha chế';
+                                                            break;
                                                     }
-                                                    echo "<td>{$role}</td>";
-                                                    // Thay đổi giá trị của cột Status dựa trên điều kiện
-                                                    $status = ($row['Status'] == 1) ? "Đang làm việc" : "Đã nghỉ việc";
-                                                    echo "<td>{$status}</td>";
-                                                    echo "<td>
-                                                        <button type='button' class='btn btn-success'>
-                                                            <i class='fas fa-edit'></i>
-                                                        </button> </td> <td>
-                                                        <button type='button' class='btn btn-danger'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
+                                                    echo "<option value='{$position['id']}'>{$positionLabel}</option>";
                                                 }
-                                            } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
+                                                ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="birthDate">Ngày Sinh:</label></th>
+                                        <td><input type="date" class="form-control" id="birthDate" name="birthDate" required></td>
+                                    </tr>
                                 </table>
-                            </div>
+
+                                <!-- Button section -->
+                                <div class="button-group">
+                                    </br>
+                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
+                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
+                                    <button type="submit" class="btn btn-primary btn-add">Thêm Nhân Viên</button>
+                                </div>
+                            </form>        
                         </div>
                     </div>
                 </div>
