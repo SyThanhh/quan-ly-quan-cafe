@@ -14,11 +14,11 @@
     <!-- Page Header Start -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
         <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Contact</h1>
+            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Liên hệ</h1>
             <div class="d-inline-flex mb-lg-5">
-                <p class="m-0 text-white"><a class="text-white" href="">Home</a></p>
+                <p class="m-0 text-white"><a class="text-white" href="">Trang chủ</a></p>
                 <p class="m-0 text-white px-2">/</p>
-                <p class="m-0 text-white">Contact</p>
+                <p class="m-0 text-white">Liên hệ</p>
             </div>
         </div>
     </div>
@@ -29,14 +29,14 @@
     <div class="container-fluid pt-5">
         <div class="container">
             <div class="section-title">
-                <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Contact Us</h4>
-                <h1 class="display-4">Feel Free To Contact</h1>
+                <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Liên hệ với chúng tôi</h4>
+                
             </div>
             <div class="row px-3 pb-2">
                 <div class="col-sm-4 text-center mb-3">
                     <i class="fa fa-2x fa-map-marker-alt mb-3 text-primary"></i>
-                    <h4 class="font-weight-bold">Address</h4>
-                    <p>123 Street, New York, USA</p>
+                    <h4 class="font-weight-bold">Địa chỉ</h4>
+                    <p>Nguyễn Văn Bảo, P4, Gò Vấp, TP.HCM</p>
                 </div>
                 <div class="col-sm-4 text-center mb-3">
                     <i class="fa fa-2x fa-phone-alt mb-3 text-primary"></i>
