@@ -242,7 +242,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-primary btn-add"><a style="color:white" href="index.php?page=page_add_shift">Thêm lịch mới</a></button>
+                                        <a class="btn btn-primary btn-add" style="color:white" href="index.php?page=page_add_shift"><i class="fas fa-plus"></i> &nbsp; Thêm lịch mới</a>
                                     </div>
                                 </div>
                             </div>
@@ -273,12 +273,12 @@
                                                     echo "<td>{$row['ShiftType']}</td>";
                                                     echo "<td>{$row['StartDate']}</td>";
                                                     echo "<td>{$row['EndDate']}</td>";
-                                                    echo "<td><a href='#'>Xem chi tiết</a></td>";
+                                                    
                                                     echo "<td>
-                                                        <button type='button' class='btn btn-success'>
+                                                        <a href='index.php?page=page_update_shift&id={$row['ShiftID']}' class='btn btn-success' style='color:white'>
                                                             <i class='fas fa-edit'></i>
-                                                        </button></td> <td>
-                                                        <button type='button' class='btn btn-danger'>
+                                                        </a></td> <td>
+                                                        <button type='button' class='btn btn-danger'onclick='confirmDelete({$row['ShiftID']})'>
                                                             <i class='fas fa-trash'></i>
                                                         </button>
                                                     </td>";
@@ -297,7 +297,41 @@
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
         </div>    
+    <!-- Modal xác nhận xóa -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa lịch này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>    
 
+    <script>
+        // Hàm mở modal xác nhận xóa
+        function confirmDelete(shiftID) {
+            // Hiển thị modal
+            $('#confirmDeleteModal').modal('show');
+            
+            // // Gán ID của nhân viên vào nút xác nhận
+            // document.getElementById('confirmDeleteButton').onclick = function () {
+            //     // Thực hiện hành động xóa ở đây nếu cần thiết
+            //     console.log("Đã xác nhận xóa nhân viên với ID:", employeeID);
+            //     $('#confirmDeleteModal').modal('hide');
+            // };
+        }
+    </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>
