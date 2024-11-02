@@ -222,137 +222,125 @@
                     </ul>
                 </nav>
 
-                <!--  Nội dung trang  -->
-                <div class="container-fluid">
+                <?php
+                    // Lấy mã lịch từ URL
+                    if (isset($_GET['id'])) {
+                        $shiftID = $_GET['id'];
+                    }
+
+                    // Truy vấn thông tin lịch dựa trên ID
+                    $result = $conn->query("
+                        SELECT w.*, we.EmployeeID, e.Roles
+                        FROM workshift AS w
+                        LEFT JOIN workshift_employee AS we ON w.ShiftID = we.ShiftID
+                        LEFT JOIN employee AS e ON we.EmployeeID = e.EmployeeID
+                        WHERE w.ShiftID = $shiftID
+                    ");
+                    
+                    // Lấy thông tin lịch và chuyển đổi các định dạng
+                    $shift = $result->fetch_assoc();
+                    $startDate = date("Y-m-d", strtotime($shift['StartDate']));
+                    $endDate = date("Y-m-d", strtotime($shift['EndDate']));
+                    // Lấy danh sách nhân viên đứng quầy
+                    $cashierEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 2");
+                    // Lấy danh sách nhân viên kế toán
+                    $accountingEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 3");
+                    // Lấy danh sách nhân viên pha chế
+                    $baristaEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 4");
+                ?>
+
+                <!-- Form hiển thị thông tin lịch -->
+                <div class="container-fluid" align="center">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ THÔNG TIN NHÂN VIÊN</h4>
+                            <div>
+                                <h4>SỬA LỊCH</h4>
+                                </br>   
                             </div>
-                            
-                            <div class="col-md-12 text-center">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="name-search" placeholder="Tìm nhân viên theo tên">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <a class="btn btn-primary btn-add" style="color:white" href="index.php?page=page_add_employee"><i class="fas fa-plus"></i> &nbsp; Thêm nhân viên mới</a>
-                                    </div>
-                                </div>
-                            </div>
-                            </br>
+                            <form action="" method="post">
+                            <table>
+                                    <tr>
+                                        <th><label for="shiftID">Mã Ca Làm:</label></th>
+                                        <td><input type="text" class="form-control" id="shiftID" name="shiftID" value="<?php echo $shift['ShiftID']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="shiftType">Loại Ca Làm:</label></th>
+                                        <td>
+                                            <select id="shiftType" class="form-control" name="shiftType" required>
+                                                <option value="Sáng" <?php if ($shift['ShiftType'] == 'Ca sáng') echo 'selected'; ?>>Ca Sáng</option>
+                                                <option value="Chiều" <?php if ($shift['ShiftType'] == 'Ca chiều') echo 'selected'; ?>>Ca Chiều</option>
+                                                <option value="Tối" <?php if ($shift['ShiftType'] == 'Ca tối') echo 'selected'; ?>>Ca Tối</option>
+                                                <option value="Đêm" <?php if ($shift['ShiftType'] == 'Ca đêm') echo 'selected'; ?>>Ca Đêm</option>
+                                                <option value="Linh Hoạt" <?php if ($shift['ShiftType'] == 'Ca linh Hoạt') echo 'selected'; ?>>Ca Linh Hoạt</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><label>Thời Gian Áp Dụng:</label></th>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="startDate">Ngày bắt đầu:</label></td>
+                                        <td><input type="date" class="form-control" id="startDate" name="startDate" value="<?php echo $startDate; ?>" required></td>
+                                    </tr> 
+                                    <tr>
+                                        <td><label for="endDate">Ngày kết thúc:</label></td>
+                                        <td><input type="date" class="form-control" id="endDate" name="endDate" value="<?php echo $endDate; ?>" required></td>
+                                    </tr>
 
-                            <!-- Danh sách nhân viên -->
-                            <div class="mt-8">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Mã</th>
-                                            <th>Họ</th>
-                                            <th>Tên</th>
-                                            <th>Email</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Vai trò</th>
-                                            <th>Trạng thái</th>
-                                            <th colspan='2'>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
+                                    <!-- Select nhân viên đứng quầy -->
+                                    <tr>
+                                        <th><label for="cashier">Nhân Viên Đứng Quầy:</label></th>
+                                        <td>
+                                            <select id="cashier" class="form-control" name="cashier" required>
+                                                <?php while ($employee = $cashierEmployees->fetch_assoc()) {
+                                                    $selected = ($employee['EmployeeID'] == $shift['EmployeeID'] && $shift['Roles'] == 2) ? 'selected' : '';
+                                                    echo "<option value='{$employee['EmployeeID']}' {$selected}>{$employee['FullName']}</option>";
+                                                } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
 
-                                            // Hiển thị danh sách nhân viên
-                                            if ($employees) {
-                                                while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['EmployeeID']}</td>";
-                                                    echo "<td>{$row['FirstName']}</td>";
-                                                    echo "<td>{$row['LastName']}</td>";
-                                                    echo "<td>{$row['Email']}</td>";
-                                                    echo "<td>{$row['PhoneNumber']}</td>";
-                                                    // Thay đổi giá trị của cột Roles dựa trên điều kiện
-                                                    $role = '';
-                                                    if ($row['Roles'] == 1) {
-                                                        $role = "Quản lý";
-                                                    } elseif ($row['Roles'] == 2) {
-                                                        $role = "Nhân viên đứng quầy";
-                                                    } elseif ($row['Roles'] == 3) {
-                                                        $role = "Nhân viên kế toán";
-                                                    } elseif ($row['Roles'] == 4) {
-                                                        $role = "Nhân viên pha chế";
-                                                    }
-                                                    echo "<td>{$role}</td>";
-                                                    // Thay đổi giá trị của cột Status dựa trên điều kiện
-                                                    $status = ($row['Status'] == 1) ? "Đang làm việc" : "Đã nghỉ việc";
-                                                    echo "<td>{$status}</td>";
-                                                    echo "<td>
-                                                        <a href='index.php?page=page_update_employee&id={$row['EmployeeID']}' class='btn btn-success' style='color:white'>
-                                                            <i class='fas fa-edit'></i>
-                                                        </a>
-                                                    </td> <td>
-                                                        <button type='button' class='btn btn-danger' onclick='confirmDelete({$row['EmployeeID']})'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
+                                    <!-- Select nhân viên kế toán -->
+                                    <tr>
+                                        <th><label for="accountant">Nhân Viên Kế Toán:</label></th>
+                                        <td>
+                                            <select id="accountant" class="form-control" name="accountant" required>
+                                                <?php while ($employee = $accountingEmployees->fetch_assoc()) {
+                                                    $selected = ($employee['EmployeeID'] == $shift['EmployeeID'] && $shift['Roles'] == 3) ? 'selected' : '';
+                                                    echo "<option value='{$employee['EmployeeID']}' {$selected}>{$employee['FullName']}</option>";
+                                                } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Select nhân viên pha chế -->
+                                    <tr>
+                                        <th><label for="barista">Nhân Viên Pha Chế:</label></th>
+                                        <td>
+                                            <select id="barista" class="form-control" name="barista" required>
+                                                <?php while ($employee = $baristaEmployees->fetch_assoc()) {
+                                                    $selected = ($employee['EmployeeID'] == $shift['EmployeeID'] && $shift['Roles'] == 4) ? 'selected' : '';
+                                                    echo "<option value='{$employee['EmployeeID']}' {$selected}>{$employee['FullName']}</option>";
+                                                } ?>
+                                            </select>
+                                        </td>
+                                    </tr>
                                 </table>
-                            </div>
+                                <!-- Button section -->
+                                <div class="button-group">
+                                    </br>
+                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
+                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
+                                    <button type="submit" class="btn btn-primary btn-add">Sửa Lịch</button>
+                                </div>
+                            </form>        
                         </div>
                     </div>
                 </div>
-            </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
         </div>    
-        
-    <!-- Modal xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa nhân viên này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>    
 
-    <script>
-        // Hàm mở modal xác nhận xóa
-        function confirmDelete(employeeID) {
-            // Hiển thị modal
-            $('#confirmDeleteModal').modal('show');
-            
-            // // Gán ID của nhân viên vào nút xác nhận
-            // document.getElementById('confirmDeleteButton').onclick = function () {
-            //     // Thực hiện hành động xóa ở đây nếu cần thiết
-            //     console.log("Đã xác nhận xóa nhân viên với ID:", employeeID);
-            //     $('#confirmDeleteModal').modal('hide');
-            // };
-        }
-    </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>
