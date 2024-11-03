@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,31 +7,50 @@
     <title>Document</title>
     <!-- Đầu trang -->
     <?php
+        ob_start();
         include_once('./common/head/head.php');    
         include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
-
     ?>
     <style>
-        .table-custom {
-        border: 2px solid black; /* Đặt độ dày của đường viền bảng */
-    }
-
-    .table-custom th,
-    .table-custom td {
-        border: 2px solid black; /* Đặt độ dày của đường viền cho từng ô */
-    }
-
-    .table-custom th {
-        background-color: #f8f9fa; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
-    }
+        .table>thead>tr>th {
+            border: 2px solid black;
+        }
+        form {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        select {
+            width: 100%;
+            padding: 8px; 
+            margin: 5px 0;
+            box-sizing: border-box; 
+        }
     </style>
+    <script>
+        // Hàm để tự động cập nhật thời gian vào ô input
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`; // Lấy định dạng YYYY-MM-DDTHH:mm
+            document.getElementById('ThoiDiemCapNhat').value = dateTimeString;
+        }
+    </script>
 </head>
 
-<body>
+<body onload="updateCurrentTime()">
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
         <?php include_once('./common/menu/siderbar.php'); ?>
@@ -226,60 +244,111 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="header text-left">
-                                <h4>QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
+                                <h4>CẬP NHẬT CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
                             </div>
-                            
                             <?php
+                                $CouponID = $_REQUEST['CouponID'];
                                 include_once('./controller/cCoupon.php');
                                 $p = new cCoupon();
-                                $tbl = $p -> getCoupon();
-                                if($tbl){
-                                    echo '<table class="table table-bordered table-custom">';
-                                    echo '<div style="text-align: right;">'; 
-                                    echo '<a href="index.php?page=page_add_coupon" class="btn btn-primary mb-3"><i class="fas fa-plus"></i>  Thêm Chương Trình</a>';
-                                    echo '</div>';
-                                    echo '<tr><th>Mã Giảm Giá</th><th>Ngày Bắt Đầu</th><th>Ngày Kết Thúc</th><th>Mô Tả</th><th>Giảm Giá</th><th>Trạng Thái</th><th>Thời Điểm Cập Nhật Cuối Cùng</th><th colspan=2>Điều chỉnh</th></tr>';
-                                    while($r = mysqli_fetch_assoc($tbl)){
-                                        echo "<tr>";
-                                        echo "<td>".$r['CouponCode']."</td>";
-                                        echo "<td>".$r['StartDate']."</td>";
-                                        echo "<td>".$r['EndDate']."</td>";
-                                        echo "<td>".$r['Description']."</td>";
-                                        echo "<td>".$r['CouponDiscount']."</td>";
-                                        $status = ($r['Status'] == 1) ? "Còn hạn sử dụng" : "Hết hạn sử dụng";
-                                        echo "<td>{$status}</td>";
-                                        echo "<td>".$r['UpDateAt']."</td>";
-                                        echo "<td> <a href='index.php?page=page_update_coupon&CouponID=".$r["CouponID"]."' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
-                                        echo "<td> <a href='index.php?page=page_delete_coupon&CouponID=".$r["CouponID"]. "' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
+                                $sp = $p->get01CouponByID($CouponID);
+                                if ($sp) {
+                                    while ($r = mysqli_fetch_assoc($sp)) {
+                                        $CouponCode = $r["CouponCode"];
+                                        $StartDate = $r["StartDate"];
+                                        $EndDate = $r["EndDate"];
+                                        $Description = $r["Description"];
+                                        $CouponDiscount = $r["CouponDiscount"];
+                                        $Status = $r["Status"];
+                                        $UpDateAt = $r["UpDateAt"];
                                     }
-                                    echo '</tr>';
-                                    echo '</table>';
                                 }
-                                else{
-                                    echo 'Lỗi kết nối!';
-                                }
-
                             ?>
-                                <div class="row">
-                                    <div class="col-10"></div>
-                                    <div class="col-2 text-right">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" href="#"><<</a></li>
-                                            <li class="page-item disabled"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">>></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+
+                            <form action="#" method="post" enctype="multipart/form-data">
+                                <table>
+                                    <tr>
+                                        <td>Mã Giảm Giá</td>
+                                        <td>
+                                            <input type="text" name="MaGiamGia" value="<?php if (isset($CouponCode)) echo $CouponCode; ?>" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ngày Bắt Đầu</td>
+                                        <td><input type="datetime-local" name="NgayBatDau" value="<?php if (isset($StartDate)) echo $StartDate; ?>" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ngày Kết Thúc</td>
+                                        <td><input type="datetime-local" name="NgayKetThuc" value="<?php if (isset($EndDate)) echo $EndDate; ?>" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mô Tả</td>
+                                        <td><input type="text" name="MoTa" value="<?php if (isset($Description)) echo $Description; ?>" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Giảm Giá</td>
+                                        <td>
+                                            <select name="GiamGia" id="GiamGia">
+                                                <option value="10.00" <?php if (isset($CouponDiscount) && $CouponDiscount == "10.00") echo "selected"; ?>>10.00</option>
+                                                <option value="15.00" <?php if (isset($CouponDiscount) && $CouponDiscount == "15.00") echo "selected"; ?>>15.00</option>
+                                                <option value="20.00" <?php if (isset($CouponDiscount) && $CouponDiscount == "20.00") echo "selected"; ?>>20.00</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Trạng Thái</td>
+                                        <td>
+                                            <select name="TrangThai" id="TrangThai">
+                                                <option value="0" <?php if (isset($Status) && $Status == "0") echo "selected"; ?>>Hết hạn sử dụng</option>
+                                                <option value="1" <?php if (isset($Status) && $Status == "1") echo "selected"; ?>>Còn hạn sử dụng</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời điểm cập nhật cuối cùng</td>
+                                        <td>
+                                            <input type="datetime-local" id="ThoiDiemCapNhat" name="ThoiDiemCapNhat" value="<?php if (isset($UpDateAt)) echo $UpDateAt; ?>" required readonly>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="submit" name="btnUpDate" class="btn btn-success" value="Cập nhật">
+                                            <input type="reset" value="Nhập lại" class="btn btn-danger">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+
+                            <?php
+                                if (isset($_REQUEST["btnUpDate"])) {
+                                    include_once('./controller/cCoupon.php');
+                                    $p = new cCoupon();
+                                    $currentDate = date('Y-m-d\TH:i'); 
+                                    if (strtotime($StartDate) < strtotime($currentDate)) {
+                                        echo "<script>alert('Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại!')</script>";
+                                    } elseif (strtotime($StartDate) >= strtotime($EndDate)) {
+                                        echo "<script>alert('Ngày kết thúc phải lớn hơn ngày bắt đầu!')</script>";
+                                    } else {
+                                        $kq = $p->cUpdateCp($CouponID, $_REQUEST['MaGiamGia'], $_REQUEST['NgayBatDau'], $_REQUEST['NgayKetThuc'], $_REQUEST['MoTa'], $_REQUEST['GiamGia'], $_REQUEST['TrangThai'], $_REQUEST['ThoiDiemCapNhat']); 
+                                        if ($kq) {
+                                            echo "<script>alert('Cập nhật thành công!')</script>";
+                                            header('refresh:0.5; url="index.php?page=page_coupon"');
+                                            exit();
+                                        } else {
+                                            echo "<script>alert('Cập nhật thất bại!')</script>";
+                                            header('refresh:0.5; url="index.php?page=page_coupon"');
+                                            exit();
+                                        }
+                                    }
+                                }
+                            ?>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
             <!-- Cuối trang -->
-        <?php include_once('./common/footer/footer.php'); ?>
-    </div>   
+            <?php include_once('./common/footer/footer.php'); ob_end_flush();?>
+        </div>
 
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
