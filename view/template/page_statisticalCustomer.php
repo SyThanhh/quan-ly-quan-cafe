@@ -2,29 +2,12 @@
 <html lang="en">
 
 <head>
-  <?php  include_once('./common/head/head.php');   ?>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  <?php  include_once('./common/head/head.php')    ?>
 </head>
 
-<?php
-    // include_once('./connect/database.php');
-    // $db = new Database();
-    
-    
-    // $query = "SELECT * FROM customer";
-
-    // // Gọi hàm select
-    // $result = $db->select($query);
-   
-
-    // if ($result) {
-    //     // Nếu có kết quả, lặp qua và in ra
-    //     while ($row = $result->fetch_assoc()) {
-    //        var_dump($row);
-    //     }
-    // } else {
-    //     echo "Không có bản ghi nào được tìm thấy.";
-    // }
-?>
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -244,37 +227,8 @@
                 </nav>
                 <!-- End of Topbar -->
                 <div class="container mt-4">
-    <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ DOANH THU</h1>
-    <form>
-        <div class="form-row">
-            <!-- Cột bên trái -->
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="loaiThoiGian">Loại thời gian</label>
-                    <select class="form-control" id="loaiThoiGian">
-                        <option>Báo cáo theo ngày</option>
-                        <option>Báo cáo theo tháng</option>
-                        <option>Báo cáo theo năm</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="ngayBatDau">Ngày bắt đầu</label>
-                    <input type="date" class="form-control" id="ngayBatDau" value="2024-01-01">
-                </div>
-                <button type="submit" class="btn btn-secondary">Thống kê</button>
-            </div>
-            <!-- Cột giữa để canh lề, tạo khoảng cách giữa hai phần -->
-            <div class="col-md-3"></div>
-            <!-- Cột bên phải -->
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="ngayKetThuc">Ngày kết thúc</label>
-                    <input type="date" class="form-control" id="ngayKetThuc" value="2024-01-31">
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
+                  <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ THÔNG TIN KHÁCH HÀNG</h1>
+    
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 

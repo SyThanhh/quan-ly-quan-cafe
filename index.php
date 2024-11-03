@@ -3,6 +3,8 @@
 
    $page = isset($_GET['page']) ? $_GET['page'] : null; // Mặc định là null
 
+
+
    // Đường dẫn đến thư mục chứa các file trang
    $page_directory = 'view/template/';
    

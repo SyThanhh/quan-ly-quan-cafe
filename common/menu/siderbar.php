@@ -1,5 +1,7 @@
+<?php
+ob_start(); // Bắt đầu output buffering
+?>
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
 <!-- Sidebar - Brand -->
 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
     <div class="sidebar-brand-icon rotate-n-15">
@@ -57,10 +59,9 @@
     <div id="manageCustomer" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
+            <a class="collapse-item" href="index.php?page=page_customer">Xem thông tin</a>
+            <a class="collapse-item" href="index.php?page=page_statisticalCustomer.php">Thống kê thông kê</a>
+
         </div>
     </div>
 </li>
@@ -92,11 +93,9 @@
     <div id="manageOrder" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
+            <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
+            <a class="collapse-item" href="index.php?page=page_viewOrder">Xem hóa đơn chi tiết hóa <br> đơn</a>
+           
         </div>
     </div>
 </li>
@@ -129,9 +128,9 @@
     <div id="manageCoupon" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="index.php?page=page_coupon">Colors</a>
-        </div>git
+            <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
+            <a class="collapse-item" href="index.php?page=page_coupon">Quản lý khuyến mãi</a>
+        </div>
     </div>
 </li>
 
@@ -144,7 +143,7 @@
     <div id="manageRequest" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
+            <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
             <a class="collapse-item" href="index.php?page=page_supplier">Quản lý phiếu</a>
         </div>
     </div>
@@ -159,7 +158,7 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="page_manage.php">thống kê</a>
+            <a class="collapse-item" href="index.php?page=page_manage.php">thống kê</a>
 
         </div>
     </div>
@@ -169,12 +168,12 @@
 <hr class="sidebar-divider">
 
 <!-- Heading -->
-<div class="sidebar-heading">
+<!-- <div class="sidebar-heading">
     Addons
-</div>
+</div> -->
 
 <!-- Nav Item - Pages Collapse Menu -->
-<li class="nav-item">
+<!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
         aria-expanded="true" aria-controls="collapsePages">
         <i class="fas fa-fw fa-folder"></i>
@@ -192,7 +191,7 @@
             <a class="collapse-item" href="blank.html">Blank Page</a>
         </div>
     </div>
-</li>
+</li> -->
 
 <!-- Nav Item - Charts -->
 <li class="nav-item">
@@ -224,3 +223,6 @@
 </div>
 
 </ul>
+<?php
+ob_end_flush(); // Kết thúc output buffering
+?>

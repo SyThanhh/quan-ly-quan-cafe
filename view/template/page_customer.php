@@ -2,48 +2,64 @@
 <html lang="en">
 
 <head>
-  <?php  include_once('./common/head/head.php');   ?>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/css/table.css">
+    <!-- Đầu trang -->
+    <?php
+        include_once('./common/head/head.php');   
+        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+
+        // Tạo một đối tượng Database để kết nối
+        $database = new Database();
+        $conn = $database->connect(); // Lấy kết nối
+    ?>
+    
+    <style>
+      
+        
+        
+        @media (max-width: 600px) {
+            .table, .table thead, .table tbody, .table th, .table td, .table tr {
+                display: block;
+            }
+            .table thead {
+                display: none;
+            }
+            .table tbody tr {
+                margin-bottom: 15px;
+            }
+            .table td {
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+            }
+             .table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-left: 10px;
+                text-align: left;
+                font-weight: bold;
+            } 
+        }
+    </style>
 </head>
 
-<?php
-    // include_once('./connect/database.php');
-    // $db = new Database();
-    
-    
-    // $query = "SELECT * FROM customer";
-
-    // // Gọi hàm select
-    // $result = $db->select($query);
-   
-
-    // if ($result) {
-    //     // Nếu có kết quả, lặp qua và in ra
-    //     while ($row = $result->fetch_assoc()) {
-    //        var_dump($row);
-    //     }
-    // } else {
-    //     echo "Không có bản ghi nào được tìm thấy.";
-    // }
-?>
-<body id="page-top">
-
-    <!-- Page Wrapper -->
+<body>
     <div id="wrapper">
+        <!-- Thanh điều hướng dọc -->
+        <?php include_once('./common/menu/siderbar.php'); ?>
 
-        <!-- Sidebar -->
-        <?php include_once('./common/menu/siderbar.php')?>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
+        <!-- Giao diện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
-
-                <!-- Topbar -->
+                <!-- Thanh điều hướng ngang -->
+                  <div id="content">
+                <!-- Thanh điều hướng ngang -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
@@ -240,225 +256,119 @@
                         </li>
 
                     </ul>
-
                 </nav>
-                <!-- End of Topbar -->
-                <div class="container mt-4">
-    <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ DOANH THU</h1>
-    <form>
-        <div class="form-row">
-            <!-- Cột bên trái -->
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="loaiThoiGian">Loại thời gian</label>
-                    <select class="form-control" id="loaiThoiGian">
-                        <option>Báo cáo theo ngày</option>
-                        <option>Báo cáo theo tháng</option>
-                        <option>Báo cáo theo năm</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="ngayBatDau">Ngày bắt đầu</label>
-                    <input type="date" class="form-control" id="ngayBatDau" value="2024-01-01">
-                </div>
-                <button type="submit" class="btn btn-secondary">Thống kê</button>
-            </div>
-            <!-- Cột giữa để canh lề, tạo khoảng cách giữa hai phần -->
-            <div class="col-md-3"></div>
-            <!-- Cột bên phải -->
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="ngayKetThuc">Ngày kết thúc</label>
-                    <input type="date" class="form-control" id="ngayKetThuc" value="2024-01-31">
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-                <!-- Begin Page Content -->
+
+                <!--  Nội dung trang  -->
                 <div class="container-fluid">
-
-                    <!-- Content Row -->
-
                     <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="col-md-12">
+                            <div class="header text-left">
+                                <h4>QUẢN LÝ KHÁCH HÀNG</h4>
+                            </div>
+                            
+                            <div class="col-md-12 text-center">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group" style="width:55%;">
+                                            <input type="text" class="form-control" width="60" id="name-search" placeholder="Tìm nhân viên theo tên">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
+                                                     <i class="fas fa-eraser"></i>
+                                                </button>
+                                            </div>
+                                           
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myColumnChart"></canvas>
+                                    <div class="col-md-6 text-right">
+                                        <button type="button" class="btn btn-primary btn-add">
+                                        <i class="fas fa-plus-square"></i>
+                                            Thêm chương trình
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            </br>
 
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
+                            <!-- Danh sách nhân viên -->
+                             <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Tên</th>
+                                            <th scope="col">Số Điện thoại</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Điểm tích lũy</th>
+                                            <th scope="col">Thời gian tạo</th>
+                                            <th colspan='2' class="">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            // Truy vấn danh sách nhân viên
+                                            $customers= $database->select("SELECT * FROM customer");
+
+                                            // Hiển thị danh sách nhân viên
+                                            if ($customers) {
+                                                while ($row = $customers->fetch_assoc()) {
+                                                    echo "<tr>";
+                                                    echo "<td data-label='ID'>{$row['CustomerID']}</td>";
+                                                    echo "<td data-label='Tên'>{$row['CustomerName']}</td>";
+                                                    echo "<td data-label='Số Điện thoại'>{$row['CustomerPhone']}</td>";
+                                                    echo "<td data-label='Email'>{$row['Email']}</td>";
+                                                    echo "<td data-label='Điểm tích lũy'>{$row['CustomerPoint']}</td>";
+                                                    echo "<td data-label='Thời gian tạo'>{$row['CreateAt']}</td>";
+                                                    echo "<td data-label='Thao tác'>
+                                                            <button type='button' class='btn btn-success' id='btnEdit'>
+                                                                <i class='fas fa-edit'></i>
+                                                            </button>
+                                                        </td>
+                                                        <td data-label='Thao tác'>
+                                                            <button type='button' class='btn btn-danger' id='btnDelete'>
+                                                               <i class='fas fa-minus-square'></i>
+                                                            </button>
+                                                        </td>";
+                                                    echo "</tr>";
+                                                }
+                                            } else {
+                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
+                                            }
+                                        ?>
+                                    </tbody>
+                                 </table>
+                                 <div class="row justify-content-end mr-1">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Content Row -->
-                    
-                    <div class="container mt-4">
-                        <table class="table table-bordered text-center">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Loại Sản Phẩm</th>
-                                    <th>Số lượng</th>
-                                    <th>Doanh thu</th>
-                                    <th>Lợi nhuận</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Các hàng dữ liệu -->
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <!-- Hàng tổng cộng -->
-                                <tr>
-                                    <td colspan="3"></td>
-                                    <td><strong>Tổng doanh thu:</strong></td>
-                                    <td><strong>Tổng lợi nhuận:</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <?php include_once('./common/footer/footer.php') ?>
-            <!-- End of Footer -->
-
-        </div>
-        <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
                 </div>
             </div>
-        </div>
-    </div>
+            <!-- Cuối trang -->
+            <?php include_once('./common/footer/footer.php'); ?>
+        </div>   
 
-  
-    <!-- Script -->
-    <?php include_once('./common/script/default.php')?>
+    <!-- Bootstrap core JavaScript-->
+    <?php include_once('./common/script/default.php'); ?>
 </body>
-
 </html>
