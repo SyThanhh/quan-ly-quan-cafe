@@ -34,7 +34,7 @@ ob_start(); // Bắt đầu output buffering
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
         aria-expanded="true" aria-controls="collapseTwo">
-        <i class="fas fa-fw fa-cog"></i>
+        <i class="fas fa-money-bill-wave"></i>
         <span>Bán hàng</span>
     </a>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -53,7 +53,7 @@ ob_start(); // Bắt đầu output buffering
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageCustomer"
         aria-expanded="true" aria-controls="manageCustomer">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-users"></i>
         <span>Quản lý khách hàng</span>
     </a>
     <div id="manageCustomer" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
@@ -70,7 +70,7 @@ ob_start(); // Bắt đầu output buffering
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageEmployee"
         aria-expanded="true" aria-controls="manageEmployee">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-id-badge"></i>
         <span>Quản lý nhân viên</span>
     </a>
     <div id="manageEmployee" class="collapse" aria-labelledby="headingUtilities"
@@ -87,7 +87,7 @@ ob_start(); // Bắt đầu output buffering
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageOrder"
         aria-expanded="true" aria-controls="manageOrder">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-receipt"></i>
         <span>Quản lý hóa đơn</span>
     </a>
     <div id="manageOrder" class="collapse" aria-labelledby="headingUtilities"
@@ -103,17 +103,14 @@ ob_start(); // Bắt đầu output buffering
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageMenu"
         aria-expanded="true" aria-controls="manageMenu">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-book"></i>
         <span>Quản lý menu</span>
     </a>
     <div id="manageMenu" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
+            <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
+            <a class="collapse-item" href="index.php?page=page_menu">Quản lý menu</a>
         </div>
     </div>
 </li>
@@ -122,7 +119,7 @@ ob_start(); // Bắt đầu output buffering
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageCoupon"
         aria-expanded="true" aria-controls="manageCoupon">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-ticket-alt"></i>
         <span>Quản lý khuyến mãi</span>
     </a>
     <div id="manageCoupon" class="collapse" aria-labelledby="headingUtilities"
@@ -137,7 +134,7 @@ ob_start(); // Bắt đầu output buffering
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageRequest"
         aria-expanded="true" aria-controls="manageRequest">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-file-alt"></i>
         <span>Quản lý phiếu gửi yêu cầu</span>
     </a>
     <div id="manageRequest" class="collapse" aria-labelledby="headingUtilities"
@@ -151,14 +148,14 @@ ob_start(); // Bắt đầu output buffering
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageStatistical"
         aria-expanded="true" aria-controls="manageStatistical">
-        <i class="fas fa-fw fa-wrench"></i>
+        <i class="fas fa-chart-bar"></i>
         <span>Thống kê doanh thu</span>
     </a>
     <div id="manageStatistical" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="index.php?page=page_manage">thống kê</a>
+            <a class="collapse-item" href="index.php?page=page_manage">Thống kê</a>
 
         </div>
     </div>

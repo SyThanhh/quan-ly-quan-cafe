@@ -227,31 +227,34 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="header text-left">
-                                <h4>QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
+                                <h4>QUẢN LÝ MENU</h4>
                             </div>
                             
                             <?php
-                                include_once('./controller/cCoupon.php');
-                                $p = new cCoupon();
-                                $tbl = $p -> getCoupon();
+                                include_once('./controller/cMenu.php');
+                                $p = new cProduct();
+                                $tbl = $p -> getProduct();
                                 if($tbl){
                                     echo '<table class="table table-bordered table-custom">';
                                     echo '<div style="text-align: right;">'; 
-                                    echo '<a href="index.php?page=page_add_coupon" class="btn btn-primary mb-3"><i class="fas fa-plus"></i>  Thêm Chương Trình</a>';
+                                    echo '<a href="index.php?page=page_add_menu" class="btn btn-primary mb-3"><i class="fas fa-plus"></i>  Thêm Món</a>';
                                     echo '</div>';
-                                    echo '<tr><th>Mã Giảm Giá</th><th>Ngày Bắt Đầu</th><th>Ngày Kết Thúc</th><th>Mô Tả</th><th>Giảm Giá</th><th>Trạng Thái</th><th>Thời Điểm Cập Nhật Cuối Cùng</th><th colspan=2>Điều chỉnh</th></tr>';
+                                    echo '<tr><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Giá Bán</th><th>Hình Ảnh</th><th>Số Lượng Tồn Kho</th><th>Trạng Thái</th><th>Mô Tả</th><th>Loại Sản Phẩm</th><th colspan=2>Điều chỉnh</th></tr>';
                                     while($r = mysqli_fetch_assoc($tbl)){
                                         echo "<tr>";
-                                        echo "<td>".$r['CouponCode']."</td>";
-                                        echo "<td>".$r['StartDate']."</td>";
-                                        echo "<td>".$r['EndDate']."</td>";
-                                        echo "<td>".$r['Description']."</td>";
-                                        echo "<td>".$r['CouponDiscount']."</td>";
-                                        $status = ($r['Status'] == 1) ? "Còn hạn sử dụng" : "Hết hạn sử dụng";
+                                        echo "<td>".$r['ProductID']."</td>";
+                                        echo "<td>".$r['ProductName']."</td>";
+                                        echo "<td>".$r['UnitPrice']."</td>";
+                                        echo "<td>";
+                                        echo '<img src="assets/img/'.$r['ProductImage'].'" width="100px">';
+                                        echo "</td>";
+                                        echo "<td>".$r['UnitsInStock']."</td>";
+                                        $status = ($r['Status'] == 1) ? "Còn sản phẩm" : "Hết sản phẩm";
                                         echo "<td>{$status}</td>";
-                                        echo "<td>".$r['UpDateAt']."</td>";
-                                        echo "<td> <a href='index.php?page=page_update_coupon' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
-                                        echo "<td> <a href='index.php?page=page_delete_coupon' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
+                                        echo "<td>".$r['Description']."</td>";
+                                        echo "<td>".$r['CategoryName']."</td>";
+                                        echo "<td> <a href='index.php?page=page_update_menu&ProductID=".$r["ProductID"]."' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
+                                        echo "<td> <a href='index.php?page=page_delete_menu&ProductID=".$r["ProductID"]. "' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
                                     }
                                     echo '</tr>';
                                     echo '</table>';

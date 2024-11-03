@@ -1,5 +1,3 @@
-
-<?php ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,32 +7,53 @@
     <title>Document</title>
     <!-- Đầu trang -->
     <?php
+        ob_start();
         include_once('./common/head/head.php');    
         include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
-
     ?>
     <style>
-        .table-custom {
-        border: 2px solid black; /* Đặt độ dày của đường viền bảng */
-    }
-
-    .table-custom th,
-    .table-custom td {
-        border: 2px solid black; /* Đặt độ dày của đường viền cho từng ô */
-    }
-
-    .table-custom th {
-        background-color: #f8f9fa; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
-    }
+        .table>thead>tr>th {
+            border: 2px solid black;
+        }
+        form {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        input[type="money"],
+        input[type="int"],
+        select {
+            width: 100%;
+            padding: 8px; 
+            margin: 5px 0;
+            box-sizing: border-box; 
+        }
     </style>
+    <script>
+        // Hàm để tự động cập nhật thời gian vào ô input
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`; // Lấy định dạng YYYY-MM-DDTHH:mm
+            document.getElementById('ThoiDiemCapNhat').value = dateTimeString;
+        }
+    </script>
 </head>
 
-<body>
-    <div id="wrapper">
+<body onload="updateCurrentTime()">
+<div id="wrapper">
         <!-- Thanh điều hướng dọc -->
         <?php include_once('./common/menu/siderbar.php'); ?>
 
@@ -227,60 +246,173 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="header text-left">
-                                <h4>QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
+                                <h4>THÊM MÓN TRONG MENU</h4>
                             </div>
                             
-                            <?php
-                                include_once('./controller/cCoupon.php');
-                                $p = new cCoupon();
-                                $tbl = $p -> getCoupon();
-                                if($tbl){
-                                    echo '<table class="table table-bordered table-custom">';
-                                    echo '<div style="text-align: right;">'; 
-                                    echo '<a href="index.php?page=page_add_coupon" class="btn btn-primary mb-3"><i class="fas fa-plus"></i>  Thêm Chương Trình</a>';
-                                    echo '</div>';
-                                    echo '<tr><th>Mã Giảm Giá</th><th>Ngày Bắt Đầu</th><th>Ngày Kết Thúc</th><th>Mô Tả</th><th>Giảm Giá</th><th>Trạng Thái</th><th>Thời Điểm Cập Nhật Cuối Cùng</th><th colspan=2>Điều chỉnh</th></tr>';
-                                    while($r = mysqli_fetch_assoc($tbl)){
-                                        echo "<tr>";
-                                        echo "<td>".$r['CouponCode']."</td>";
-                                        echo "<td>".$r['StartDate']."</td>";
-                                        echo "<td>".$r['EndDate']."</td>";
-                                        echo "<td>".$r['Description']."</td>";
-                                        echo "<td>".$r['CouponDiscount']."</td>";
-                                        $status = ($r['Status'] == 1) ? "Còn hạn sử dụng" : "Hết hạn sử dụng";
-                                        echo "<td>{$status}</td>";
-                                        echo "<td>".$r['UpDateAt']."</td>";
-                                        echo "<td> <a href='index.php?page=page_update_coupon' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
-                                        echo "<td> <a href='index.php?page=page_delete_coupon' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
-                                    }
-                                    echo '</tr>';
-                                    echo '</table>';
-                                }
-                                else{
-                                    echo 'Lỗi kết nối!';
-                                }
+                            <form action="#" method="post" enctype="multipart/form-data">
+                                <table>
+                                    <tr>
+                                        <td>Mã Sản Phẩm</td>
+                                        <td>
+                                            <input type="text" name="MaSanPham" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tên Sản Phẩm</td>
+                                        <td>
+                                            <input type="text" name="TenSanPham" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Giá Bán</td>
+                                        <td><input type="money"  name="GiaBan" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hình Ảnh</td>
+                                        <td><input type="file" name="HinhAnh"  required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Số Lượng Tồn Kho</td>
+                                        <td><input type="int" name="SoLuongTonKho"  required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Trạng Thái</td>
+                                        <td>
+                                            <select name="TrangThai" id="TrangThai">
+                                                <option value="1">Hết sản phẩm</option>
+                                                <option value="0">Còn sản phẩm</option>
+                                            </select>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Mô Tả</td>
+                                        <td><input type="text"  name="MoTa" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời Gian Tạo Sản Phẩm</td>
+                                        <td><input type="datetime-local"  name="ThoiGianTaoSanPham" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mã Yêu Cầu</td>
+                                        <td><input type="int"  name="MaYeuCau" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Loại Sản Phẩm</td>
+                                        <td>
+                                            <?php
+                                                include_once('Controller/cCategory.php');
+                                                $po = new cCategory();
+                                                $tbl = $po -> getCategory();
+                                                if($tbl){
+                                                    echo '<select name="cboLoaiSP" id="">';
+                                                    while($r = mysqli_fetch_assoc($tbl)){
+                                                            echo '<option value='.$r["CategoryID"].'>'.$r["CategoryName"].'</option>';
+                                                    }
+                                                    echo '</select>';
+                                                }
+                                                else{
+                                                    echo 'Lỗi kết nối!';
+                                                }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời Điểm Cập Nhật Cuối Cùng</td>
+                                        <td>
+                                            <input type="datetime-local" id="ThoiDiemCapNhat" name="ThoiDiemCapNhat" required readonly>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="submit" name="btnInsert" class="btn btn-success" value="Thêm">
+                                            <input type="reset" value="Nhập lại" class="btn btn-danger">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
 
-                            ?>
-                                <div class="row">
-                                    <div class="col-10"></div>
-                                    <div class="col-2 text-right">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" href="#"><<</a></li>
-                                            <li class="page-item disabled"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">>></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                            <?php
+                                if (isset($_REQUEST["btnInsert"])) {
+                                    include_once('./controller/cMenu.php');
+                                    $p = new cProduct();
+                                    
+                                    // Xử lý upload ảnh
+                                    $target_dir = "./assets/img/"; // Thư mục lưu trữ hình ảnh
+                                    $target_file = $target_dir . basename($_FILES["HinhAnh"]["name"]);
+                                    $uploadOk = 1;
+                                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                                    
+                                    // Kiểm tra xem tệp có phải là hình ảnh thực sự không
+                                    $check = getimagesize($_FILES["HinhAnh"]["tmp_name"]);
+                                    if ($check !== false) {
+                                        echo "Tệp là hình ảnh - " . $check["mime"] . ".<br>";
+                                        $uploadOk = 1;
+                                    } else {
+                                        echo "Tệp không phải là hình ảnh.<br>";
+                                        $uploadOk = 0;
+                                    }
+                                    
+                                    // Kiểm tra kích thước tệp
+                                    if ($_FILES["HinhAnh"]["size"] > 500000) { // Kiểm tra kích thước lớn hơn 500KB
+                                        echo "Xin lỗi, tệp của bạn quá lớn.<br>";
+                                        $uploadOk = 0;
+                                    }
+                                    
+                                    // Cho phép các định dạng tệp hình ảnh nhất định
+                                    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                                        echo "Xin lỗi, chỉ cho phép tệp JPG, JPEG, PNG & GIF.<br>";
+                                        $uploadOk = 0;
+                                    }
+                                    
+                                    // Kiểm tra xem $uploadOk có bằng 0 không do lỗi
+                                    if ($uploadOk == 0) {
+                                        echo "Xin lỗi, tệp của bạn không được upload.<br>";
+                                    } else {
+                                        // Nếu mọi thứ đều ổn, cố gắng upload tệp
+                                        if (move_uploaded_file($_FILES["HinhAnh"]["tmp_name"], $target_file)) {
+                                            echo "Tệp " . htmlspecialchars(basename($_FILES["HinhAnh"]["name"])) . " đã được upload.<br>";
+                                            
+                                            // Tiếp tục với việc thêm sản phẩm vào cơ sở dữ liệu
+                                            $kq = $p->cInsertMenu(
+                                                $_REQUEST['MaSanPham'],
+                                                $_REQUEST['TenSanPham'],
+                                                $_REQUEST['GiaBan'],
+                                                $target_file,
+                                                $_REQUEST['SoLuongTonKho'],
+                                                $_REQUEST['TrangThai'],
+                                                $_REQUEST['MoTa'],
+                                                $_REQUEST['ThoiGianTaoSanPham'],
+                                                $_REQUEST['ThoiDiemCapNhat'],
+                                                $_REQUEST['MaYeuCau'],
+                                                $_REQUEST['cboLoaiSP']
+                                            );
+                                            
+                                            // Kiểm tra kết quả thêm sản phẩm vào cơ sở dữ liệu
+                                            if ($kq) {
+                                                echo "<script>alert('Thêm thành công!')</script>";
+                                                header('refresh:0.5; url="index.php?page=page_menu"');
+                                                exit();
+                                            } else {
+                                                echo "Thêm thất bại! Lỗi: " . mysqli_error($p->conn); // Giả sử $p->conn là kết nối cơ sở dữ liệu
+                                                echo "<script>alert('Thêm thất bại!')</script>";
+                                                header('refresh:0.5; url="index.php?page=page_menu"');
+                                                exit();
+                                            }
+                                        } else {
+                                            echo "Xin lỗi, đã xảy ra lỗi khi upload tệp của bạn.<br>";
+                                        }
+                                    }
+                                }
+                                ?>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
             <!-- Cuối trang -->
-        <?php include_once('./common/footer/footer.php'); ?>
-    </div>   
+        <?php include_once('./common/footer/footer.php'); ob_end_flush();?>
+    </div> 
 
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
