@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-<?php
+    <!-- Đầu trang -->
+    <?php
         include_once('./common/head/head.php');    
         include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
@@ -10,49 +11,20 @@
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
     ?>
-  <script src="./assets/js/manager.js"></script>
+    <link rel="stylesheet" href="./assets/css/employee_shift.css">
 </head>
 
-<?php
-    // include_once('./connect/database.php');
-    // $db = new Database();
-    
-    
-    // $query = "SELECT * FROM customer";
-
-    // // Gọi hàm select
-    // $result = $db->select($query);
-   
-
-    // if ($result) {
-    //     // Nếu có kết quả, lặp qua và in ra
-    //     while ($row = $result->fetch_assoc()) {
-    //        var_dump($row);
-    //     }
-    // } else {
-    //     echo "Không có bản ghi nào được tìm thấy.";
-    // }
-?>
-<body id="page-top">
-
-    <!-- Page Wrapper -->
+<body>
     <div id="wrapper">
+        <!-- Thanh điều hướng dọc -->
+        <?php include_once('./common/menu/siderbar.php'); ?>
 
-        <!-- Sidebar -->
-        <?php include_once('./common/menu/siderbar.php')?>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
+        <!-- Giao giện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
-
-                <!-- Topbar -->
+                <!-- Thanh điều hướng ngang -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
@@ -248,257 +220,75 @@
                         </li>
 
                     </ul>
-
                 </nav>
-                <!-- End of Topbar -->
-                <div class="container mt-4">
-    <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ DOANH THU</h1>
-    <form>
-        <div class="form-row">
-            <!-- Cột bên trái -->
-            <div class="col-md-3">
-                <!-- <div class="form-group">
-                    <label for="loaiThoiGian">Loại thời gian</label>
-                    <select class="form-control" id="loaiThoiGian">
-                        <option>Báo cáo theo ngày</option>
-                        <option>Báo cáo theo tháng</option>
-                        <option>Báo cáo theo năm</option>
-                    </select>
-                </div> -->
-                <div class="form-group">
-                    <label for="ngayBatDau">Ngày bắt đầu</label>
-                    <input type="date" class="form-control" id="ngayBatDau" value="2024-01-01">
-                </div>
-            <!-- <button type="submit" class="btn btn-secondary">Thống kê</button> -->
-            </div>
-            <!-- Cột giữa để canh lề, tạo khoảng cách giữa hai phần -->
-            <div class="col-md-3"></div>
-            <!-- Cột bên phải -->
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="ngayKetThuc">Ngày kết thúc</label>
-                    <input type="date" class="form-control" id="ngayKetThuc" value="2024-01-31">
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
 
-                    <!-- Content Row -->
+                <!--  Nội dung trang  -->
+                <?php
+                $supplierID = isset($_GET['id']) ? $_GET['id'] : 0;
+                $result = $database->select("
+                SELECT p.*, ps.*, s.*
+                FROM product AS p
+                LEFT JOIN product_supplier AS ps ON p.ProductID = ps.ProductID
+                LEFT JOIN supplier AS s ON ps.SupplierID = s.SupplierID
+                WHERE s.SupplierID = '$supplierID'
+            ");
+// Truy vấn SQL để lấy thông tin nhà cung cấp và sản phẩm dựa trên SupplierID
 
+                    $supplier = $result->fetch_assoc();
+                ?>
+                <div class="container-fluid" align="center">
                     <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myColumnChart"></canvas>
-                                    </div>
-                                </div>
+                        <div class="col-md-12">
+                            <div>
+                                <h4>SỬA THÔNG TIN PHIẾU</h4>
+                                </br>   
                             </div>
-                        </div>
+                            <form action="" method="post" >
+                            <table>
+                                <tr>
+                                    <th><label for="employeeID">Mã </label></th>
+                                    <td><input type="text" class="form-control" id="employeeID" name="supplierID" value="<?php echo $supplier['SupplierID']; ?>" readonly></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <th><label for="lastName">Tên công ty:</label></th>
+                                    <td><input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $supplier['CompanyName']; ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="firstName">Tên nhà cung cấp:</label></th>
+                                    <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $supplier['ProductName']; ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="email">Sản phẩm:</label></th>
+                                    <td><input type="text" class="form-control" id="email" name="email" value="<?php echo $supplier['ContactName']; ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="phoneNumber">Địa chỉ</label></th>
+                                    <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="<?php echo $supplier['Address']; ?>" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="birthDate">Số điện thoại:</label></th>
+                                    <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="<?php echo $supplier['Phone']; ?>" required></td>
 
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
+                                </tr>
+                            </table>
+                                <!-- Button section -->
+                                <div class="button-group">
+                                    </br>
+                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
+                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
+                                    <button type="submit" class="btn btn-primary btn-add">Cập nhật</button>
                                 </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            </form>        
                         </div>
                     </div>
-
-                    <!-- Content Row -->
-                 <br>   
-            <div class="container mt-4">
-            <table class="table table-bordered text-center">
-                    <thead class="custom-thead">
-                        <tr>
-                            <th class="text-white">STT</th>
-                            <th class="text-white">Loại Sản Phẩm</th>
-                            <th class="text-white">Số lượng</th>
-                            <th class="text-white">Doanh thu</th>
-                            <th class="text-white">Lợi nhuận</th>
-                        </tr>
-                    </thead>
-        <tbody>
-        <tbody>
-        <tbody>
-    <?php
-    $supplier = $database->select("
-        SELECT p.*, ps.*, od.*, o.*
-        FROM product p
-        JOIN product_supplier ps ON p.ProductID = ps.ProductID
-        JOIN orderdetail od ON p.ProductID = od.ProductID
-        JOIN `order` o ON od.OrderID = o.OrderID
-    ");
-
-    $totalRevenue = 0; // Biến để tính tổng doanh thu
-
-    if ($supplier) {
-        while ($row = $supplier->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-            echo "<tr>";
-            echo "<td>{$row['ProductID']}</td>";
-            echo "<td>{$row['ProductName']}</td>";
-            echo "<td>{$row['Quantity']}</td>";
-            echo "<td>{$row['TotalAmount']}</td>";
-            
-            // Cộng tổng doanh thu
-            $totalRevenue += $row['TotalAmount'];
-            
-            echo "<td></td>";
-            echo "</tr>";
-        }
-    } else {
-        echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
-    }
-
-    // Định dạng tổng doanh thu với hai số thập phân
-    $formattedTotalRevenue = number_format($totalRevenue, 2);
-
-    // Hiển thị hàng tổng cộng
-    echo "<tr>";
-    echo "<td colspan='3'></td>";
-    echo "<td><strong>Tổng doanh thu:</strong> {$formattedTotalRevenue}</td>";
-    echo "<td><strong>Tổng lợi nhuận:</strong></td>";
-    echo "</tr>";
-    ?>
-</tbody>
-
-</tbody>
-
-
-        </tbody>
-    </table>
-
-    <div class="row justify-content-end mr-1">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-<style>
-    /* CSS tùy chỉnh để đổi màu viền của thead */
-    .custom-thead th {
-        background-color: #4e73df;
-    }
-</style>
-
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <?php include_once('./common/footer/footer.php') ?>
-            <!-- End of Footer -->
-
-        </div>
-        <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">x</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
                 </div>
             </div>
-        </div>
-    </div>
+            <!-- Cuối trang -->
+            <?php include_once('./common/footer/footer.php'); ?>
+        </div>    
 
     <!-- Bootstrap core JavaScript-->
-    <?php 
-    include_once('./common/script/default.php')
-    ?>
+    <?php include_once('./common/script/default.php'); ?>
 </body>
-
 </html>

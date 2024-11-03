@@ -6,7 +6,9 @@
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');    
-        
+        include_once('./connect/database.php');
+        $database = new Database();
+        $conn = $database->connect(); // Lấy kết nối
     ?>
     <link rel="stylesheet" href="./assets/css/sell.css">
     <link rel="stylesheet" href="./assets/css/alertNotification.css">
@@ -254,33 +256,44 @@
                                             <th>Mã</th>
                                             <th>Tên công ty</th>
                                             <th>Tên nhà cung cấp</th>
+                                            <th>Sản phẩm</th>
                                             <th>Địa chỉ</th>
                                             <th>Số điện thoại</th>
                                             <th>Fax</th>
-                                            <th>Trạng thái</th>
-</tr>
+                                            <th colspan='2'>Trạng thái</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                            // // Truy vấn danh sách nhân viên
-                                            // $employees = $database->select("SELECT * FROM supplier");
-
-                                            // // Hiển thị danh sách nhân viên
-                                            // if ($employees) {
-                                            //     while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                            //         echo "<tr>";
-                                            //         echo "<td>{$row['SupplierID']}</td>";
-                                            //         echo "<td>{$row['CompanyName']}</td>";
-                                            //         echo "<td>{$row['ContactName']}</td>";
-                                            //         echo "<td>{$row['Address']}</td>";
-                                            //         echo "<td>{$row['Phone']}</td>";
-                                            //         echo "<td>{$row['Fax']}</td>";
-                                            //         echo "<td></td>";
-                                            //         echo "</tr>";
-                                            //     }
-                                            // } else {
-                                            //     echo "<tr><td colspan='7' class='text-center'>Không có dữ liệu</td></tr>";
-                                            // }
+                                    <?php
+                                            // Truy vấn danh sách nhân viên
+                                            $supplier = $database->select("
+                                                    SELECT p.*, s.*
+                                                    FROM product p
+                                                    JOIN product_supplier ps ON p.ProductID = ps.ProductID
+                                                    JOIN supplier s ON ps.SupplierID = s.SupplierID
+                                            ");
+                                            if ($supplier) {
+                                                while ($row = $supplier->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
+                                                    echo "<tr>";
+                                                    echo "<td>{$row['SupplierID']}</td>";
+                                                    echo "<td>{$row['CompanyName']}</td>";
+                                                    echo "<td>{$row['ContactName']}</td>";
+                                                    echo "<td>{$row['ProductName']}</td>";
+                                                    echo "<td>{$row['Address']}</td>";
+                                                    echo "<td>{$row['Phone']}</td>";
+                                                    echo "<td>{$row['Fax']}</td>";
+                                                    echo "<td>
+                                                    <a href='index.php?page=page_update_supplier&id={$row['SupplierID']}' class='btn btn-success' style='color:white'>
+                                                        <i class='fas fa-edit'></i>
+                                                    </a></td> <td>
+                                                    <button type='button' class='btn btn-danger'onclick='confirmDelete({$row['SupplierID']})'>
+                                                        <i class='fas fa-trash'></i>
+                                                    </button>
+                                                </td>";
+                                                }
+                                            } else {
+                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
+                                            }                                            
                                         ?>
                                     </tbody>
                                 </table>
