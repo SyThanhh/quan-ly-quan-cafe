@@ -5,21 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <?php  include_once('./common/head/head.php')    ?>
-    <style>
-
-        @media (min-width: 768px) {
-            .chart-pie {
-                height: calc(23rem - 38px) !important;
-            }
-        }
-    </style>
+  <?php  include_once('./common/head/head.php')    ?>
+ 
 </head>
-<?php
-    include_once('./connect/database.php');
-    $db = new Database();
-    $conn = $db->connect();
-?>
+
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -250,25 +239,30 @@
 
                         <!-- Area Chart -->
                         <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow">
+                            <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                    <button class="btn btn-primary btn-sm stats-btn" data-type="products">Thống kê theo sản phẩm</button>
-                                    <button class="btn btn-primary btn-sm stats-btn" data-type="points">Thống kê theo điểm</button>    
-                                    </h6>
-                
-                                </div>
-                                <!-- Card Body -->
-                                <div class="container">
-                                    <div class="stats-option">
-                                       
+                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                    <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                         <canvas id="statsChart"></canvas>
+                                        <canvas id="myColumnChart"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -276,25 +270,42 @@
 
                         <!-- Pie Chart -->
                         <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow" style="width:420px;">
+                            <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="width:418px;">
-                                    <h6 class="m-0 font-weight-bold text-primary">Tổng chi tiêu của khách hàng</h6>
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                                         </a>
-                                      
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <div class="chart-pie ">
-                                        <canvas id="pieChart" width="500" height="500"></canvas>
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="myPieChart"></canvas>
                                     </div>
-                                    
+                                    <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-primary"></i> Direct
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-success"></i> Social
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle text-info"></i> Referral
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -302,32 +313,59 @@
 
                     <!-- Content Row -->
                     <div class="container my-5">
-                       
-                        <div class="data-table">
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                            <tr>
-                                <th>Tên khách hàng</th>
-                                <th>Tổng lượng mua</th>
-                                <th>Xem chi tiết</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php
-
-                            ?>
-                            
-                            <tr>
-                                <td>Mary Johnson</td>
-                                <td>$4,500</td>
-                                <td><a href="?page=page_viewDetailCustomer" class="btn btn-primary btn-sm">Xem</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <h2>Thông tin khách hàng</h2>
+                        <div class="card mb-4" id="customer-info">
+                        <div class="card-body">
+                            <h5 class="card-title">Tên: <span id="customer-name">John Doe</span></h5>
+                            <p class="card-text">Email: <span id="customer-email">johndoe@example.com</span></p>
+                            <p class="card-text">Số điện thoại: <span id="customer-phone">0123456789</span></p>
+                            <p class="card-text">Địa chỉ: <span id="customer-address">123 Đường ABC, Thành phố XYZ</span></p>
+                            <p class="card-text">Tổng số đơn hàng: <span id="total-orders">10</span></p>
+                            <p class="card-text">Tổng chi tiêu: <span id="total-spent">$5,000</span></p>
+                            <p class="card-text">Điểm thưởng: <span id="reward-points">1,000</span></p>
                         </div>
                     </div>
 
-                    
+                    <h3>Lịch sử mua sắm</h3>
+                    <table class="table table-striped" id="purchase-history">
+                        <thead>
+                            <tr>
+                            <th>Tên sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Giá</th>
+                            <th>Ngày mua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sản phẩm A</td>
+                                <td>2</td>
+                                <td>$200</td>
+                                <td>01/01/2023</td>
+                            </tr>
+                            <tr>
+                                <td>Sản phẩm B</td>
+                                <td>1</td>
+                                <td>$150</td>
+                                <td>15/01/2023</td>
+                            </tr>
+                            <tr>
+                                <td>Sản phẩm C</td>
+                                <td>3</td>
+                                <td>$300</td>
+                                <td>20/02/2023</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="chart-container">
+                        <canvas id="purchaseChart"></canvas>
+                    </div>
+
+                    <button class="btn btn-secondary" id="back-button">Trở về</button>
+                 </div>
+
+                   
                 </div>
                 <!-- /.container-fluid -->
 
@@ -370,258 +408,45 @@
     </div>
 
   
-    <!-- Script -->
-    <?php include_once('./common/script/default.php')?>
-
 
     <script>
-    // $(document).ready(function() {
-    //   const ctx = $('#statsChart')[0].getContext('2d');
-    //   const pieCtx = $('#pieChart')[0].getContext('2d');
-
-    //   let statsChart, pieChart;
-
-    //   // Dữ liệu mẫu cho thống kê theo sản phẩm
-    //   const productData = {
-    //     labels: ['Cà phê', 'Cà pha Phin', 'Nước ép'],
-    //     datasets: [{
-    //       label: 'Số lượng bán',
-    //       data: [120, 150, 90],
-    //       backgroundColor: [
-    //         'rgba(255, 99, 132, 0.2)',
-    //         'rgba(54, 162, 235, 0.2)',
-    //         'rgba(255, 206, 86, 0.2)'
-    //       ],
-    //       borderColor: [
-    //         'rgba(255, 99, 132, 1)',
-    //         'rgba(54, 162, 235, 1)',
-    //         'rgba(255, 206, 86, 1)'
-    //       ],
-    //       borderWidth: 1
-    //     }]
-    //   };
-
-    //   // Add sample data for `pointsData`
-    //     const pointsData = {
-    //     labels: ['Hạng kim Cương', 'Hạng Vàng', 'Hạng Bạc'],
-    //     datasets: [{
-    //         label: 'Điểm thưởng',
-    //         data: [300, 450, 200],
-    //         backgroundColor: [
-    //         'rgba(153, 102, 255, 0.2)',
-    //         'rgba(75, 192, 192, 0.2)',
-    //         'rgba(255, 159, 64, 0.2)'
-    //         ],
-    //         borderColor: [
-    //         'rgba(153, 102, 255, 1)',
-    //         'rgba(75, 192, 192, 1)',
-    //         'rgba(255, 159, 64, 1)'
-    //         ],
-    //         borderWidth: 1
-    //     }]
-    //     };
-
-    //   const pieData = {
-    //         labels: ['Nguyễn Văn A', 'Văn Thị Mọng', 'Đào lê'],
-    //         datasets: [{
-    //             label: 'Tổng chi tiêu',
-    //             data: [5000, 3000, 4500],
-    //             backgroundColor: [
-    //                 'rgba(255, 99, 132, 0.2)',
-    //                 'rgba(54, 162, 235, 0.2)',
-    //                 'rgba(255, 206, 86, 0.2)'
-    //             ],
-    //             borderColor: [
-    //                 'rgba(255, 99, 132, 1)',
-    //                 'rgba(54, 162, 235, 1)',
-    //                 'rgba(255, 206, 86, 1)'
-    //             ],
-    //             borderWidth: 1
-    //         }]
-    //     };
-
-    //     $(document).ready(function() {
-    //         const ctx = $('#pieChart')[0].getContext('2d');
-    //         const pieChart = new Chart(ctx, {
-    //             type: 'pie',
-    //             data: pieData,
-    //             options: {
-    //                 responsive: true,
-    //                 plugins: {
-    //                     legend: {
-    //                         position: 'top',
-    //                     },
-    //                     title: {
-    //                         display: true,
-    //                         text: 'Tổng chi tiêu của khách hàng'
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     });
-
-    //     function renderChart(data) {
-    //         if (statsChart) {
-    //             statsChart.destroy(); // Xóa biểu đồ cũ nếu có
-    //             statsChart.data.datasets[0].data = data.datasets[0].data; // Cập nhật dữ liệu
-    //             statsChart.update(); // Cập nhật biểu đồ
-    //         }
-    //         statsChart = new Chart(ctx, {
-    //             type: 'bar',
-    //             data: data,
-    //             options: {
-    //                 scales: {
-    //                     y: {
-    //                         beginAtZero: true, // Bắt đầu từ 0
-    //                         min: 0,
-    //                         max : 500
-    //                     }
-    //                 },
-    //                 plugins: {
-    //                     title: {
-    //                         display: true,
-    //                         text: 'Thống kê theo sản phẩm'
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     }
-    //   function renderPieChart(data) {
-    //         if (pieChart) {
-    //             pieChart.destroy(); // Xóa biểu đồ cũ nếu có
-    //         }
-    //         pieChart = new Chart(pieCtx, {
-    //             type: 'pie',
-    //             data: data,
-    //             options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 legend: {
-    //                 position: 'right', // Di chuyển huyền thoại đến bên phải
-    //                 labels: {
-    //                     font: {
-    //                     size: 14 // Tăng kích thước phông chữ của huyền thoại
-    //                     }
-    //                 }
-    //                 },
-    //                 title: {
-    //                 display: true,
-    //                 // text: 'Tổng chi tiêu của khách hàng',
-    //                 font: {
-    //                     size: 18 // Tăng kích thước phông chữ của tiêu đề
-    //                 }
-    //                 }
-    //             }
-    //             }
-    //         });
-    //     }
-    //   $('.stats-btn').click(function() {
-    //     const type = $(this).data('type');
-    //     $('#error-message').hide(); // Ẩn thông báo lỗi
-
-    //     if (type === 'products') {
-    //       renderChart(productData);
-    //       renderPieChart(pieData); // Cập nhật biểu đồ tròn theo sản phẩm
-    //     } else if (type === 'points') {
-    //       renderChart(pointsData);
-    //       renderPieChart(pieData); // Cập nhật biểu đồ tròn theo điểm
-    //     } else {
-    //       $('#error-message').show(); // Hiển thị thông báo lỗi nếu không có dữ liệu
-    //     }
-    //   });
-    //   console.log(pointsData);
-    //   // Hiển thị biểu đồ theo sản phẩm mặc định khi tải trang
-    //   renderChart(productData);
-    //   renderPieChart(pieData); // Hiển thị biểu đồ tròn mặc định
-    // });
-   document.addEventListener('DOMContentLoaded', function() {
-    // Lấy dữ liệu sản phẩm
-    fetch('view/template/get_data.php')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        renderChart(data);
-        renderPieChart(pieData);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
-});
-
-//     function renderChart(data) {
-//         if (statsChart) {
-//             statsChart.destroy(); // Xóa biểu đồ cũ nếu có
-//         }
-//         statsChart = new Chart(ctx, {
-//             type: 'bar',
-//             data: data,
-//             options: {
-//                 scales: {
-//                     y: {
-//                         beginAtZero: true,
-//                         min: 0
-//                     }
-//                 },
-//                 plugins: {
-//                     title: {
-//                         display: true,
-//                         text: 'Thống kê theo sản phẩm'
-//                     }
-//                 }
-//             }
-//         });
-//     }
-// });
-  </script>
-  <!-- <script>
-
-     $(document).ready(function() {
-      const ctx = $('#statsChart')[0].getContext('2d');
-
-      const productData = {
-        labels: ['Cà phê', 'Cà pha Phin', 'Nước ép'],
+ 
+    $(document).ready(function() {
+      // Dữ liệu mẫu cho biểu đồ
+      const purchaseData = {
+        labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
         datasets: [{
-          label: 'Số lượng bán',
-          data: [120, 150, 90],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)'
-          ],
+          label: 'Số lượng sản phẩm đã mua',
+          data: [5, 3, 4, 2],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1
         }]
       };
 
-      const statsChart = new Chart(ctx, {
+      // Vẽ biểu đồ
+      const ctx = $('#purchaseChart')[0].getContext('2d');
+      const purchaseChart = new Chart(ctx, {
         type: 'bar',
-        data: productData,
+        data: purchaseData,
         options: {
           scales: {
             y: {
               beginAtZero: true
             }
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: 'Thống kê theo sản phẩm'
-            }
           }
         }
       });
+
+      // Sự kiện quay lại
+      $('#back-button').click(function() {
+        window.history.back();
+      });
     });
-  </script> -->
-   
+
+  </script>
+    <!-- Script -->
+    <?php include_once('./common/script/default.php')?>
 </body>
 
 </html>

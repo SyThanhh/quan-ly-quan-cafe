@@ -23,3 +23,4 @@
 
 <!-- Link Bootstrap JS -->
 <script src="./lib/js/bootstrap.min.js"></script>
+<script src="./assets/vendor/chart/Chart.js"></script>

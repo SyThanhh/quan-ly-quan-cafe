@@ -4,11 +4,11 @@
 <!-- Bootstrap JS (cần jQuery) -->
 <!-- <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
 
+
 <!-- jQuery Easing Plugin -->
 <script src="./assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <!-- Chart.js -->
-<script src="./assets/vendor/chart.js/Chart.min.js"></script>
 
 <!-- Demo Scripts for Chart.js -->
 <script src="./lib/demo/chart-area-demo.js"></script>

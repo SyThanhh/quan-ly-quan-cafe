@@ -60,7 +60,7 @@ ob_start(); // Bắt đầu output buffering
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
             <a class="collapse-item" href="index.php?page=page_customer">Xem thông tin</a>
-            <a class="collapse-item" href="index.php?page=page_statisticalCustomer.php">Thống kê thông kê</a>
+            <a class="collapse-item" href="index.php?page=page_statisticalCustomer">Thống kê thông kê</a>
 
         </div>
     </div>
@@ -158,7 +158,7 @@ ob_start(); // Bắt đầu output buffering
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="index.php?page=page_manage.php">thống kê</a>
+            <a class="collapse-item" href="index.php?page=page_manage">thống kê</a>
 
         </div>
     </div>
