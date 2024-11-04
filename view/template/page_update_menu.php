@@ -231,7 +231,7 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" href="index.php?page=logout">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>
@@ -283,7 +283,9 @@
                                     </tr>
                                     <tr>
                                         <td>Hình Ảnh</td>
-                                        <td><input type="file" name="HinhAnh" value="<?php if (isset($ProductImage)) echo $ProductImage; ?>" required></td> 
+                                        <td><input type="file" name="HinhAnh" required>
+                                        <?php echo '<img src="assets/img/' . $ProductImage. '" width="100px">'?>
+                                    </td> 
                                     </tr>
                                     <tr>
                                         <td>Số Lượng Tồn Kho</td>
@@ -339,7 +341,7 @@
                                     <tr>
                                         <td></td>
                                         <td>
-                                            <input type="submit" name="btnInsert" class="btn btn-success" value="Cập nhật">
+                                            <input type="submit" name="btnUpDate" class="btn btn-success" value="Cập nhật">
                                             <input type="reset" value="Nhập lại" class="btn btn-danger">
                                         </td>
                                     </tr>
@@ -348,54 +350,15 @@
 
                             <?php
                                 if (isset($_REQUEST["btnUpDate"])) {
-                                    include_once('./controller/cProduct.php');
+                                    include_once('./controller/cMenu.php');
                                     $p = new cProduct();
-                                    $target_dir = "assets/img/"; // Thư mục lưu trữ hình ảnh
-                                    $target_file = $target_dir . basename($_FILES["HinhAnh"]["name"]);
-                                    $uploadOk = 1;
-                                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                                
-                                    // Kiểm tra xem tệp có phải là hình ảnh thực sự không
-                                    $check = getimagesize($_FILES["HinhAnh"]["tmp_name"]);
-                                    if($check !== false) {
-                                        echo "Tệp là hình ảnh - " . $check["mime"] . ".";
-                                        $uploadOk = 1;
+                                    $kq = $p->cUpDateMenu( $ProductID,$_REQUEST['TenSanPham'], $_REQUEST['GiaBan'], $_FILES["HinhAnh"], $_REQUEST['SoLuongTonKho'], $_REQUEST['TrangThai'], $_REQUEST['MoTa'], $_REQUEST['ThoiGianTaoSanPham'],  $_REQUEST['ThoiDiemCapNhat'], $_REQUEST['MaYeuCau'], $_REQUEST['cboLoaiSP']);
+                                    if ($kq) {
+                                        echo "<script>alert('Cập nhật thành công!')</script>";
+                                        header('refresh:0.5; url="index.php?page=page_menu"');
                                     } else {
-                                        echo "Tệp không phải là hình ảnh.";
-                                        $uploadOk = 0;
-                                    }
-                                
-                                    // Kiểm tra kích thước tệp
-                                    if ($_FILES["HinhAnh"]["size"] > 500000) { // Kiểm tra kích thước lớn hơn 500KB
-                                        echo "Xin lỗi, tệp của bạn quá lớn.";
-                                        $uploadOk = 0;
-                                    }
-                                
-                                    // Cho phép các định dạng tệp hình ảnh nhất định
-                                    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
-                                        echo "Xin lỗi, chỉ cho phép tệp JPG, JPEG, PNG & GIF.";
-                                        $uploadOk = 0;
-                                    }
-                                
-                                    // Kiểm tra xem $uploadOk có bằng 0 không do lỗi
-                                    if ($uploadOk == 0) {
-                                        echo "Xin lỗi, tệp của bạn không được upload.";
-                                    } else {
-                                        // Nếu mọi thứ đều ổn, cố gắng upload tệp
-                                        if (move_uploaded_file($_FILES["HinhAnh"]["tmp_name"], $target_file)) {
-                                            echo "Tệp ". htmlspecialchars(basename($_FILES["HinhAnh"]["name"])). " đã được upload.";
-                                            // Tiếp tục với việc thêm sản phẩm vào cơ sở dữ liệu
-                                            $kq = $p->cUpDateMenu( $ProductID,$_REQUEST['TenSanPham'], $_REQUEST['GiaBan'], $target_file, $_REQUEST['SoLuongTonKho'], $_REQUEST['TrangThai'], $_REQUEST['MoTa'], $_REQUEST['ThoiGianTaoSanPham'],  $_REQUEST['ThoiDiemCapNhat'], $_REQUEST['MaYeuCau'], $_REQUEST['cboLoaiSP']);
-                                            if ($kq) {
-                                                echo "<script>alert('Cập nhật thành công!')</script>";
-                                                header('refresh:0.5; url="index.php?page=page_menu"');
-                                            } else {
-                                                echo "<script>alert('Cập nhật thất bại!')</script>";
-                                                header('refresh:0.5; url="index.php?page=page_menu"');
-                                            }
-                                        } else {
-                                            echo "Xin lỗi, đã xảy ra lỗi khi upload tệp của bạn.";
-                                        }
+                                        echo "<script>alert('Cập nhật thất bại!')</script>";
+                                        //header('refresh:0.5; url="index.php?page=page_menu"');
                                     }
                                 }
                             ?>

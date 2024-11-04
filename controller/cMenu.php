@@ -33,9 +33,9 @@
             }
         }
 
-        public function cUpDateMenu($ProductID, $ProductName, $UnitPrice, $ProductImage, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName){
+        public function cUpDateMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName){
            $p = new mProduct();
-           $tbl = $p -> mUpDateMenu($ProductID, $ProductName, $UnitPrice, $ProductImage, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName);
+           $tbl = $p -> mUpDateMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName);
            if($tbl){
                 return $tbl;
             }
@@ -44,9 +44,9 @@
             }
         }
 
-            public function cInSertMenu($ProductID, $ProductName, $UnitPrice, $ProductImage, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName){
+            public function cInSertMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName){
                 $p = new mProduct();
-                $tbl = $p -> mInsertMenu($ProductID, $ProductName, $UnitPrice, $ProductImage, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName);
+                $tbl = $p -> mInsertMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryName);
                 if($tbl){
                      return $tbl;
                  }

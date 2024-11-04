@@ -212,7 +212,7 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" href="index.php?page=logout">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>
@@ -233,7 +233,7 @@
                             <?php
                                 include_once('./controller/cMenu.php');
                                 $p = new cProduct();
-                                $tbl = $p -> getProduct();
+                                $tbl = $p->getProduct();
                                 if($tbl){
                                     echo '<table class="table table-bordered table-custom">';
                                     echo '<div style="text-align: right;">'; 
@@ -241,12 +241,13 @@
                                     echo '</div>';
                                     echo '<tr><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Giá Bán</th><th>Hình Ảnh</th><th>Số Lượng Tồn Kho</th><th>Trạng Thái</th><th>Mô Tả</th><th>Loại Sản Phẩm</th><th colspan=2>Điều chỉnh</th></tr>';
                                     while($r = mysqli_fetch_assoc($tbl)){
+                                        $productImagePath = 'assets/img/' . $r['ProductImage'];
                                         echo "<tr>";
                                         echo "<td>".$r['ProductID']."</td>";
                                         echo "<td>".$r['ProductName']."</td>";
                                         echo "<td>".$r['UnitPrice']."</td>";
                                         echo "<td>";
-                                        echo '<img src="assets/img/'.$r['ProductImage'].'" width="100px">';
+                                        echo '<img src="' . $productImagePath . '" width="100px">';
                                         echo "</td>";
                                         echo "<td>".$r['UnitsInStock']."</td>";
                                         $status = ($r['Status'] == 1) ? "Còn sản phẩm" : "Hết sản phẩm";
@@ -255,15 +256,13 @@
                                         echo "<td>".$r['CategoryName']."</td>";
                                         echo "<td> <a href='index.php?page=page_update_menu&ProductID=".$r["ProductID"]."' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
                                         echo "<td> <a href='index.php?page=page_delete_menu&ProductID=".$r["ProductID"]. "' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
+                                        echo "</tr>"; // Thêm dòng này để đóng thẻ <tr>
                                     }
-                                    echo '</tr>';
                                     echo '</table>';
-                                }
-                                else{
+                                } else {
                                     echo 'Lỗi kết nối!';
                                 }
-
-                            ?>
+                                ?>
                                 <div class="row">
                                     <div class="col-10"></div>
                                     <div class="col-2 text-right">

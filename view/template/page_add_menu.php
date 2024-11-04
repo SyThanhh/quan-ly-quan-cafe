@@ -48,6 +48,7 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`; // Lấy định dạng YYYY-MM-DDTHH:mm
             document.getElementById('ThoiDiemCapNhat').value = dateTimeString;
+            document.getElementById('ThoiGianTaoSanPham').value = dateTimeString;
         }
     </script>
 </head>
@@ -231,7 +232,7 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" href="index.php?page=logout">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>
@@ -290,7 +291,7 @@
                                     </tr>
                                     <tr>
                                         <td>Thời Gian Tạo Sản Phẩm</td>
-                                        <td><input type="datetime-local"  name="ThoiGianTaoSanPham" required></td>
+                                        <td><input type="datetime-local"  name="ThoiGianTaoSanPham" id="ThoiGianTaoSanPham" required readonly></td>
                                     </tr>
                                     <tr>
                                         <td>Mã Yêu Cầu</td>
@@ -300,7 +301,7 @@
                                         <td>Loại Sản Phẩm</td>
                                         <td>
                                             <?php
-                                                include_once('Controller/cCategory.php');
+                                                include_once('controller/cCategory.php');
                                                 $po = new cCategory();
                                                 $tbl = $po -> getCategory();
                                                 if($tbl){
@@ -334,51 +335,12 @@
 
                             <?php
                                 if (isset($_REQUEST["btnInsert"])) {
-                                    include_once('./controller/cMenu.php');
+                                    include_once('controller/cMenu.php');
                                     $p = new cProduct();
-                                    
-                                    // Xử lý upload ảnh
-                                    $target_dir = "./assets/img/"; // Thư mục lưu trữ hình ảnh
-                                    $target_file = $target_dir . basename($_FILES["HinhAnh"]["name"]);
-                                    $uploadOk = 1;
-                                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                                    
-                                    // Kiểm tra xem tệp có phải là hình ảnh thực sự không
-                                    $check = getimagesize($_FILES["HinhAnh"]["tmp_name"]);
-                                    if ($check !== false) {
-                                        echo "Tệp là hình ảnh - " . $check["mime"] . ".<br>";
-                                        $uploadOk = 1;
-                                    } else {
-                                        echo "Tệp không phải là hình ảnh.<br>";
-                                        $uploadOk = 0;
-                                    }
-                                    
-                                    // Kiểm tra kích thước tệp
-                                    if ($_FILES["HinhAnh"]["size"] > 500000) { // Kiểm tra kích thước lớn hơn 500KB
-                                        echo "Xin lỗi, tệp của bạn quá lớn.<br>";
-                                        $uploadOk = 0;
-                                    }
-                                    
-                                    // Cho phép các định dạng tệp hình ảnh nhất định
-                                    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-                                        echo "Xin lỗi, chỉ cho phép tệp JPG, JPEG, PNG & GIF.<br>";
-                                        $uploadOk = 0;
-                                    }
-                                    
-                                    // Kiểm tra xem $uploadOk có bằng 0 không do lỗi
-                                    if ($uploadOk == 0) {
-                                        echo "Xin lỗi, tệp của bạn không được upload.<br>";
-                                    } else {
-                                        // Nếu mọi thứ đều ổn, cố gắng upload tệp
-                                        if (move_uploaded_file($_FILES["HinhAnh"]["tmp_name"], $target_file)) {
-                                            echo "Tệp " . htmlspecialchars(basename($_FILES["HinhAnh"]["name"])) . " đã được upload.<br>";
-                                            
-                                            // Tiếp tục với việc thêm sản phẩm vào cơ sở dữ liệu
-                                            $kq = $p->cInsertMenu(
-                                                $_REQUEST['MaSanPham'],
+                                    $kq = $p->cInsertMenu($_REQUEST['MaSanPham'],
                                                 $_REQUEST['TenSanPham'],
                                                 $_REQUEST['GiaBan'],
-                                                $target_file,
+                                                $_FILES['HinhAnh'],
                                                 $_REQUEST['SoLuongTonKho'],
                                                 $_REQUEST['TrangThai'],
                                                 $_REQUEST['MoTa'],
@@ -388,22 +350,16 @@
                                                 $_REQUEST['cboLoaiSP']
                                             );
                                             
-                                            // Kiểm tra kết quả thêm sản phẩm vào cơ sở dữ liệu
                                             if ($kq) {
                                                 echo "<script>alert('Thêm thành công!')</script>";
                                                 header('refresh:0.5; url="index.php?page=page_menu"');
                                                 exit();
                                             } else {
-                                                echo "Thêm thất bại! Lỗi: " . mysqli_error($p->conn); // Giả sử $p->conn là kết nối cơ sở dữ liệu
                                                 echo "<script>alert('Thêm thất bại!')</script>";
-                                                header('refresh:0.5; url="index.php?page=page_menu"');
+                                                //header('refresh:0.5; url="index.php?page=page_menu"');
                                                 exit();
                                             }
-                                        } else {
-                                            echo "Xin lỗi, đã xảy ra lỗi khi upload tệp của bạn.<br>";
                                         }
-                                    }
-                                }
                                 ?>
 
                         </div>
