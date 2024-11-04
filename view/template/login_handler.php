@@ -1,6 +1,8 @@
 <?php
 session_start();
-include 'config.php'; // Kết nối tới cơ sở dữ liệu
+include './connect/database.php'; // Kết nối tới cơ sở dữ liệu
+$database = new Database();
+$conn = $database->connect(); // Lấy kết nối
 
 // Lấy thông tin từ form đăng nhập
 $username = $_POST['username'];
@@ -21,12 +23,13 @@ if ($result->num_rows > 0) {
         header("Location: index.php");
         exit();
     } else {
-        header("Location: login.php?error=1");
+        // header("Location: login.php?error=1");
+        header("Location: index.php?page=login&error=1");
         exit();
     }
 } else {
-    header("Location: login.php?error=1");
-   
+    // header("Location: login.php?error=1");
+    header("Location: index.php?page=login&error=1");  
     exit();
 }
 ?>

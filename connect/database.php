@@ -11,8 +11,8 @@
         public function __construct() {
             $this->servername = "localhost";
             $this->database = "db_ql3scoffee";
-            $this->username = "admin";
-            $this->password = "123456";
+            $this->username = "root";
+            $this->password = "";
 
             $this->connect();
         }
