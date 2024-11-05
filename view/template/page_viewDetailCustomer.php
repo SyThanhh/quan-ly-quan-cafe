@@ -8,7 +8,16 @@
   <?php  include_once('./common/head/head.php')    ?>
  
 </head>
+<?php
+    include_once('./connect/database.php');
+    $db = new Database();
+    $conn = $db->connect();
 
+    function format_currency_vnd($amount) {
+        return number_format($amount, 3, ',', '.') . ' ₫';
+    }
+    
+?>
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -228,101 +237,46 @@
                 </nav>
                 <!-- End of Topbar -->
                 <div class="container mt-4">
-                  <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ THÔNG TIN KHÁCH HÀNG</h1>
+                  <h1 class="h3 mb-0 text-gray-800">THÔNG TIN KHÁCH HÀNG</h1>
     
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myColumnChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                   
                     <!-- Content Row -->
                     <div class="container my-5">
-                        <h2>Thông tin khách hàng</h2>
                         <div class="card mb-4" id="customer-info">
                         <div class="card-body">
-                            <h5 class="card-title">Tên: <span id="customer-name">John Doe</span></h5>
-                            <p class="card-text">Email: <span id="customer-email">johndoe@example.com</span></p>
-                            <p class="card-text">Số điện thoại: <span id="customer-phone">0123456789</span></p>
-                            <p class="card-text">Địa chỉ: <span id="customer-address">123 Đường ABC, Thành phố XYZ</span></p>
-                            <p class="card-text">Tổng số đơn hàng: <span id="total-orders">10</span></p>
-                            <p class="card-text">Tổng chi tiêu: <span id="total-spent">$5,000</span></p>
-                            <p class="card-text">Điểm thưởng: <span id="reward-points">1,000</span></p>
+                        <?php
+                      
+                            $id = isset($_GET['customerId']) ? intval($_GET['customerId']) : 1;
+                            
+                            $customerSql = "SELECT CustomerName, Email, CustomerPhone,
+                            (SELECT COUNT(*) FROM `order` WHERE CustomerID = $id) AS TotalOrders,
+                            (SELECT SUM(p.UnitPrice * od.Quantity) FROM `order` o 
+                             JOIN orderdetail od ON o.OrderID = od.OrderID 
+                             JOIN product p ON p.ProductID = od.ProductID 
+                             WHERE o.CustomerID = $id) AS TotalSpent,
+                             CustomerPoint 
+                             FROM customer 
+                             WHERE CustomerID = $id";
+
+                            $result = $conn->query($customerSql);
+                            if ($result && $result->num_rows > 0) {
+                                 while($row = $result->fetch_assoc()) {
+                                    echo '<h5 class="card-title">Tên: <span id="customer-name">' . ($row['CustomerName']) . '</span></h5>';
+                                    echo '<p class="card-text">Email: <span id="customer-email">' . ($row['Email']) . '</span></p>';
+                                    echo '<p class="card-text">Số điện thoại: <span id="customer-phone">' . ($row['CustomerPhone']) . '</span></p>';
+                                    echo '<p class="card-text">Tổng số đơn hàng: <span id="total-orders">' . $row['TotalOrders'] . '</span></p>';
+                                    echo '<p class="card-text">Tổng chi tiêu: <span id="total-spent">' . format_currency_vnd($row['TotalSpent']) . '</span></p>';
+                                    echo '<p class="card-text">Điểm tích lũy: <span id="reward-points">' . ($row['CustomerPoint']) . '</span></p>';
+                                } 
+                            
+                            }else {
+                                echo '<p>Không tìm thấy thông tin khách hàng.</p>';
+                            }
+           
+                    ?>
+                            
                         </div>
                     </div>
 
@@ -337,24 +291,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Sản phẩm A</td>
-                                <td>2</td>
-                                <td>$200</td>
-                                <td>01/01/2023</td>
-                            </tr>
-                            <tr>
-                                <td>Sản phẩm B</td>
-                                <td>1</td>
-                                <td>$150</td>
-                                <td>15/01/2023</td>
-                            </tr>
-                            <tr>
-                                <td>Sản phẩm C</td>
-                                <td>3</td>
-                                <td>$300</td>
-                                <td>20/02/2023</td>
-                            </tr>
+                            <?php
+                                $query = "SELECT p.ProductName, od.Quantity, p.UnitPrice, o.CreateDate
+                                FROM `order` o 
+                                JOIN orderdetail od ON o.OrderID = od.OrderID 
+                                JOIN product p ON p.ProductID = od.ProductID 
+                                WHERE o.CustomerID = $id";
+
+                                $result = $conn->query($query);
+
+                                if($result && $result->num_rows>0) {
+                                    while($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                            echo '<td>' . $row['ProductName'] . '</td>';
+                                            echo '<td>' . $row['Quantity'] . '</td>';
+                                            echo '<td>' . format_currency_vnd($row['UnitPrice']) . '</td>';
+                                            echo '<td>' . date('d/m/Y', strtotime($row['CreateDate'])) . '</td>';
+                                        echo " </tr>";
+                                    }
+                                }
+                            ?>
                         </tbody>
                     </table>
 
@@ -407,23 +363,45 @@
         </div>
     </div>
 
-  
+    
 
     <script>
- 
+     
     $(document).ready(function() {
       // Dữ liệu mẫu cho biểu đồ
       const purchaseData = {
-        labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4'],
+        labels: [],
         datasets: [{
           label: 'Số lượng sản phẩm đã mua',
-          data: [5, 3, 4, 2],
+          data: [],
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1
         }]
       };
 
+
+      <?php
+        $query = "SELECT MONTH(o.CreateDate) AS month, SUM(od.Quantity) AS total_quantity
+                FROM `order` o
+                JOIN orderdetail od ON o.OrderID = od.OrderID
+                JOIN product p ON p.ProductID = od.ProductID
+                WHERE o.CustomerID = $id
+                ORDER BY MONTH(o.CreateDate)";
+
+        $result = $conn->query($query);
+
+        // Tạo dữ liệu cho biểu đồ
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo 'purchaseData.labels.push("Tháng ' . $row['month'] . '");';
+                echo 'purchaseData.datasets[0].data.push(' . $row['total_quantity'] . ');';
+            }
+        } else {
+            echo 'purchaseData.labels.push("");';
+            echo 'purchaseData.datasets[0].data.push(0, 0, 0, 0);'; 
+        }
+    ?>
       // Vẽ biểu đồ
       const ctx = $('#purchaseChart')[0].getContext('2d');
       const purchaseChart = new Chart(ctx, {
@@ -440,7 +418,7 @@
 
       // Sự kiện quay lại
       $('#back-button').click(function() {
-        window.history.back();
+            window.history.back();
       });
     });
 

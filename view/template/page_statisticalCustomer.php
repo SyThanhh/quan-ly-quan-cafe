@@ -19,6 +19,11 @@
     include_once('./connect/database.php');
     $db = new Database();
     $conn = $db->connect();
+
+    function format_currency_vnd($amount) {
+        return number_format($amount, 3, ',', '.') . ' ₫';
+    }
+    
 ?>
 <body id="page-top">
 
@@ -255,8 +260,8 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">
-                                    <button class="btn btn-primary btn-sm stats-btn" data-type="products">Thống kê theo sản phẩm</button>
-                                    <button class="btn btn-primary btn-sm stats-btn" data-type="points">Thống kê theo điểm</button>    
+                                        <button class="btn btn-primary btn-sm stats-btn" data-type="products">Thống kê theo sản phẩm</button>
+                                        <button class="btn btn-primary btn-sm stats-btn" data-type="points">Thống kê theo mức điểm và chi tiêu</button>
                                     </h6>
                 
                                 </div>
@@ -292,7 +297,7 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-pie ">
-                                        <canvas id="pieChart" width="500" height="500"></canvas>
+                                        <canvas id="pieChart"></canvas>
                                     </div>
                                     
                                 </div>
@@ -304,26 +309,41 @@
                     <div class="container my-5">
                        
                         <div class="data-table">
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                            <tr>
-                                <th>Tên khách hàng</th>
-                                <th>Tổng lượng mua</th>
-                                <th>Xem chi tiết</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php
-
-                            ?>
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Tên khách hàng</th>
+                                    <th>Tổng lượng mua</th>
+                                    <th>Xem chi tiết</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                    $sql = "SELECT c.CustomerID, c.CustomerName, SUM(p.UnitPrice * od.Quantity) AS TotalPurchase
+                                    FROM customer c
+                                    JOIN `order` o ON c.CustomerID = o.CustomerID
+                                    JOIN orderdetail od ON od.OrderID = o.OrderID
+                                    JOIN product p ON p.ProductID = od.ProductID
+                                    GROUP BY c.CustomerID";
+                    
+                                    $result = $conn->query($sql);
                             
-                            <tr>
-                                <td>Mary Johnson</td>
-                                <td>$4,500</td>
-                                <td><a href="?page=page_viewDetailCustomer" class="btn btn-primary btn-sm">Xem</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                    // Kiểm tra kết quả truy vấn
+                                    if ($result && $result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo '<tr>';
+                                            echo '<td>' . htmlspecialchars($row['CustomerName']) . '</td>'; // Tên khách hàng
+                                            echo '<td>' . format_currency_vnd($row['TotalPurchase']) .'</td>'; // Tổng lượng mua
+                                            echo '<td><a href="?page=page_viewDetailCustomer&id=' . $row['CustomerID'] . '" class="btn btn-primary btn-sm">Xem</a></td>'; // Nút xem chi tiết
+                                            echo '</tr>';
+                                        }
+                                    } else {
+                                        echo '<tr><td colspan="3">Không có dữ liệu nào.</td></tr>';
+                                    }
+                                ?>
+                            
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -375,252 +395,124 @@
 
 
     <script>
-    // $(document).ready(function() {
-    //   const ctx = $('#statsChart')[0].getContext('2d');
-    //   const pieCtx = $('#pieChart')[0].getContext('2d');
+        
+        $(document).ready(function() {
+           
 
-    //   let statsChart, pieChart;
+        $('.stats-btn').on('click', function() {
+            const type = $(this).data('type'); // Lấy kiểu thống kê
 
-    //   // Dữ liệu mẫu cho thống kê theo sản phẩm
-    //   const productData = {
-    //     labels: ['Cà phê', 'Cà pha Phin', 'Nước ép'],
-    //     datasets: [{
-    //       label: 'Số lượng bán',
-    //       data: [120, 150, 90],
-    //       backgroundColor: [
-    //         'rgba(255, 99, 132, 0.2)',
-    //         'rgba(54, 162, 235, 0.2)',
-    //         'rgba(255, 206, 86, 0.2)'
-    //       ],
-    //       borderColor: [
-    //         'rgba(255, 99, 132, 1)',
-    //         'rgba(54, 162, 235, 1)',
-    //         'rgba(255, 206, 86, 1)'
-    //       ],
-    //       borderWidth: 1
-    //     }]
-    //   };
+            // Gọi hàm fetch dữ liệu và vẽ biểu đồ
+            fetchData(type);
+        });
 
-    //   // Add sample data for `pointsData`
-    //     const pointsData = {
-    //     labels: ['Hạng kim Cương', 'Hạng Vàng', 'Hạng Bạc'],
-    //     datasets: [{
-    //         label: 'Điểm thưởng',
-    //         data: [300, 450, 200],
-    //         backgroundColor: [
-    //         'rgba(153, 102, 255, 0.2)',
-    //         'rgba(75, 192, 192, 0.2)',
-    //         'rgba(255, 159, 64, 0.2)'
-    //         ],
-    //         borderColor: [
-    //         'rgba(153, 102, 255, 1)',
-    //         'rgba(75, 192, 192, 1)',
-    //         'rgba(255, 159, 64, 1)'
-    //         ],
-    //         borderWidth: 1
-    //     }]
-    //     };
+        // Hàm fetch dữ liệu và vẽ biểu đồ
+        function fetchData(type) {
+            $.ajax({
+                url: `view/template/get_data.php?type=${type}`,
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                   
+                    if (type === "points") {
 
-    //   const pieData = {
-    //         labels: ['Nguyễn Văn A', 'Văn Thị Mọng', 'Đào lê'],
-    //         datasets: [{
-    //             label: 'Tổng chi tiêu',
-    //             data: [5000, 3000, 4500],
-    //             backgroundColor: [
-    //                 'rgba(255, 99, 132, 0.2)',
-    //                 'rgba(54, 162, 235, 0.2)',
-    //                 'rgba(255, 206, 86, 0.2)'
-    //             ],
-    //             borderColor: [
-    //                 'rgba(255, 99, 132, 1)',
-    //                 'rgba(54, 162, 235, 1)',
-    //                 'rgba(255, 206, 86, 1)'
-    //             ],
-    //             borderWidth: 1
-    //         }]
-    //     };
-
-    //     $(document).ready(function() {
-    //         const ctx = $('#pieChart')[0].getContext('2d');
-    //         const pieChart = new Chart(ctx, {
-    //             type: 'pie',
-    //             data: pieData,
-    //             options: {
-    //                 responsive: true,
-    //                 plugins: {
-    //                     legend: {
-    //                         position: 'top',
-    //                     },
-    //                     title: {
-    //                         display: true,
-    //                         text: 'Tổng chi tiêu của khách hàng'
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     });
-
-    //     function renderChart(data) {
-    //         if (statsChart) {
-    //             statsChart.destroy(); // Xóa biểu đồ cũ nếu có
-    //             statsChart.data.datasets[0].data = data.datasets[0].data; // Cập nhật dữ liệu
-    //             statsChart.update(); // Cập nhật biểu đồ
-    //         }
-    //         statsChart = new Chart(ctx, {
-    //             type: 'bar',
-    //             data: data,
-    //             options: {
-    //                 scales: {
-    //                     y: {
-    //                         beginAtZero: true, // Bắt đầu từ 0
-    //                         min: 0,
-    //                         max : 500
-    //                     }
-    //                 },
-    //                 plugins: {
-    //                     title: {
-    //                         display: true,
-    //                         text: 'Thống kê theo sản phẩm'
-    //                     }
-    //                 }
-    //             }
-    //         });
-    //     }
-    //   function renderPieChart(data) {
-    //         if (pieChart) {
-    //             pieChart.destroy(); // Xóa biểu đồ cũ nếu có
-    //         }
-    //         pieChart = new Chart(pieCtx, {
-    //             type: 'pie',
-    //             data: data,
-    //             options: {
-    //             responsive: true,
-    //             plugins: {
-    //                 legend: {
-    //                 position: 'right', // Di chuyển huyền thoại đến bên phải
-    //                 labels: {
-    //                     font: {
-    //                     size: 14 // Tăng kích thước phông chữ của huyền thoại
-    //                     }
-    //                 }
-    //                 },
-    //                 title: {
-    //                 display: true,
-    //                 // text: 'Tổng chi tiêu của khách hàng',
-    //                 font: {
-    //                     size: 18 // Tăng kích thước phông chữ của tiêu đề
-    //                 }
-    //                 }
-    //             }
-    //             }
-    //         });
-    //     }
-    //   $('.stats-btn').click(function() {
-    //     const type = $(this).data('type');
-    //     $('#error-message').hide(); // Ẩn thông báo lỗi
-
-    //     if (type === 'products') {
-    //       renderChart(productData);
-    //       renderPieChart(pieData); // Cập nhật biểu đồ tròn theo sản phẩm
-    //     } else if (type === 'points') {
-    //       renderChart(pointsData);
-    //       renderPieChart(pieData); // Cập nhật biểu đồ tròn theo điểm
-    //     } else {
-    //       $('#error-message').show(); // Hiển thị thông báo lỗi nếu không có dữ liệu
-    //     }
-    //   });
-    //   console.log(pointsData);
-    //   // Hiển thị biểu đồ theo sản phẩm mặc định khi tải trang
-    //   renderChart(productData);
-    //   renderPieChart(pieData); // Hiển thị biểu đồ tròn mặc định
-    // });
-   document.addEventListener('DOMContentLoaded', function() {
-    // Lấy dữ liệu sản phẩm
-    fetch('view/template/get_data.php')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+                        renderPieChart(data); // Vẽ biểu đồ pie
+                    }
+                    renderChart(data, type); // Vẽ biểu đồ cột
+                },
+                error: function(error) {
+                    console.error('Có vấn đề với yêu cầu fetch:', error);
+                }
+            });
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-        renderChart(data);
-        renderPieChart(pieData);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
-});
 
-//     function renderChart(data) {
-//         if (statsChart) {
-//             statsChart.destroy(); // Xóa biểu đồ cũ nếu có
-//         }
-//         statsChart = new Chart(ctx, {
-//             type: 'bar',
-//             data: data,
-//             options: {
-//                 scales: {
-//                     y: {
-//                         beginAtZero: true,
-//                         min: 0
-//                     }
-//                 },
-//                 plugins: {
-//                     title: {
-//                         display: true,
-//                         text: 'Thống kê theo sản phẩm'
-//                     }
-//                 }
-//             }
-//         });
-//     }
-// });
-  </script>
-  <!-- <script>
-
-     $(document).ready(function() {
-      const ctx = $('#statsChart')[0].getContext('2d');
-
-      const productData = {
-        labels: ['Cà phê', 'Cà pha Phin', 'Nước ép'],
-        datasets: [{
-          label: 'Số lượng bán',
-          data: [120, 150, 90],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)'
-          ],
-          borderWidth: 1
-        }]
-      };
-
-      const statsChart = new Chart(ctx, {
-        type: 'bar',
-        data: productData,
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        // Hàm vẽ biểu đồ hình tròn
+        function renderPieChart(data) {
+            const pieCtx = $('#pieChart')[0].getContext('2d');
+            if (pieChart instanceof Chart) {
+                pieChart.destroy(); // Hủy biểu đồ cũ nếu có
             }
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: 'Thống kê theo sản phẩm'
-            }
-          }
+
+            window.pieChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: data.labels, // Tên khách hàng
+                    datasets: [{
+                        label: 'Tổng giá trị đơn hàng',
+                        data: data.datasets[0].data, // Dữ liệu tổng giá trị đơn hàng
+                        backgroundColor: data.datasets[0].backgroundColor,
+                        borderColor: data.datasets[0].borderColor,
+                        borderWidth: data.datasets[0].borderWidth,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "" 
+                        }
+                    }
+                }   
+            });
         }
-      });
-    });
-  </script> -->
+
+        function renderChart(data, types) {
+            if (statsChart instanceof Chart) {
+                statsChart.destroy();
+            }
+
+            const ctx = $('#statsChart')[0].getContext('2d');
+            statsChart = new Chart(ctx, {
+                type: 'bar', // Hoặc loại biểu đồ bạn đang sử dụng
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: data.title,
+                        data: data.datasets[0].data,
+                        backgroundColor: data.datasets[0].backgroundColor,
+                        borderColor: data.datasets[0].borderColor,
+                        borderWidth: data.datasets[0].borderWidth
+                    }]
+                },
+                options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "" // Tiêu đề cho biểu đồ
+                    },
+                    legend: {
+                        display: true // Hiển thị legend nếu cần
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: (types === 'products') ? 'Tên Sản Phẩm' : 'Tên Khách Hàng',
+                            font: {
+                            size: 16 // Kích thước chữ cho nhãn trục Y
+                        }
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: (types === 'products') ? 'Số Lượng Bán Ra' : 'Tổng Giá Trị Đơn Hàng (VNĐ)', // Tên cho trục Y
+                            font: {
+                            size: 16 // Kích thước chữ cho nhãn trục Y
+                        }
+                        },
+                        beginAtZero: true // Bắt đầu từ 0
+                    }
+                }
+            }
+            });
+        }
+        });
+
+    </script>
    
 </body>
 

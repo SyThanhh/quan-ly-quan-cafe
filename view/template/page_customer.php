@@ -9,17 +9,13 @@
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');   
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
-
-        // Tạo một đối tượng Database để kết nối
-        $database = new Database();
-        $conn = $database->connect(); // Lấy kết nối
+        include_once('./controller/CustomerController.php'); // Đường dẫn vào file kết nối database
+        $CustomerControler = new CustomerController();
+        // $customer = $CustomerControler->getC
     ?>
     
     <style>
       
-        
-        
         @media (max-width: 600px) {
             .table, .table thead, .table tbody, .table th, .table td, .table tr {
                 display: block;
@@ -265,7 +261,10 @@
                             <div class="header text-left">
                                 <h4>QUẢN LÝ KHÁCH HÀNG</h4>
                             </div>
-                            
+                            <div id="message-notification" class="alert" style="display: none;">
+                                <strong></strong> <span class="message-content"></span>
+                            </div>
+
                             <div class="col-md-12 text-center">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -285,9 +284,9 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-primary btn-add">
+                                        <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#addCustomerModal">
                                         <i class="fas fa-plus-square"></i>
-                                            Thêm chương trình
+                                            Thêm Mới Khách hàng
                                         </button>
                                     </div>
                                 </div>
@@ -310,30 +309,32 @@
                                     <tbody>
                                         <?php
                                             // Truy vấn danh sách nhân viên
-                                            $customers= $database->select("SELECT * FROM customer");
+                                            $customers= $CustomerControler->getAllCutomers("SELECT * FROM customer");
 
                                             // Hiển thị danh sách nhân viên
                                             if ($customers) {
                                                 while ($row = $customers->fetch_assoc()) {
-                                                    echo "<tr>";
+                                                    echo "<tr data-id='{$row['CustomerID']}'>";
                                                     echo "<td data-label='ID'>{$row['CustomerID']}</td>";
-                                                    echo "<td data-label='Tên'>{$row['CustomerName']}</td>";
-                                                    echo "<td data-label='Số Điện thoại'>{$row['CustomerPhone']}</td>";
-                                                    echo "<td data-label='Email'>{$row['Email']}</td>";
+                                                    echo "<td data-label='Tên' class='customerName'>{$row['CustomerName']}</td>";
+                                                    echo "<td data-label='Số Điện thoại' class='customerPhone'>{$row['CustomerPhone']}</td>";
+                                                    echo "<td data-label='Email' class='customerEmail'>{$row['Email']}</td>";
                                                     echo "<td data-label='Điểm tích lũy'>{$row['CustomerPoint']}</td>";
                                                     echo "<td data-label='Thời gian tạo'>{$row['CreateAt']}</td>";
                                                     echo "<td data-label='Thao tác'>
-                                                            <button type='button' class='btn btn-success' id='btnEdit'>
+                                                            <button type='button' class='btn btn-success edit-btn'>
                                                                 <i class='fas fa-edit'></i>
                                                             </button>
-                                                        </td>
-                                                        <td data-label='Thao tác'>
-                                                            <button type='button' class='btn btn-danger' id='btnDelete'>
-                                                               <i class='fas fa-minus-square'></i>
+                                                          </td>
+                                                          <td data-label='Thao tác'>
+                                                            <button type='button' class='btn btn-danger delete-btn'>
+                                                                <i class='fas fa-minus-square'></i>
                                                             </button>
-                                                        </td>";
+                                                          </td>";
                                                     echo "</tr>";
                                                 }
+                                            } elseif ($customers === -1) {
+                                                echo "<tr><td colspan='9' class='text-center'>Không có khách hàng nào</td></tr>";
                                             } else {
                                                 echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
                                             }
@@ -363,6 +364,69 @@
                         </div>
                     </div>
                 </div>
+                                        <!--Modal Customer-->
+                <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCustomerModalLabel">Thêm Khách Hàng</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="customerForm" method="post">
+                                    <input type="text" id="customerId" name="customerId" value="" hidden>
+                                    <div class="form-group">
+                                        <label for="customerName">Họ Tên</label>
+                                        <input type="text" class="form-control" id="customerName" name="customerName" placeholder="Nhập họ tên" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerEmail">Email</label>
+                                        <input type="email" class="form-control" id="customerEmail" name="customerEmail" placeholder="Nhập email" required>
+                                        <span id="emailFeedback"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerPhone">Số Điện Thoại</label>
+                                        <input type="tel" class="form-control" id="customerPhone" name="customerPhone" placeholder="Nhập số điện thoại" required>
+                                        <span id="phoneFeedback"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-primary" id="btnAddCustomer">Xác Nhận</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        <!--Modal delete-->
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+              
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xóa khách hàng có <b>ID</b> là <b id="confirmDeleteID"></b> ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+                
+        </div>
+    </div>
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
@@ -370,5 +434,163 @@
 
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#customerEmail').on('input', function() {
+                const email = $(this).val();
+                const id = $('#customerId').val(); // Lấy ID của khách hàng hiện tại
+                
+                if (email) {
+                    $.ajax({
+                        url: '?page=check_email_customer',
+                        type: 'POST',
+                        data: { email: email, id: id }, // Gửi cả email và id
+                        success: function(response) {
+                            if (response.exists) {
+                                $('#emailFeedback').text("Email đã tồn tại.").css("color", "red");
+                            } else {
+                                $('#emailFeedback').text("Email có thể sử dụng.").css("color", "green");
+                            }
+                        }
+                    });
+                }
+            });
+
+          // Kiểm tra số điện thoại
+            $('#customerPhone').on('input', function() {
+                    const phone = $(this).val();
+                    const id = $('#customerId').val();
+                    
+                    if (phone && phone.length !== 10) {
+                        $('#phoneFeedback').text("Số điện thoại phải có 10 chữ số.").css("color", "red");
+                    } else if (phone) {
+                        $.ajax({
+                            url: '?page=check_phone_customer', 
+                            type: 'POST',
+                            data: { phone: phone, id: id  },
+                            success: function(response) {
+                                if (response.exists) {
+                                    $('#phoneFeedback').text("Số điện thoại đã tồn tại.").css("color", "red");
+
+                                } else {
+                                    $('#phoneFeedback').text("Số điện thoại có thể sử dụng.").css("color", "green");
+                                }
+                            }
+                        });
+                    } else {
+                        $('#phoneFeedback').text('Số điện thoại không hợp lệ ').css("color", "red");
+
+                    }
+                });
+
+            });
+        $('#customerForm').on('submit', function(e) {
+                const id = $('#customerId').val();
+                const name = $('#customerName').val();
+                const email = $('#customerEmail').val();
+                const phone = $('#customerPhone').val();
+                const message = $("#message-notification");
+                const action = (id) ? 'edit' : 'add';
+                e.preventDefault();
+                $.ajax({
+                    url: '?page=processing_customer',
+                    type: 'POST',
+                    data: { action, id, name, email, phone },
+                    success: function(response) {
+                        if (response.success) {
+                            showMessage(response.message, 'success'); 
+                        } else {
+                            showMessage(response.message, 'danger'); // Hiển thị thông báo lỗi
+                        }
+                        $('#addCustomerModal').modal('hide'); 
+                    },
+                    error: function(error) {
+                        showMessage('Đã xảy ra lỗi: ' + error.statusText, 'danger');
+                    }
+                });
+            // }
+        });
+    
+    
+
+    $('.btn-add').on('click', function() {
+        $('#addCustomerModalLabel').text('Thêm mới khách hàng');
+        $('#customerForm')[0].reset();
+        $('#emailFeedback').text("");
+        $('#phoneFeedback').text("");
+
+    });
+    // Edit customer
+    $('.edit-btn').on('click', function() {
+        $('#emailFeedback').text("");
+        $('#phoneFeedback').text("");
+        const row = $(this).closest('tr');
+        const id = row.data('id');
+        const name = row.find('.customerName').text(); 
+        const email = row.find('.customerEmail').text(); 
+        const phone = row.find('.customerPhone').text(); 
+
+        // Điền dữ liệu vào form
+        $('#customerName').val(name);
+        $('#customerEmail').val(email);
+        $('#customerPhone').val(phone);
+        $('#customerId').val(id);
+        $('#addCustomerModalLabel').text('Cập nhật thông tin khách hàng');
+        $('#addCustomerModal').modal('show'); 
+    });
+
+    // Delete customer
+    let row;
+    $('.delete-btn').on('click', function() {
+        row = $(this).closest('tr');
+        const id = row.data('id');
+        $('#confirmDeleteModal').modal('show');
+        $('#confirmDeleteID').text(id);
+    });
+    $('#confirmDelete').on('click', function() {
+        const id = row.data('id');
+        
+    
+        $.ajax({
+            url: '?page=processing_customer',
+            type: 'POST',
+            data: { action: 'delete', id },
+            success: function(response) {
+                if (response.success) {
+                    showMessage(response.message, 'success'); 
+                } else {
+                    showMessage(response.message, 'danger'); // Hiển thị thông báo lỗi
+                }
+                $('#addCustomerModal').modal('hide'); 
+            },
+            error: function(error) {
+                showMessage('Đã xảy ra lỗi: ' + error.statusText, 'danger');
+            }
+        });
+        
+    });
+
+
+    function showMessage(message, type) {
+        const alertDiv = $('#message-notification');
+        
+        alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
+        
+        alertDiv.find('strong').text(type === 'success' ? 'Thành công!' : 'Lỗi!');
+        
+        alertDiv.find('.message-content').text(message);
+        
+        alertDiv.show();
+        
+        setTimeout(() => {
+            alertDiv.hide();
+        }, 8000);
+    }
+
+
+
+    </script>
 </body>
 </html>

@@ -43,9 +43,9 @@
         }
 
         // tự gọi đến hàm đòng kết nối khi ko sd đối tượng đó nữa
-        public function __destruct() {
-            $this->close();
-        }
+        // public function __destruct() {
+        //     $this->close();
+        // }
 
         public function select($query)
         {
