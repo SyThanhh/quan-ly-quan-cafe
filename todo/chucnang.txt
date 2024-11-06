@@ -1,37 +1,47 @@
 + Chức năng chung:
-●	Đăng nhập
-●	Đăng xuất
+●	Đăng nhập : Điền, Quyên
+●	Đăng xuất : Điền , Quyên
+
+
 + Chức năng cho người quản lý (Admin): có toàn bộ các chức năng của hệ thống.
 ●	Quản lý nhân viên.
-+ Quản lý thông tin nhân viên (thêm, sửa, xóa) : Nhi 
-+ Phân công lịch làm việc (Thêm, xóa, cập nhật) : Nhi
-●	Cập nhật lại vị trí nhân viên
+    -  Quản lý thông tin nhân viên (thêm, sửa, xóa) : Nhi 
+    - Phân công lịch làm việc (Thêm, xóa, cập nhật) : Nhi
+●	Cập nhật lại vị trí nhân viên : Nhi
 ●	Quản lý khách hàng (thêm, xóa, sửa, thống kê ), tìm kiếm, phân trang : Thanh ✔
 ●	Quản lý phiếu gửi yêu cầu nhập hàng : Thành
 ●	Quản lý hoá đơn (xem hóa đơn, chi tiết hóa đơn), tìm kiếm ,phân trang : Thanh 
 ●	Quản lý menu (thêm, xóa, cập nhật) : Phước
 ●	Quản lý các chương trình khuyến mãi (thêm , cập nhật, xóa) : Phước
-●	Thống kê doanh thu (theo ngày, tháng, năm, xuất file báo cáo.).  Thành
+●	Thống kê doanh thu (theo ngày, tháng, năm, xuất file báo cáo.) :  Thành
+●	Trang chủ :  Thành
+
+
 + Chức năng cho Khách hàng:
-●	Tìm kiếm sản phẩm
-●	Xem menu sản phẩm 
-●	Đánh giá sản phẩm
-●	Bình luận sản phẩm
-●	Xem lịch sử giao dịch
-●	Xem điểm tích lũy
-●	Cập nhật thông tin
-●	Đăng ký tài khoản
+●	Tìm kiếm sản phẩm : Quyên
+●	Xem menu sản phẩm : Quyên
+●	Đánh giá sản phẩm : Phước
+●	Bình luận sản phẩm : Phước
+●	Xem lịch sử giao dịch : Quyên
+●	Xem điểm tích lũy : Quyên
+●	Cập nhật thông tin : Điền 
+●	Đăng ký tài khoản : Điền, Quyên
+
 +	Chức năng cho Nhân viên quầy:
-●	Xem lịch làm việc.
-●	Tìm kiếm sản phẩm : 
+●	Xem lịch làm việc : Phân quyền
+●	Tìm kiếm sản phẩm : Quyên
 ●	Xem các chương trình khuyến mãi
 ●	Thanh toán hóa đơn. : Thanh 
-●	Tạo tài khoản khách hàng : 
+●	Tạo tài khoản khách hàng : Thanh
+
+
 +	Chức năng cho Nhân viên pha chế:
-●	Xem lịch làm việc.
-●	Gửi yêu cầu nhập hàng
+●	Xem lịch làm việc : Phân quyền 
+●	Gửi yêu cầu nhập hàng : Điền 
+
+
 +	Chức năng cho Nhân viên kế toán:
-●	Xem lịch làm việc.
-●	Xem hóa đơn, chi tiết hoá đơn
-●	Thống kê doanh thu (theo ngày, tháng, năm, tạo file báo cáo) sản phẩm. :
+●	Xem lịch làm việc : Phân quyền
+●	Xem hóa đơn, chi tiết hoá đơn : Phân quyền
+●	Thống kê doanh thu (theo ngày, tháng, năm, tạo file báo cáo) sản phẩm. : Phân quyền
 
