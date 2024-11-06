@@ -8,14 +8,80 @@
     <link rel="stylesheet" href="assets/css/table.css">
     <!-- Đầu trang -->
     <?php
+        session_start();
         include_once('./common/head/head.php');   
         include_once('./controller/CustomerController.php'); // Đường dẫn vào file kết nối database
         $CustomerControler = new CustomerController();
-        // $customer = $CustomerControler->getC
+        $searchKeyword = '';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['search'])) {
+                $_SESSION['searchKeyword'] = $_POST['search']; // Lưu từ khóa tìm kiếm
+            } elseif (isset($_POST['clear'])) {
+                unset($_SESSION['searchKeyword']); // Xóa từ khóa tìm kiếm
+            }
+        }
     ?>
     
     <style>
-      
+        #search-form {
+            max-width: 600px;
+            /* margin: auto; */
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        #search-form .form-control {
+            border-radius: 6px 0 0 6px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+        }
+
+        #search-form .btn-outline-secondary {
+            border: 1px solid #ced4da;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        #search-form .search-button i {
+            font-size: 1.1rem;
+            color: #495057;
+        }
+
+        #search-form .btn-outline-secondary:hover {
+            background-color: #e2e6ea;
+        }
+
+        #search-form .btn-outline-secondary:focus {
+            box-shadow: none;
+        }
+
+        @media (max-width: 576px) {
+            #search-form {
+                flex-direction: column;
+            }
+
+            #search-form .form-control {
+                border-radius: 8px;
+                margin-bottom: 8px;
+            }
+
+            #search-form .input-group-append {
+                width: 100%;
+                margin-bottom: 4px;
+            }
+
+            #search-form .btn-outline-secondary {
+                width: 100%;
+                border-radius: 8px;
+            }
+        }
+
+
+       
         @media (max-width: 600px) {
             .table, .table thead, .table tbody, .table th, .table td, .table tr {
                 display: block;
@@ -265,24 +331,24 @@
                                 <strong></strong> <span class="message-content"></span>
                             </div>
 
+                            <!--Form group-->
                             <div class="col-md-12 text-center">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="input-group" style="width:55%;">
-                                            <input type="text" class="form-control" width="60" id="name-search" placeholder="Tìm nhân viên theo tên">
+                                        <form method="POST" id="search-form" class="d-flex">
+                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên" value="<?php echo ($_SESSION["searchKeyword"])?$_SESSION["searchKeyword"]:''; ?>">
                                             <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
+                                                <button class="btn btn-outline-secondary search-button" type="submit">
                                                     <i class="fas fa-search"></i>
                                                 </button>
                                             </div>
                                             <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                     <i class="fas fa-eraser"></i>
+                                                <button class="btn btn-outline-secondary search-button" id="btn-clear">
+                                                    <i class="fas fa-eraser"></i>
                                                 </button>
                                             </div>
-                                           
-                                        </div>
-                                    </div>
+                                        </form>
+                                     </div>
                                     <div class="col-md-6 text-right">
                                         <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#addCustomerModal">
                                         <i class="fas fa-plus-square"></i>
@@ -307,12 +373,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $customers= $CustomerControler->getAllCutomers("SELECT * FROM customer");
-
-                                            // Hiển thị danh sách nhân viên
-                                            if ($customers) {
+                                 
+                                         <?php
+                                           
+                                            
+                                            $searchKeyword = isset($_SESSION['searchKeyword']) ? $_SESSION['searchKeyword'] : '';
+                                            
+                                            $customers = $CustomerControler->getAllCustomers($searchKeyword);
+                                            
+                                            if ($customers && is_object($customers)) {
                                                 while ($row = $customers->fetch_assoc()) {
                                                     echo "<tr data-id='{$row['CustomerID']}'>";
                                                     echo "<td data-label='ID'>{$row['CustomerID']}</td>";
@@ -325,18 +394,16 @@
                                                             <button type='button' class='btn btn-success edit-btn'>
                                                                 <i class='fas fa-edit'></i>
                                                             </button>
-                                                          </td>
-                                                          <td data-label='Thao tác'>
+                                                        </td>";
+                                                    echo "<td data-label='Thao tác'>
                                                             <button type='button' class='btn btn-danger delete-btn'>
                                                                 <i class='fas fa-minus-square'></i>
                                                             </button>
-                                                          </td>";
+                                                        </td>";
                                                     echo "</tr>";
                                                 }
-                                            } elseif ($customers === -1) {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có khách hàng nào</td></tr>";
                                             } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
+                                                echo "<tr><td colspan='8' class='text-center'>Không có khách hàng nào</td></tr>"; // Sửa số cột cho phù hợp
                                             }
                                         ?>
                                     </tbody>
@@ -589,7 +656,46 @@
         }, 8000);
     }
 
+    $('#search-button').on('click', function(e) {
+        e.preventDefault();
+            const searchKeyword = $('#name-search').val();
+            searchCustomers(searchKeyword);
+        });
 
+        $('#name-search').on('input', function() {
+            const searchKeyword = $(this).val();
+            searchCustomers(searchKeyword);
+    });
+
+    function searchCustomers(keyword) {
+        $.ajax({
+            url: '?page=page_customer', 
+            type: 'POST',
+            data: { search: keyword },
+            success: function(response) {
+                $('#search-results').html(response); 
+            },
+            error: function() {
+                $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
+            }
+        });
+    }
+    $("#btn-clear").on('click', function(e) {
+        clearSearch();
+    })
+    function clearSearch() {
+        $('#name-search').val(""); 
+        $.ajax({
+            url: '?page=page_customer', 
+            data: { clear: true }, 
+            success: function(response) {
+                $('#search-results').html(response);
+            },
+            error: function() {
+                $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
+            }
+        });
+    }
 
     </script>
 </body>

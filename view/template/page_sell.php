@@ -262,7 +262,7 @@
                                 <div class="form-group col-md-6">
                                     <label for="points">Điểm</label>
                                     <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="50">
-                                    <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button>
+                                    <!-- <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button> -->
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="discountCode">Mã KM</label>

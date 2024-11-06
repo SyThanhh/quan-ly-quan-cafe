@@ -9,16 +9,38 @@
             $this->conn = (new Database())->connect(); // Kết nối CSDL
         }
 
-        public function selectAll() {
-
-            if($this->conn) {
-                $str = "SELECT * FROM customer";
-
-                $tblCustomer = $this->conn->query($str);
-
-                return $tblCustomer;
+        public function selectAll($keyword) {
+            if ($this->conn) {
+                // Khởi tạo truy vấn cơ bản
+                $str = "SELECT * FROM customer WHERE Status = 1";
+        
+                // Nếu có từ khóa tìm kiếm, thêm điều kiện
+                if (!empty($keyword)) {
+                    $str .= " AND ((CustomerName LIKE ?) OR (CustomerPhone LIKE ?))";
+                }
+        
+                // Chuẩn bị truy vấn
+                $stmt = $this->conn->prepare($str);
+        
+                if ($stmt) {
+                    // Liên kết tham số nếu có từ khóa
+                    if (!empty($keyword)) {
+                        $searchTerm = "%$keyword%";
+                        $stmt->bind_param("ss", $searchTerm, $searchTerm); // Liên kết tham số
+                    }
+        
+                    // Thực thi câu lệnh
+                    if ($stmt->execute()) {
+                        $result = $stmt->get_result(); // Lấy kết quả
+                        return $result; // Trả về kết quả
+                    } else {
+                        return false; // Trả về false nếu không thể thực thi câu lệnh
+                    }
+                } else {
+                    return false; // Trả về false nếu không thể chuẩn bị câu lệnh
+                }
             } else {
-                return false;
+                return false; // Trả về false nếu không có kết nối
             }
         }
 

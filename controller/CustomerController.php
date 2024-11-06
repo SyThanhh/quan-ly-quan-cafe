@@ -9,17 +9,17 @@
         }
     
 
-        public function getAllCutomers() {
-           
-            $tblCustomer = $this->mCustomer -> selectAll();
-            if($tblCustomer) {
-                if($tblCustomer->num_rows>0) {
-                    return $tblCustomer;
+        public function getAllCustomers($keyword) {
+            $tblCustomer = $this->mCustomer->selectAll($keyword);
+        
+            if ($tblCustomer) {
+                if ($tblCustomer->num_rows > 0) {
+                    return $tblCustomer; 
                 } else {
-                    return -1;
+                    return null; 
                 }
             } else {
-                return false;
+                return false; 
             }
         }
 
