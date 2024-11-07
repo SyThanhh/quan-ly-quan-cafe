@@ -7,7 +7,6 @@
         private  $password;
         private  $conn;
 
-        // Hàm khởi tạo (constructor) để gán giá trị cho các thuộc tính
         public function __construct() {
             $this->servername = "localhost";
             $this->database = "db_ql3scoffee";
@@ -19,17 +18,14 @@
 
         public function connect() {
             try {
-                // Sử dụng mysqli_connect để kết nối cơ sở dữ liệu
                 $this->conn = mysqli_connect($this->servername, $this->username, $this->password, $this->database);
     
-                // Kiểm tra kết nối
                 if (!$this->conn) {
                     throw new Exception("Connection failed: " . mysqli_connect_error());
                 }
                 return $this->conn;
     
             } catch (Exception $e) {
-                // Bắt lỗi và hiển thị thông báo lỗi
                 echo "Kết nối thất bại: " . $e->getMessage();
             }
         }

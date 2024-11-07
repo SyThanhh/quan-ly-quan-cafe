@@ -682,6 +682,7 @@
     }
     $("#btn-clear").on('click', function(e) {
         clearSearch();
+        e.preventDefault();
     })
     function clearSearch() {
         $('#name-search').val(""); 

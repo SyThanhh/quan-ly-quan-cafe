@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,11 +12,39 @@
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');   
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+        include_once('./controller/OrderController.php'); // Đường dẫn vào file kết nối database
 
-        // Tạo một đối tượng Database để kết nối
-        $database = new Database();
-        $conn = $database->connect(); // Lấy kết nối
+        $orderController = new OrderController(); 
+
+        $fromDate = '';
+        $toDate = '';
+        $orders = [];
+        
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $fromDate = isset($_POST['from-date']) ? $_POST['from-date'] : '';
+            $toDate = isset($_POST['to-date']) ? $_POST['to-date'] : '';
+        
+            $_SESSION['from-date'] = $fromDate;
+            $_SESSION['to-date'] = $toDate;
+        
+            if (!empty($fromDate) || !empty($toDate)) {
+                $orders = $orderController->getAllOrders($fromDate, $toDate);
+            } else {
+                $orders = $orderController->getAllOrders("", ""); 
+            }
+        } elseif (isset($_POST['clear'])) {
+            unset($_SESSION['from-date']); 
+            unset($_SESSION['to-date']);
+            $fromDate = '';
+            $toDate = '';
+            $orders = $orderController->getAllOrders("", "");
+        } else {
+            $fromDate = isset($_SESSION['from-date']) ? $_SESSION['from-date'] : '';
+            $toDate = isset($_SESSION['to-date']) ? $_SESSION['to-date'] : '';
+            $orders = $orderController->getAllOrders($fromDate, $toDate);
+        }
+        
+        
     ?>
     
     <style>
@@ -319,15 +350,20 @@
                                     <div class="col-md-6">
                                         <div class="input-group" style="width:55%;">
                                             <div class="filter-container">
-                                                <div class="date-input">
-                                                    <label for="from-date">Từ ngày:</label>
-                                                    <input type="date" id="from-date" placeholder="mm/dd/yyyy">
-                                                </div>
-                                                <div class="date-input">
-                                                    <label for="to-date">Đến ngày:</label>
-                                                    <input type="date" id="to-date" placeholder="mm/dd/yyyy">
-                                                </div>
-                                                <button class="filter-button">Lọc</button>
+                                                <form class="d-flex" id="filter-date" method="post">
+                                                    <div class="date-input mr-2">
+                                                        <label for="from-date">Từ ngày:</label>
+                                                        <input type="date" id="from-date" name="from-date" placeholder="mm/dd/yyyy" value="<?php echo $_SESSION['from-date']?$_SESSION['from-date']:'' ?>">
+                                                    </div>
+                                                    <div class="date-input mr-2">
+                                                        <label for="to-date">Đến ngày:</label>
+                                                        <input type="date" id="to-date" name="to-date" placeholder="mm/dd/yyyy" value="<?php echo $_SESSION['to-date']?$_SESSION['to-date']:'' ?>">
+                                                    </div>
+                                                    <button class="filter-button mr-2" id="btn-filter" type="submit">Lọc</button>
+                                                    <button class="btn  filter-button  btn-light" id="btn-clear">
+                                                         <i class="fas fa-eraser"></i>
+                                                    </button>
+                                                </form>
                                             </div>
 
                                            
@@ -354,12 +390,8 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $query = "SELECT * FROM  `order` o JOIN customer c ON o.CustomerId = c.CustomerID JOIN employee e ON o.EmployeeID = e.EmployeeID JOIN coupon cp ON o.couponID = cp.couponID";
-
-                                            // Thực hiện truy vấn
-                                            $orders = mysqli_query($conn, $query);
-
+                                        
+                                          
                                             // Hiển thị danh sách nhân viên
                                             if ($orders) {
                                                 while ($row = $orders->fetch_assoc()) {
@@ -367,7 +399,7 @@
                                                         echo "<td>{$row['OrderID']}</td>";
                                                         echo "<td>{$row['CustomerName']}</td>";
                                                         // echo "<td>{$row['FirstName']} {$row['LastName']}</td>"; 
-                                                        echo "<td>{$row['CreateAt']}</td>";
+                                                        echo "<td>{$row['CreateDate']}</td>";
                                                         echo "<td>{$row['CouponDiscount']} <span>%</span></td>";
                                                         echo "<td>{$row['PaymentMethod']}</td>";
                                                         echo "<td>{$row['TotalAmount']} <span>đ</span> </td>";
@@ -423,5 +455,29 @@
     <!-- Bootstrap core JavaScript-->
      
     <?php include_once('./common/script/default.php'); ?>
+    <script>
+        $('#btn-clear').on('click', function(e) {
+            $('#from-date').val('');
+                
+            $('#to-date').val('');
+            clearSearch();
+        });
+
+           
+        function clearSearch(e) {
+            // e.preventDefault();
+           
+            $.ajax({
+                url: '?page=page_viewOrder', 
+                data: { clear: true }, 
+                success: function(response) {
+                    $('#search-results').html(response);
+                },
+                error: function() {
+                    $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
+                }
+            });
+        }
+    </script>
 </body>
 </html>

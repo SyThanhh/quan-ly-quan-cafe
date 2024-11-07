@@ -11,74 +11,35 @@
 
         public function selectAll($keyword) {
             if ($this->conn) {
-                // Khởi tạo truy vấn cơ bản
                 $str = "SELECT * FROM customer WHERE Status = 1";
         
-                // Nếu có từ khóa tìm kiếm, thêm điều kiện
                 if (!empty($keyword)) {
-                    $str .= " AND ((CustomerName LIKE ?) OR (CustomerPhone LIKE ?))";
+                    $str .= " AND (CustomerName LIKE ? OR CustomerPhone LIKE ?)";
                 }
-        
-                // Chuẩn bị truy vấn
-                $stmt = $this->conn->prepare($str);
+    
+                $stmt = mysqli_prepare($this->conn, $str);
         
                 if ($stmt) {
-                    // Liên kết tham số nếu có từ khóa
                     if (!empty($keyword)) {
                         $searchTerm = "%$keyword%";
-                        $stmt->bind_param("ss", $searchTerm, $searchTerm); // Liên kết tham số
+                        mysqli_stmt_bind_param($stmt, "ss", $searchTerm, $searchTerm); 
                     }
         
-                    // Thực thi câu lệnh
-                    if ($stmt->execute()) {
-                        $result = $stmt->get_result(); // Lấy kết quả
-                        return $result; // Trả về kết quả
+                    if (mysqli_stmt_execute($stmt)) {
+                        $result = mysqli_stmt_get_result($stmt); 
+                        return $result; 
                     } else {
-                        return false; // Trả về false nếu không thể thực thi câu lệnh
+                        return false; 
                     }
                 } else {
-                    return false; // Trả về false nếu không thể chuẩn bị câu lệnh
+                    return false; 
                 }
             } else {
-                return false; // Trả về false nếu không có kết nối
+                return false; 
             }
         }
 
-        // public function save($id, $name, $email, $phone) {
-        //     if ($this->conn) {
-        //         $name = trim($name);
-        //         $email = trim($email);
-        //         $phone = trim($phone);
-        
-        //         if (empty($name) || empty($email) || empty($phone)) {
-        //             return false; 
-        //         }
-        
-        //         if ($id && is_numeric($id)) { 
-        //             $str = "UPDATE customer SET CustomerName = ?, Email = ?, CustomerPhone = ? WHERE CustomerID = ?";
-        //             $stmt = mysqli_prepare($this->conn, $str);
-                   
-        //             mysqli_stmt_bind_param($stmt, "sssi", $name, $email, $phone, $id);
-        //         } else {
-        //             $str = "INSERT INTO customer (CustomerName, Email, CustomerPhone) VALUES (?, ?, ?)";
-        //             $stmt = mysqli_prepare($this->conn, $str);
-                   
-        //             mysqli_stmt_bind_param($stmt, "sss", $name, $email, $phone);
-        //         }
-        
-              
-        //         $result = mysqli_stmt_execute($stmt);
-        //         if (!$result) {
-        //             error_log("MySQL Error: " . mysqli_stmt_error($stmt));
-        //         }
-        
-        //         // Đóng câu lệnh
-        //         mysqli_stmt_close($stmt); 
-        
-        //         return $result; // Trả về kết quả thực thi
-        //     }
-        //     return false; 
-        // }
+       
 
         public function add($name, $email, $phone) {
             if ($this->conn) {
@@ -132,7 +93,7 @@
                 $stmt = mysqli_prepare($this->conn, $str);
         
                 if ($stmt === false) {
-                    return false; // Xử lý lỗi
+                    return false; 
                 }
         
                 mysqli_stmt_bind_param($stmt, "sssi", $name, $email, $phone, $id);
@@ -185,9 +146,14 @@
                 
                 $result = mysqli_stmt_execute($stmt);
                 
+                // Lấy kết quả
+                $result = mysqli_stmt_get_result($stmt);
+                $customer = mysqli_fetch_assoc($result); 
+
+
                 mysqli_stmt_close($stmt); 
-                
-                return $result; 
+
+                return $customer; 
             }
             return false; 
         }
