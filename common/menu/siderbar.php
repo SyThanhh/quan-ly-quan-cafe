@@ -67,7 +67,7 @@ ob_start(); // Bắt đầu output buffering
 </li>
 
   <!-- Nav Item - Utilities Collapse Menu -->
-  <li class="nav-item">
+<li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageEmployee"
         aria-expanded="true" aria-controls="manageEmployee">
         <i class="fas fa-id-badge"></i>
@@ -81,6 +81,13 @@ ob_start(); // Bắt đầu output buffering
             <a class="collapse-item" href="index.php?page=page_shift">Quản lý lịch làm việc</a>
         </div>
     </div>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link collapsed" href="index.php?page=page_roles">
+        <i class="fas fa-id-badge"></i>
+        <span>Cập nhật vị trí nhân viên</span>
+    </a>
 </li>
 
   <!-- Nav Item - Utilities Collapse Menu -->

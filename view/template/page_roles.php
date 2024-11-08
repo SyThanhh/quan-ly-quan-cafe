@@ -227,7 +227,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="header text-left">
-                                <h4>QUẢN LÝ THÔNG TIN NHÂN VIÊN</h4>
+                                <h4>CẬP NHẬT LẠI VỊ TRÍ NHÂN VIÊN</h4>
                             </div>
                             
                             <div class="col-md-12 text-center">
@@ -242,8 +242,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 text-right">
-                                        <a class="btn btn-primary btn-add" style="color:white" href="index.php?page=page_add_employee"><i class="fas fa-plus"></i> &nbsp; Thêm nhân viên mới</a>
+                                    <div class="col-md-6">
+                                        <span style="color:red">Lưu ý: Thay đổi vị trí làm việc sẽ thay đổi các chức năng nhân viên có thể sử dụng trên hệ thống</span>
                                     </div>
                                 </div>
                             </div>
@@ -259,9 +259,8 @@
                                             <th>Tên</th>
                                             <th>Email</th>
                                             <th>Số điện thoại</th>
-                                            <th>Vị trí làm việc</th>
-                                            <th>Trạng thái</th>
-                                            <th colspan='2'>Thao tác</th>
+                                            <th>Vai trò</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -290,21 +289,14 @@
                                                         $role = "Nhân viên pha chế";
                                                     }
                                                     echo "<td>{$role}</td>";
-                                                    // Thay đổi giá trị của cột Status dựa trên điều kiện
-                                                    $status = ($row['Status'] == 1) ? "Đang làm việc" : "Đã nghỉ việc";
-                                                    echo "<td>{$status}</td>";
                                                     echo "<td>
-                                                        <a href='index.php?page=page_update_employee&id={$row['EmployeeID']}' class='btn btn-success' style='color:white'>
+                                                        <a href='index.php?page=page_update_roles&id={$row['EmployeeID']}' class='btn btn-success' style='color:white'>
                                                             <i class='fas fa-edit'></i>
                                                         </a>
-                                                    </td> <td>
-                                                        <button type='button' class='btn btn-danger' onclick='confirmDelete({$row['EmployeeID']})'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
+                                                    </td> ";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
+                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
                                             }                                            
                                         ?>
                                     </tbody>
@@ -318,41 +310,9 @@
             <?php include_once('./common/footer/footer.php'); ?>
         </div>    
         
-    <!-- Modal xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa nhân viên này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>    
+       
 
-    <script>
-        // Hàm mở modal xác nhận xóa
-        function confirmDelete(employeeID) {
-            // Hiển thị modal
-            $('#confirmDeleteModal').modal('show');
-            
-            // // Gán ID của nhân viên vào nút xác nhận
-            // document.getElementById('confirmDeleteButton').onclick = function () {
-            //     // Thực hiện hành động xóa ở đây nếu cần thiết
-            //     console.log("Đã xác nhận xóa nhân viên với ID:", employeeID);
-            //     $('#confirmDeleteModal').modal('hide');
-            // };
-        }
-    </script>
+    
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>

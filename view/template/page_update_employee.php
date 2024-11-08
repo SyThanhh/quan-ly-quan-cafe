@@ -255,7 +255,7 @@
                                     <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $employee['LastName']; ?>" required></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="email">Tên:</label></th>
+                                    <th><label for="email">Email:</label></th>
                                     <td><input type="text" class="form-control" id="email" name="email" value="<?php echo $employee['Email']; ?>" required></td>
                                 </tr>
                                 <tr>

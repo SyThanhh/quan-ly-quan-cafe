@@ -223,93 +223,79 @@
                 </nav>
 
                 <!--  Nội dung trang  -->
-                <div class="container-fluid">
+                <?php
+                // Lấy mã nhân viên từ URL
+                if (isset($_GET['id'])) {
+                    $employeeID = $_GET['id'];
+                }
+
+                // Truy vấn thông tin nhân viên dựa trên ID
+                $result = $conn->query("SELECT * FROM employee WHERE EmployeeID = $employeeID");
+                $employee = $result->fetch_assoc();
+                $dateOfBirth = date("Y-m-d", strtotime($employee['DateOfBirth']));
+
+                // Danh sách các vai trò và mã số tương ứng
+                $rolesMapping = [
+                    2 => "Nhân viên đứng quầy",
+                    3 => "Nhân viên kế toán",
+                    4 => "Nhân viên pha chế"
+                ];
+
+                // Chuyển đổi chuỗi roles từ database thành mảng số
+                $employeeRoles = explode(',', $employee['Roles']);
+                ?>
+
+                <div class="container-fluid" align="center">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ THÔNG TIN NHÂN VIÊN</h4>
+                            <div>
+                                <h4>SỬA THÔNG TIN NHÂN VIÊN</h4>
+                                </br>
                             </div>
-                            
-                            <div class="col-md-12 text-center">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="name-search" placeholder="Tìm nhân viên theo tên">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <a class="btn btn-primary btn-add" style="color:white" href="index.php?page=page_add_employee"><i class="fas fa-plus"></i> &nbsp; Thêm nhân viên mới</a>
-                                    </div>
-                                </div>
-                            </div>
-                            </br>
-
-                            <!-- Danh sách nhân viên -->
-                            <div class="mt-8">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Mã</th>
-                                            <th>Họ</th>
-                                            <th>Tên</th>
-                                            <th>Email</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Vị trí làm việc</th>
-                                            <th>Trạng thái</th>
-                                            <th colspan='2'>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
-
-                                            // Hiển thị danh sách nhân viên
-                                            if ($employees) {
-                                                while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['EmployeeID']}</td>";
-                                                    echo "<td>{$row['FirstName']}</td>";
-                                                    echo "<td>{$row['LastName']}</td>";
-                                                    echo "<td>{$row['Email']}</td>";
-                                                    echo "<td>{$row['PhoneNumber']}</td>";
-                                                    // Thay đổi giá trị của cột Roles dựa trên điều kiện
-                                                    $role = '';
-                                                    if ($row['Roles'] == 1) {
-                                                        $role = "Quản lý";
-                                                    } elseif ($row['Roles'] == 2) {
-                                                        $role = "Nhân viên đứng quầy";
-                                                    } elseif ($row['Roles'] == 3) {
-                                                        $role = "Nhân viên kế toán";
-                                                    } elseif ($row['Roles'] == 4) {
-                                                        $role = "Nhân viên pha chế";
-                                                    }
-                                                    echo "<td>{$role}</td>";
-                                                    // Thay đổi giá trị của cột Status dựa trên điều kiện
-                                                    $status = ($row['Status'] == 1) ? "Đang làm việc" : "Đã nghỉ việc";
-                                                    echo "<td>{$status}</td>";
-                                                    echo "<td>
-                                                        <a href='index.php?page=page_update_employee&id={$row['EmployeeID']}' class='btn btn-success' style='color:white'>
-                                                            <i class='fas fa-edit'></i>
-                                                        </a>
-                                                    </td> <td>
-                                                        <button type='button' class='btn btn-danger' onclick='confirmDelete({$row['EmployeeID']})'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
+                            <form action="" method="post">
+                                <table>
+                                    <tr>
+                                        <th><label for="employeeID">Mã Nhân Viên:</label></th>
+                                        <td><input type="text" class="form-control" id="employeeID" name="employeeID" value="<?php echo $employee['EmployeeID']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="lastName">Họ:</label></th>
+                                        <td><input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $employee['FirstName']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="firstName">Tên:</label></th>
+                                        <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $employee['LastName']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="email">Email:</label></th>
+                                        <td><input type="text" class="form-control" id="email" name="email" value="<?php echo $employee['Email']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="phoneNumber">Số Điện Thoại:</label></th>
+                                        <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="<?php echo $employee['PhoneNumber']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label>Vị trí làm việc:</label></th>
+                                        <td>
+                                            <?php foreach ($rolesMapping as $roleID => $roleName): ?>
+                                                <div class="form-check">
+                                                    <input class="form-radio-input" type="radio" name="roles" value="<?php echo $roleID; ?>" 
+                                                    <?php echo in_array($roleID, $employeeRoles) ? 'checked' : ''; ?>>
+                                                    <label class="form-radio-label"><?php echo $roleName; ?></label>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </td>
+                                    </tr>
                                 </table>
-                            </div>
+
+                                <!-- Button section -->
+                                <div class="button-group">
+                                    </br>
+                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
+                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
+                                    <button type="submit" class="btn btn-primary btn-add">Cập nhật</button>
+                                </div>
+                            </form>        
                         </div>
                     </div>
                 </div>
@@ -317,42 +303,7 @@
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
         </div>    
-        
-    <!-- Modal xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa nhân viên này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>    
 
-    <script>
-        // Hàm mở modal xác nhận xóa
-        function confirmDelete(employeeID) {
-            // Hiển thị modal
-            $('#confirmDeleteModal').modal('show');
-            
-            // // Gán ID của nhân viên vào nút xác nhận
-            // document.getElementById('confirmDeleteButton').onclick = function () {
-            //     // Thực hiện hành động xóa ở đây nếu cần thiết
-            //     console.log("Đã xác nhận xóa nhân viên với ID:", employeeID);
-            //     $('#confirmDeleteModal').modal('hide');
-            // };
-        }
-    </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>
