@@ -4,7 +4,12 @@
 <head>
 
     <?php
-        include_once('./common/head/head.php')    
+        include_once('./common/head/head.php')  ; 
+        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+
+        // Tạo một đối tượng Database để kết nối
+        $database = new Database();
+        $conn = $database->connect(); // Lấy kết nối 
     ?>
  
     <link rel="stylesheet" href="./assets/css/sell.css">
@@ -41,7 +46,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -52,7 +57,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -346,31 +351,30 @@
                                     <h4>Danh sách sản phẩm</h4>
                                 </div>
                                 <div class="product-list" id="product-list">
-                                    <div class="product-item" data-name="Sản phẩm 1" data-stock="1" data-price="100000">
+                                    <!-- <div class="product-item" data-name="Sản phẩm 1" data-stock="1" data-price="100000">
                                         <img src="https://via.placeholder.com/100" alt="Sản phẩm 1">
                                         <p>Sản phẩm 1</p>
                                         <p class="stock">Tồn kho: 1</p>
-                                    </div>
-                                    <div class="product-item" data-name="Sản phẩm 2" data-stock="2" data-price="200000">
-                                        <img src="https://via.placeholder.com/100" alt="Sản phẩm 2">
-                                        <p>Sản phẩm 2</p>
-                                        <p class="stock">Tồn kho: 2</p>
-                                    </div>
-                                    <div class="product-item" data-name="Sản phẩm 3" data-stock="3" data-price="300000">
-                                        <img src="https://via.placeholder.com/100" alt="Sản phẩm 3">
-                                        <p>Sản phẩm 3</p>
-                                        <p class="stock">Tồn kho: 3</p>
-                                    </div>
-                                    <div class="product-item" data-name="Sản phẩm 4" data-stock="4" data-price="400000">
-                                        <img src="https://via.placeholder.com/100" alt="Sản phẩm 4">
-                                        <p>Sản phẩm 4</p>
-                                        <p class="stock">Tồn kho: 4</p>
-                                    </div>
-                                    <div class="product-item" data-name="Sản phẩm 5" data-stock="5" data-price="300000">
-                                        <img src="https://via.placeholder.com/100" alt="Sản phẩm 5">
-                                        <p>Sản phẩm 5</p>
-                                        <p class="stock">Tồn kho: 5</p>
-                                    </div>
+                                    </div> -->
+                                    <?php
+                                        $query = "SELECT ProductName, UnitsInStock, UnitPrice, ProductImage FROM product"; // Giả sử bảng của bạn là 'products' và có các cột name, stock, price
+                                        $products = $database->select($query);
+                                        
+                                        // Kiểm tra kết quả và hiển thị danh sách sản phẩm
+                                        if ($products) {
+                                            while ($product = $products->fetch_assoc()) {
+                                                echo '<div class="product-item" data-name="'.$product['ProductName'].'" data-stock="'.$product['UnitsInStock'].'" data-price="'.$product['UnitPrice'].'">';
+                                                echo '<img src="assets/img/products/'.$product["ProductImage"].'" alt="'.$product['ProductName'].'">';
+                                                echo '<p>'.$product['ProductName'].'</p>';
+                                                echo '<p class="stock">Tồn kho: '.$product['UnitsInStock'].'</p>';
+                                                echo '<p class="price">Giá: '.number_format($product['UnitPrice'], 3, ',', '.').'₫</p>';
+                                                echo '</div>';
+                                            }
+                                        } else {
+                                            echo "Không có sản phẩm nào.";
+                                        }
+                                    ?>
+                                   
                                 </div>
                         </div>
                     </div>

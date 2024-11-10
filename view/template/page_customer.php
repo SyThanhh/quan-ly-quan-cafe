@@ -127,7 +127,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -138,7 +138,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -336,7 +336,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <form method="POST" id="search-form" class="d-flex">
-                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên" value="<?php echo ($_SESSION["searchKeyword"])?$_SESSION["searchKeyword"]:''; ?>">
+                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên" value="<?php echo isset($_SESSION["searchKeyword"]) ? $_SESSION["searchKeyword"] : ''; ?>">
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary search-button" type="submit">
                                                     <i class="fas fa-search"></i>
@@ -682,7 +682,7 @@
     }
     $("#btn-clear").on('click', function(e) {
         clearSearch();
-        e.preventDefault();
+        // e.preventDefault();
     })
     function clearSearch() {
         $('#name-search').val(""); 

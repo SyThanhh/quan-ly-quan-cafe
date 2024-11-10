@@ -2,52 +2,16 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="assets/css/table.css">
     <!-- Đầu trang -->
     <?php
-        include_once('./common/head/head.php');   
+        include_once('./common/head/head.php');    
         include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
     ?>
-    
-    <style>
-      
-        
-        @media (max-width: 600px) {
-            .table, .table thead, .table tbody, .table th, .table td, .table tr {
-                display: block;
-            }
-            .table thead {
-                display: none;
-            }
-            .table tbody tr {
-                margin-bottom: 15px;
-            }
-            .table td {
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-             .table td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: 45%;
-                padding-left: 10px;
-                text-align: left;
-                font-weight: bold;
-            } 
-
-        }
-
-       
-    </style>
+    <link rel="stylesheet" href="./assets/css/employee_shift.css">
 </head>
 
 <body>
@@ -55,19 +19,17 @@
         <!-- Thanh điều hướng dọc -->
         <?php include_once('./common/menu/siderbar.php'); ?>
 
-        <!-- Giao diện trang -->
+        <!-- Giao giện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <!-- Thanh điều hướng ngang -->
-                  <div id="content">
-                <!-- Thanh điều hướng ngang -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
                     <!-- Topbar Search -->
-                    <!-- <form
+                    <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -78,7 +40,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form> -->
+                    </form>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -261,112 +223,88 @@
                 </nav>
 
                 <!--  Nội dung trang  -->
-                <div class="container-fluid">
+                <?php
+                // Lấy mã nhân viên từ URL
+                if (isset($_GET['id'])) {
+                    $employeeID = $_GET['id'];
+                }
+
+                // Truy vấn thông tin nhân viên dựa trên ID
+                $result = $conn->query("SELECT * FROM employee WHERE EmployeeID = $employeeID");
+                $employee = $result->fetch_assoc();
+                $dateOfBirth = date("Y-m-d", strtotime($employee['DateOfBirth']));
+
+                // Danh sách các vai trò và mã số tương ứng
+                $rolesMapping = [
+                    2 => "Nhân viên đứng quầy",
+                    3 => "Nhân viên kế toán",
+                    4 => "Nhân viên pha chế"
+                ];
+
+                // Chuyển đổi chuỗi roles từ database thành mảng số
+                $employeeRoles = explode(',', $employee['Roles']);
+                ?>
+
+                <div class="container-fluid" align="center">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>XEM CHI TIẾT HÓA ĐƠN</h4>
+                            <div>
+                                <h4>SỬA THÔNG TIN NHÂN VIÊN</h4>
+                                </br>
                             </div>
-                            
-                            <div class="col-md-12 mt-4" style="padding-bottom: -20px;">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                         <a href="?page=page_viewOrder" class="btn btn-primary">
-                                         <i class="fas fa-arrow-left"></i> Trở lại
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            </br>
+                            <form action="" method="post">
+                                <table>
+                                    <tr>
+                                        <th><label for="employeeID">Mã Nhân Viên:</label></th>
+                                        <td><input type="text" class="form-control" id="employeeID" name="employeeID" value="<?php echo $employee['EmployeeID']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="lastName">Họ:</label></th>
+                                        <td><input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $employee['FirstName']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="firstName">Tên:</label></th>
+                                        <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $employee['LastName']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="email">Email:</label></th>
+                                        <td><input type="text" class="form-control" id="email" name="email" value="<?php echo $employee['Email']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label for="phoneNumber">Số Điện Thoại:</label></th>
+                                        <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="<?php echo $employee['PhoneNumber']; ?>" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><label>Vị trí làm việc:</label></th>
+                                        <td>
+                                            <?php foreach ($rolesMapping as $roleID => $roleName): ?>
+                                                <div class="form-check">
+                                                    <input class="form-radio-input" type="radio" name="roles" value="<?php echo $roleID; ?>" 
+                                                    <?php echo in_array($roleID, $employeeRoles) ? 'checked' : ''; ?>>
+                                                    <label class="form-radio-label"><?php echo $roleName; ?></label>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </td>
+                                    </tr>
+                                </table>
 
-                            <!-- Danh sách nhân viên -->
-                             <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Tên Nhân viên</th> 
-                                            <th scope="col">Ngày tạo</th>
-                                            <!-- <th scope="col">Tên Khách hàng</th>-->
-                                            <th scope="col">Mã sản phẩm</th>
-                                            <th scope="col">Tên sản phẩm</th>
-                                            <th scope="col">Giá bán</th>
-                                            <th scope="col">Số lượng</th>
-                                            <th scope="col">Tổng tiền</th>
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            if (isset($_GET["OrderID"])) {
-                                                $orderID = $_GET["OrderID"];
-                                            
-                                                // Truy vấn chi tiết hóa đơn
-                                                $query = "SELECT * FROM orderdetail od 
-                                                          JOIN `order` o ON od.OrderID = o.OrderID 
-                                                          JOIN employee e ON e.employeeID = o.employeeID
-                                                          JOIN product p ON p.ProductID = od.ProductID 
-                                                          WHERE od.OrderID = '$orderID'";
-                                            
-                                                // Thực hiện truy vấn
-                                                $orderDetails = mysqli_query($conn, $query);
-                                            
-                                                // Kiểm tra kết quả truy vấn
-                                                if ($orderDetails && mysqli_num_rows($orderDetails) > 0) {
-                                                    while ($row = mysqli_fetch_assoc($orderDetails)) {
-                                                        echo "<tr>";
-                                                        echo "<td>{$row['OrderID']}</td>";
-                                                        echo "<td>{$row['FirstName']} {$row['LastName']}</td>";
-                                                        echo "<td>{$row['CreateDate']}</td>";
-                                                        echo "<td>{$row['ProductID']}</td>";
-                                                        echo "<td>{$row['ProductName']}</td>";
-                                                        echo "<td>{$row['UnitPrice']}<span>đ</span></td>";
-                                                        echo "<td>{$row['Quantity']}</td>";
-                                                        echo "<td>" . number_format($row['Quantity'] * $row['UnitPrice'], 3) . "<span>đ</span></td>";
-                                                        echo "</tr>";
-                                                    }
-                                                } else {
-                                                    echo "<tr><td colspan='9' class='text-center text-danger'>Không có dữ liệu</td></tr>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='9' class='text-center text-danger'>Không tồn tại OrderID</td></tr>";
-                                            }
-                                        ?>
-                                    </tbody>
-                                 </table>
-                                 <!-- <div class="row justify-content-end mr-1">
-                                    <nav aria-label="Page navigation example">
-                                        <ul class="pagination">
-                                            <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div> -->
-                            </div>
+                                <!-- Button section -->
+                                <div class="button-group">
+                                    </br>
+                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
+                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
+                                    <button type="submit" class="btn btn-primary btn-add">Cập nhật</button>
+                                </div>
+                            </form>        
                         </div>
                     </div>
                 </div>
-
-             
-
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
-        </div>   
+        </div>    
 
-    
     <!-- Bootstrap core JavaScript-->
-     
     <?php include_once('./common/script/default.php'); ?>
 </body>
 </html>

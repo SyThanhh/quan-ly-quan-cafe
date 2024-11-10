@@ -2,52 +2,16 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="assets/css/table.css">
     <!-- Đầu trang -->
     <?php
-        include_once('./common/head/head.php');   
+        include_once('./common/head/head.php');    
         include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
     ?>
-    
-    <style>
-      
-        
-        @media (max-width: 600px) {
-            .table, .table thead, .table tbody, .table th, .table td, .table tr {
-                display: block;
-            }
-            .table thead {
-                display: none;
-            }
-            .table tbody tr {
-                margin-bottom: 15px;
-            }
-            .table td {
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-             .table td:before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: 45%;
-                padding-left: 10px;
-                text-align: left;
-                font-weight: bold;
-            } 
-
-        }
-
-       
-    </style>
+    <link rel="stylesheet" href="./assets/css/employee_shift.css">
 </head>
 
 <body>
@@ -55,19 +19,17 @@
         <!-- Thanh điều hướng dọc -->
         <?php include_once('./common/menu/siderbar.php'); ?>
 
-        <!-- Giao diện trang -->
+        <!-- Giao giện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <!-- Thanh điều hướng ngang -->
-                  <div id="content">
-                <!-- Thanh điều hướng ngang -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
                     <!-- Topbar Search -->
-                    <!-- <form
+                    <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -78,7 +40,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form> -->
+                    </form>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -265,108 +227,93 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="header text-left">
-                                <h4>XEM CHI TIẾT HÓA ĐƠN</h4>
+                                <h4>CẬP NHẬT LẠI VỊ TRÍ NHÂN VIÊN</h4>
                             </div>
                             
-                            <div class="col-md-12 mt-4" style="padding-bottom: -20px;">
+                            <div class="col-md-12 text-center">
                                 <div class="row">
                                     <div class="col-md-6">
-                                         <a href="?page=page_viewOrder" class="btn btn-primary">
-                                         <i class="fas fa-arrow-left"></i> Trở lại
-                                        </a>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="name-search" placeholder="Tìm nhân viên theo tên">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <span style="color:red">Lưu ý: Thay đổi vị trí làm việc sẽ thay đổi các chức năng nhân viên có thể sử dụng trên hệ thống</span>
                                     </div>
                                 </div>
                             </div>
                             </br>
 
                             <!-- Danh sách nhân viên -->
-                             <table class="table">
+                            <div class="mt-8">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Tên Nhân viên</th> 
-                                            <th scope="col">Ngày tạo</th>
-                                            <!-- <th scope="col">Tên Khách hàng</th>-->
-                                            <th scope="col">Mã sản phẩm</th>
-                                            <th scope="col">Tên sản phẩm</th>
-                                            <th scope="col">Giá bán</th>
-                                            <th scope="col">Số lượng</th>
-                                            <th scope="col">Tổng tiền</th>
-                                            
+                                            <th>Mã</th>
+                                            <th>Họ</th>
+                                            <th>Tên</th>
+                                            <th>Email</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Vai trò</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                            if (isset($_GET["OrderID"])) {
-                                                $orderID = $_GET["OrderID"];
-                                            
-                                                // Truy vấn chi tiết hóa đơn
-                                                $query = "SELECT * FROM orderdetail od 
-                                                          JOIN `order` o ON od.OrderID = o.OrderID 
-                                                          JOIN employee e ON e.employeeID = o.employeeID
-                                                          JOIN product p ON p.ProductID = od.ProductID 
-                                                          WHERE od.OrderID = '$orderID'";
-                                            
-                                                // Thực hiện truy vấn
-                                                $orderDetails = mysqli_query($conn, $query);
-                                            
-                                                // Kiểm tra kết quả truy vấn
-                                                if ($orderDetails && mysqli_num_rows($orderDetails) > 0) {
-                                                    while ($row = mysqli_fetch_assoc($orderDetails)) {
-                                                        echo "<tr>";
-                                                        echo "<td>{$row['OrderID']}</td>";
-                                                        echo "<td>{$row['FirstName']} {$row['LastName']}</td>";
-                                                        echo "<td>{$row['CreateDate']}</td>";
-                                                        echo "<td>{$row['ProductID']}</td>";
-                                                        echo "<td>{$row['ProductName']}</td>";
-                                                        echo "<td>{$row['UnitPrice']}<span>đ</span></td>";
-                                                        echo "<td>{$row['Quantity']}</td>";
-                                                        echo "<td>" . number_format($row['Quantity'] * $row['UnitPrice'], 3) . "<span>đ</span></td>";
-                                                        echo "</tr>";
+                                            // Truy vấn danh sách nhân viên
+                                            $employees = $database->select("SELECT * FROM employee");
+
+                                            // Hiển thị danh sách nhân viên
+                                            if ($employees) {
+                                                while ($row = $employees->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
+                                                    echo "<tr>";
+                                                    echo "<td>{$row['EmployeeID']}</td>";
+                                                    echo "<td>{$row['FirstName']}</td>";
+                                                    echo "<td>{$row['LastName']}</td>";
+                                                    echo "<td>{$row['Email']}</td>";
+                                                    echo "<td>{$row['PhoneNumber']}</td>";
+                                                    // Thay đổi giá trị của cột Roles dựa trên điều kiện
+                                                    $role = '';
+                                                    if ($row['Roles'] == 1) {
+                                                        $role = "Quản lý";
+                                                    } elseif ($row['Roles'] == 2) {
+                                                        $role = "Nhân viên đứng quầy";
+                                                    } elseif ($row['Roles'] == 3) {
+                                                        $role = "Nhân viên kế toán";
+                                                    } elseif ($row['Roles'] == 4) {
+                                                        $role = "Nhân viên pha chế";
                                                     }
-                                                } else {
-                                                    echo "<tr><td colspan='9' class='text-center text-danger'>Không có dữ liệu</td></tr>";
+                                                    echo "<td>{$role}</td>";
+                                                    echo "<td>
+                                                        <a href='index.php?page=page_update_roles&id={$row['EmployeeID']}' class='btn btn-success' style='color:white'>
+                                                            <i class='fas fa-edit'></i>
+                                                        </a>
+                                                    </td> ";
                                                 }
                                             } else {
-                                                echo "<tr><td colspan='9' class='text-center text-danger'>Không tồn tại OrderID</td></tr>";
-                                            }
+                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
+                                            }                                            
                                         ?>
                                     </tbody>
-                                 </table>
-                                 <!-- <div class="row justify-content-end mr-1">
-                                    <nav aria-label="Page navigation example">
-                                        <ul class="pagination">
-                                            <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div> -->
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-
-             
-
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
-        </div>   
+        </div>    
+        
+       
 
     
     <!-- Bootstrap core JavaScript-->
-     
     <?php include_once('./common/script/default.php'); ?>
 </body>
 </html>

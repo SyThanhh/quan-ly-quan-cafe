@@ -259,7 +259,7 @@
                                             <th>Tên</th>
                                             <th>Email</th>
                                             <th>Số điện thoại</th>
-                                            <th>Vai trò</th>
+                                            <th>Vị trí làm việc</th>
                                             <th>Trạng thái</th>
                                             <th colspan='2'>Thao tác</th>
                                         </tr>

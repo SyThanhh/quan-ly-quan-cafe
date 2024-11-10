@@ -13,6 +13,21 @@
                 echo 'Lỗi kết nối!';
             }
         }
+
+        public function selProductByName($ProductName){
+            $p = new Database();
+            $con = $p -> connect();
+            if($con){
+                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where ProductName like N'%$ProductName%'";
+                $tbl = mysqli_query($con, $str);
+                $p -> close($con);
+                return $tbl;
+            }
+            else{
+                echo 'Lỗi kết nối!';
+            }
+        }
+
         public function sel01ProductByID($ProductID){
             $p = new Database();
             $con = $p -> connect();
@@ -94,7 +109,8 @@
         
             if (is_array($file) && isset($file['tmp_name'])) {
                 $imageFileType = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
-                $target_file = "" . $imageFileType; 
+                $name = $file["name"];
+                $target_file = '' . $name;
  
                 if ($file["size"] > 500000) {
                     echo "Tệp của bạn quá lớn.<br>";

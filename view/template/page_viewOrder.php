@@ -144,7 +144,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -155,7 +155,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -353,11 +353,11 @@
                                                 <form class="d-flex" id="filter-date" method="post">
                                                     <div class="date-input mr-2">
                                                         <label for="from-date">Từ ngày:</label>
-                                                        <input type="date" id="from-date" name="from-date" placeholder="mm/dd/yyyy" value="<?php echo $_SESSION['from-date']?$_SESSION['from-date']:'' ?>">
+                                                        <input type="date" id="from-date" name="from-date" placeholder="mm/dd/yyyy" value="<?php echo isset($_SESSION['from-date']) ? $_SESSION['from-date'] : ''; ?>">
                                                     </div>
                                                     <div class="date-input mr-2">
                                                         <label for="to-date">Đến ngày:</label>
-                                                        <input type="date" id="to-date" name="to-date" placeholder="mm/dd/yyyy" value="<?php echo $_SESSION['to-date']?$_SESSION['to-date']:'' ?>">
+                                                        <input type="date" id="to-date" name="to-date" placeholder="mm/dd/yyyy" value="<?php echo isset($_SESSION['to-date']) ? $_SESSION['to-date'] : ''; ?>">
                                                     </div>
                                                     <button class="filter-button mr-2" id="btn-filter" type="submit">Lọc</button>
                                                     <button class="btn  filter-button  btn-light" id="btn-clear">
