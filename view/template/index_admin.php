@@ -3,7 +3,14 @@
 
 <head>
 
-    <?php include_once('./common/head/head.php');   ?>
+<?php
+        include_once('./common/head/head.php');    
+        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+
+        // Tạo một đối tượng Database để kết nối
+        $database = new Database();
+        $conn = $database->connect(); // Lấy kết nối
+    ?>
 
 </head>
 
@@ -14,6 +21,7 @@
 
         <!-- Sidebar -->
         <?php include_once('./common/menu/siderbar.php')?>
+        
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -31,7 +39,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -42,7 +50,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -231,9 +239,9 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                        <h1 class="h3 mb-0 text-gray-800">Tổng quan</h1>
+                        <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
                     </div>
 
                     <!-- Content Row -->
@@ -245,13 +253,26 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Doanh thu
+                                            </div>
+                                            <?php
+                                                // Truy vấn lấy tất cả các đơn hàng từ bảng "order"
+                                                $total = $database->select("SELECT * FROM `order`");
+                                                $totalRevenue = 0;
+
+                                                // Duyệt qua tất cả các đơn hàng để tính tổng doanh thu
+                                                foreach ($total as $row) {
+                                                    $totalRevenue += $row['TotalAmount'];
+                                                }
+                                                // Định dạng tổng doanh thu thành dạng số có 2 chữ số thập phân
+                                                $formattedTotalRevenue = number_format($totalRevenue, );
+                                                // Hiển thị tổng doanh thu
+                                                echo '<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">' . $formattedTotalRevenue . ' VND</div>';
+
+                                                ?>
+
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -264,41 +285,45 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                                Số lượng khách hàng</div>
+                                            <?php
+                                                $sql = "SELECT COUNT(*) AS totalCustomers FROM customer";
+                                                $result = $conn->query($sql);
+                                                $row = $result->fetch_assoc();
+                                                echo '<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">' . $row['totalCustomers'] . '</div>';
+                                            ?>
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+                        
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-info shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Số lượng nhân viên
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                <?php
+                                                    $sql = "SELECT COUNT(*) AS totalEmployees FROM employee";
+                                                    $result = $conn->query($sql);
+                                                    
+                                                    // Lấy dữ liệu từ kết quả truy vấn và hiển thị
+                                                    $row = $result->fetch_assoc();
+                                                    echo "<div class='h5 mb-0 mr-3 font-weight-bold text-gray-800'>{$row['totalEmployees']}</div>";
+                                                ?>
                                                 </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
+                                                
                                             </div>
                                         </div>
-                                        <div class="col-auto">
+                                        <!-- <div class="col-auto">
                                             <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -311,12 +336,20 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Requests</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                                Số lượng đơn hàng
+                                            </div>
+                                            <?php
+                                                $sql = "SELECT COUNT(*) AS totalOrders FROM `order`";  // Đặt tên bảng `order` trong dấu backtick
+                                                $result = $conn->query($sql);
+                                                
+                                                // Lấy dữ liệu từ kết quả truy vấn và hiển thị
+                                                $row = $result->fetch_assoc();
+                                                echo "<div class='h5 mb-0 mr-3 font-weight-bold text-gray-800'>{$row['totalOrders']}</div>";
+                                            ?>
                                         </div>
-                                        <div class="col-auto">
+                                        <!-- <div class="col-auto">
                                             <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +366,7 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -352,7 +385,7 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
+                                        <canvas id="varChart"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -364,8 +397,8 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
+                                    <h6 class="m-0 font-weight-bold text-primary">Tổng tiền mua của khách hàng</h6>
+                                    <!-- <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -378,15 +411,15 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="#">Something else here</a>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
+                                        <canvas id="doughnutChart"></canvas>
                                     </div>
                                     <div class="mt-4 text-center small">
-                                        <span class="mr-2">
+                                        <!-- <span class="mr-2">
                                             <i class="fas fa-circle text-primary"></i> Direct
                                         </span>
                                         <span class="mr-2">
@@ -394,165 +427,12 @@
                                         </span>
                                         <span class="mr-2">
                                             <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Project Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
-                                </div>
-                                <div class="card-body">
-                                    <h4 class="small font-weight-bold">Server Migration <span
-                                            class="float-right">20%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Sales Tracking <span
-                                            class="float-right">40%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account Setup <span
-                                            class="float-right">Complete!</span></h4>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Color System -->
-                            <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-primary text-white shadow">
-                                        <div class="card-body">
-                                            Primary
-                                            <div class="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-success text-white shadow">
-                                        <div class="card-body">
-                                            Success
-                                            <div class="text-white-50 small">#1cc88a</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-info text-white shadow">
-                                        <div class="card-body">
-                                            Info
-                                            <div class="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-warning text-white shadow">
-                                        <div class="card-body">
-                                            Warning
-                                            <div class="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-danger text-white shadow">
-                                        <div class="card-body">
-                                            Danger
-                                            <div class="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-secondary text-white shadow">
-                                        <div class="card-body">
-                                            Secondary
-                                            <div class="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-light text-black shadow">
-                                        <div class="card-body">
-                                            Light
-                                            <div class="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-dark text-white shadow">
-                                        <div class="card-body">
-                                            Dark
-                                            <div class="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Illustrations -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="img/undraw_posting_photo.svg" alt="...">
-                                    </div>
-                                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                                        constantly updated collection of beautiful svg images that you can use
-                                        completely free and without attribution!</p>
-                                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                                        unDraw &rarr;</a>
-                                </div>
-                            </div>
-
-                            <!-- Approach -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                                        custom components and custom utility classes.</p>
-                                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                                        Bootstrap framework, especially the utility classes.</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    </div>  
 
                 </div>
                 <!-- /.container-fluid -->
@@ -577,12 +457,10 @@
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <!-- <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -599,7 +477,139 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+    <?php
+$query1 = $database->select("
+  SELECT DATE(CreateDate) AS Date, SUM(TotalAmount) AS TotalRevenue
+  FROM `order`
+  GROUP BY DATE(CreateDate)
+");
+
+$date = [];
+$totalRevenue = [];
+
+foreach ($query1 as $data) {
+    $date[] = $data['Date'];
+    $totalRevenue[] = $data['TotalRevenue'];
+}
+
+// Giả sử dữ liệu thứ hai là doanh thu theo khách hàng, bạn có thể thay thế bằng truy vấn thực tế của mình
+$query2 = $database->select("
+  SELECT c.CustomerName, SUM(o.TotalAmount) AS TotalSpent
+  FROM customer c
+  JOIN `order` o ON c.CustomerID = o.CustomerID
+  GROUP BY c.CustomerID
+");
+
+
+$customerNames = [];
+$totalSpent = [];
+
+foreach ($query2 as $data) {
+    $customerNames[] = $data['CustomerName'];
+    $totalSpent[] = $data['TotalSpent'];
+}
+?>
+
+<script>
+/* Biểu đồ cột cho doanh thu theo ngày */
+const barLabels = <?php echo json_encode($date); ?>;
+const barDataValues = <?php echo json_encode($totalRevenue); ?>;
+
+const barColors = [
+  'rgba(255, 99, 132, 0.2)',
+  'rgba(255, 159, 64, 0.2)',
+  'rgba(255, 205, 86, 0.2)',
+  'rgba(75, 192, 192, 0.2)',
+  'rgba(54, 162, 235, 0.2)',
+];
+
+const barBorderColors = [
+  'rgb(255, 99, 132)',
+  'rgb(255, 159, 64)',
+  'rgb(255, 205, 86)',
+  'rgb(75, 192, 192)',
+  'rgb(54, 162, 235)',
+];
+
+const barData = {
+  labels: barLabels,
+  datasets: [{
+    label: 'Doanh thu theo ngày',
+    data: barDataValues,
+    backgroundColor: barColors,
+    borderColor: barBorderColors,
+    borderWidth: 1
+  }]
+};
+
+const barConfig = {
+  type: 'bar',
+  data: barData,
+  options: {
+    responsive: true,
+    scales: {
+      x: { beginAtZero: true },
+      y: { beginAtZero: true }
+    },
+    plugins: {
+      legend: { display: true, position: 'top' }
+    }
+  },
+};
+
+var barChart = new Chart(
+  document.getElementById('varChart'),
+  barConfig
+);
+
+/* Biểu đồ Doughnut cho doanh thu theo khách hàng */
+const doughnutLabels = <?php echo json_encode($customerNames); ?>;
+const doughnutDataValues = <?php echo json_encode($totalSpent); ?>;
+
+const doughnutColors = [
+  'rgba(255, 99, 132, 0.6)',
+  'rgba(54, 162, 235, 0.6)',
+  'rgba(255, 206, 86, 0.6)',
+  'rgba(75, 192, 192, 0.6)',
+  'rgba(153, 102, 255, 0.6)',
+];
+
+const doughnutBorderColors = [
+  'rgb(255, 99, 132)',
+  'rgb(54, 162, 235)',
+  'rgb(255, 206, 86)',
+  'rgb(75, 192, 192)',
+  'rgb(153, 102, 255)',
+];
+
+const doughnutData = {
+  labels: doughnutLabels,
+  datasets: [{
+    label: 'Tổng chi tiêu của khách hàng',
+    data: doughnutDataValues,
+    backgroundColor: doughnutColors,
+    borderColor: doughnutBorderColors,
+    borderWidth: 1
+  }]
+};
+
+const doughnutConfig = {
+  type: 'doughnut',
+  data: doughnutData,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: 'top' }
+    }
+  },
+};
+
+var doughnutChart = new Chart(
+  document.getElementById('doughnutChart'),
+  doughnutConfig
+);
+</script>
 
     <?php 
     include_once('./common/script/default.php')

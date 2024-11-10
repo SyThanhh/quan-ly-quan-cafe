@@ -29,7 +29,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -40,7 +40,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -218,76 +218,128 @@
                                 </a>
                             </div>
                         </li>
-
                     </ul>
                 </nav>
 
                 <!--  Nội dung trang  -->
-                <?php
-                $supplierID = isset($_GET['id']) ? $_GET['id'] : 0;
-                $result = $database->select("
-                SELECT p.*, ps.*, s.*
-                FROM product AS p
-                LEFT JOIN product_supplier AS ps ON p.ProductID = ps.ProductID
-                LEFT JOIN supplier AS s ON ps.SupplierID = s.SupplierID
-                WHERE s.SupplierID = '$supplierID'
-            ");
-// Truy vấn SQL để lấy thông tin nhà cung cấp và sản phẩm dựa trên SupplierID
-
-                    $supplier = $result->fetch_assoc();
-                ?>
-                <div class="container-fluid" align="center">
+                <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
-                            <div>
-                                <h4>SỬA THÔNG TIN PHIẾU</h4>
-                                </br>   
+                            <div class="header text-left">
+                                <h4>QUẢN LÝ PHIẾU YÊU CẦU</h4>
                             </div>
-                            <form action="" method="post" >
-                            <table>
-                                <tr>
-                                    <th><label for="employeeID">Mã </label></th>
-                                    <td><input type="text" class="form-control" id="employeeID" name="supplierID" value="<?php echo $supplier['SupplierID']; ?>" readonly></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <th><label for="lastName">Tên công ty:</label></th>
-                                    <td><input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $supplier['CompanyName']; ?>" required></td>
-                                </tr>
-                                <tr>
-                                    <th><label for="firstName">Tên nhà cung cấp:</label></th>
-                                    <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $supplier['ProductName']; ?>" required></td>
-                                </tr>
-                                <tr>
-                                    <th><label for="email">Sản phẩm:</label></th>
-                                    <td><input type="text" class="form-control" id="email" name="email" value="<?php echo $supplier['ContactName']; ?>" required></td>
-                                </tr>
-                                <tr>
-                                    <th><label for="phoneNumber">Địa chỉ</label></th>
-                                    <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="<?php echo $supplier['Address']; ?>" required></td>
-                                </tr>
-                                <tr>
-                                    <th><label for="birthDate">Số điện thoại:</label></th>
-                                    <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="<?php echo $supplier['Phone']; ?>" required></td>
+                           
+                            <div class="mt-8">
+                                <table class="table table-bordered">
+                                    <thead align="center">
+                                        <tr>
+                                            <th>Mã</th>
+                                            <!-- <th>Sản phẩm</th> -->
+                                            <th>Số lượng</th>
+                                            <th>Thời gian</th>
+                                            <th>Nhân viên nhập phiếu</th>
+                                            <th colspan='2'>Trạng thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            // Truy vấn danh sách nhân viên
+                                            $requestform = $database->select("
+                                                SELECT rf.*, e.*
+                                                FROM requestform rf
+                                                JOIN employee e ON rf.EmployeeID = e.EmployeeID
+                                            ");
 
-                                </tr>
-                            </table>
-                                <!-- Button section -->
-                                <div class="button-group">
-                                    </br>
-                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
-                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add">Cập nhật</button>
-                                </div>
-                            </form>        
+                                            // Hiển thị danh sách nhân viên
+                                            if ($requestform) {
+                                                while ($row = $requestform->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
+                                                    echo "<tr>";
+                                                    echo "<td>{$row['RequestID']}</td>";
+                                                    // echo "<td>{$row['ImportProduct']}</td>";
+                                                    
+                                                    echo "<td>{$row['RequestQuantity']}</td>";
+
+                                                    echo "<td>{$row['CreateDate']}</td>";
+                                                    echo "<td>{$row['FirstName']} {$row['LastName']}</td>";
+
+                                                    echo "<td>
+                                                        <a' class='btn btn-success' style='color:white' onclick='confirmBrowse()'>
+                                                            <i class='fas fa-check'></i>
+                                                        </a></td> <td>
+                                                        <button type='button' class='btn btn-danger' onclick='confirmDelete()'>
+                                                            <i class='fas fa-trash'></i>
+                                                        </button>
+                                                    </td>";
+                                                }
+                                            } else {
+                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
+                                            }                                            
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
-        </div>    
+        </div> 
+            <!-- Modal xác nhận duyệt -->
+    <div class="modal fade" id="confirmBrowseModal" tabindex="-1" role="dialog" aria-labelledby="confirmBrowseLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmBrowseLabel">Xác nhận</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Duyệt phiếu thành công
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" >OK</button>
+                </div>
+            </div>
+        </div>
+    </div>     
+    <!-- Modal xác nhận xóa -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa phiếu này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>    
 
+    <script>
+        // Hàm mở modal xác nhận xóa
+        function confirmBrowse(RequestID) {
+            // Hiển thị modal
+            $('#confirmBrowseModal').modal('show');
+            
+
+        }
+        function confirmDelete(RequestID) {
+            // Hiển thị modal
+            $('#confirmDeleteModal').modal('show');
+            
+
+        }
+    </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>

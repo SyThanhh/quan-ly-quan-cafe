@@ -3,7 +3,7 @@ ob_start(); // Bắt đầu output buffering
 ?>
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 <!-- Sidebar - Brand -->
-<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+<a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php?page=index_admin">
     <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
     </div>
@@ -15,7 +15,7 @@ ob_start(); // Bắt đầu output buffering
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
-    <a class="nav-link" href="index.php?page=manage">
+    <a class="nav-link" href="index.php?page=index_admin">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Trang chủ</span></a>
 </li>
@@ -148,7 +148,7 @@ ob_start(); // Bắt đầu output buffering
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
-            <a class="collapse-item" href="index.php?page=page_supplier">Quản lý phiếu</a>
+            <a class="collapse-item" href="index.php?page=page_requestform">Quản lý phiếu</a>
         </div>
     </div>
 </li>

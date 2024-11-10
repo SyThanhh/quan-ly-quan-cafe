@@ -14,25 +14,19 @@
 </head>
 
 <?php
-    // include_once('./connect/database.php');
-    // $db = new Database();
     
-    
-    // $query = "SELECT * FROM customer";
-
-    // // Gọi hàm select
-    // $result = $db->select($query);
-   
-
-    // if ($result) {
-    //     // Nếu có kết quả, lặp qua và in ra
-    //     while ($row = $result->fetch_assoc()) {
-    //        var_dump($row);
-    //     }
-    // } else {
-    //     echo "Không có bản ghi nào được tìm thấy.";
-    // }
 ?>
+<style>
+  .custom-btn {
+    background-color: #4e73df;
+    color: #fff;
+    border: none;
+  }
+
+  .custom-btn:hover {
+    background-color: #3b5fb5;
+  }
+</style>
 <body id="page-top">
 
     <!-- Page Wrapper -->
@@ -96,7 +90,6 @@
                                 </form>
                             </div>
                         </li>
-
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
@@ -250,39 +243,48 @@
                     </ul>
 
                 </nav>
+                <div>
+                
+                </div>
                 <!-- End of Topbar -->
-                <div class="container mt-4">
+<div class="container mt-4">
     <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ DOANH THU</h1>
-            <form>
-                <div class="form-row">
-                    <!-- Cột bên trái -->
-                    <div class="col-md-3">
-                        <!-- <div class="form-group">
-                            <label for="loaiThoiGian">Loại thời gian</label>
-                            <select class="form-control" id="loaiThoiGian">
-                                <option>Báo cáo theo ngày</option>
-                                <option>Báo cáo theo tháng</option>
-                                <option>Báo cáo theo năm</option>
-                            </select>
-                        </div> -->
-                        <div class="form-group">
-                            <label for="ngayBatDau">Ngày bắt đầu</label>
-                            <input type="date" class="form-control" id="ngayBatDau" value="2024-01-01">
-                        </div>
-                    <!-- <button type="submit" class="btn btn-secondary">Thống kê</button> -->
+        <form>
+            <div class="form-row">
+                <!-- Cột bên trái -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ngayBatDau">Ngày bắt đầu</label>
+                        <input type="date" class="form-control" value="2024-01-01">
+ 
                     </div>
-                    <!-- Cột giữa để canh lề, tạo khoảng cách giữa hai phần -->
-                    <div class="col-md-3"></div>
-                    <!-- Cột bên phải -->
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="ngayKetThuc">Ngày kết thúc</label>
-                            <input type="date" class="form-control" id="ngayKetThuc" value="2024-01-31">
-                        </div>
+                    
+                </div>
+                <div>
+                    
+                </div>
+                <!-- Cột giữa để canh lề, tạo khoảng cách giữa hai phần -->
+                <div class="col-md-3"></div>
+                <!-- Cột bên phải -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ngayKetThuc">Ngày kết thúc</label>
+                        <input type="date" class="form-control"  value="2024-01-31">
                     </div>
                 </div>
-            </form>
+            </div>
+        </form>
+        <div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button id="stats-btn" class="btn custom-btn">Thống kê</button>
+                    
+                </div>
+    
+            </div>
         </div>
+</div>
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
@@ -296,26 +298,12 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
+                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo ngày</h6>
                                 </div>
-                                <!-- Card Body -->
+                                <!-- Vùng chứa biểu đồ Bar -->
                                 <div class="card-body">
                                     <div class="chart-area">
-                                        <canvas id="myColumnChart"></canvas>
+                                        <canvas id="myBarChart" style="display: none;"></canvas> <!-- Ẩn canvas mặc định -->
                                     </div>
                                 </div>
                             </div>
@@ -327,28 +315,16 @@
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
+                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo sản phẩm</h6>
+
+                                </div>
+                                <!-- Vùng chứa biểu đồ Doughnut -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myDoughnutChart" style="display: none;"></canvas> <!-- Ẩn canvas mặc định -->
                                     </div>
                                 </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
+                                    <!-- <div class="mt-4 text-center small">
                                         <span class="mr-2">
                                             <i class="fas fa-circle text-primary"></i> Direct
                                         </span>
@@ -358,7 +334,7 @@
                                         <span class="mr-2">
                                             <i class="fas fa-circle text-info"></i> Referral
                                         </span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -366,17 +342,15 @@
 
                     <!-- Content Row -->
                  <br>   
-            <div class="container mt-4">
+            <div class="container mt-3">
             <table class="table table-bordered text-center">
-                    <thead class="custom-thead">
-                        <tr>
-                            <th class="text-white">STT</th>
-                            <th class="text-white">Loại Sản Phẩm</th>
-                            <th class="text-white">Số lượng</th>
-                            <th class="text-white">Doanh thu</th>
-                            <th class="text-white">Lợi nhuận</th>
-                        </tr>
-                    </thead>
+            <thead class="custom-thead"> 
+                <tr> <th class="text-white">STT</th> 
+                <th class="text-white">Loại Sản Phẩm</th> 
+                <th class="text-white">Số lượng</th> 
+                <th class="text-white">Doanh thu</th> 
+            </tr> 
+        </thead>
         <tbody>
         <tbody>
         <tbody>
@@ -402,7 +376,7 @@
             // Cộng tổng doanh thu
             $totalRevenue += $row['TotalAmount'];
             
-            echo "<td></td>";
+            
             echo "</tr>";
         }
     } else {
@@ -416,14 +390,11 @@
     echo "<tr>";
     echo "<td colspan='3'></td>";
     echo "<td><strong>Tổng doanh thu:</strong> {$formattedTotalRevenue}</td>";
-    echo "<td><strong>Tổng lợi nhuận:</strong></td>";
     echo "</tr>";
     ?>
 </tbody>
 
 </tbody>
-
-
         </tbody>
     </table>
 
@@ -454,9 +425,7 @@
         background-color: #4e73df;
     }
 </style>
-
                 <!-- /.container-fluid -->
-
             </div>
             <!-- End of Main Content -->
 
@@ -494,6 +463,173 @@
             </div>
         </div>
     </div>
+    
+    <?php
+// Biểu đồ Bar: Doanh thu theo thời gian
+$barQuery = $database->select("
+  SELECT DATE(CreateDate) AS Date, SUM(TotalAmount) AS TotalRevenue
+  FROM `order`
+  GROUP BY DATE(CreateDate)
+");
+
+$dates = [];
+$totalRevenueBar = [];
+
+foreach ($barQuery as $data) {
+    $dates[] = $data['Date'];
+    $totalRevenueBar[] = $data['TotalRevenue'];
+}
+
+// Biểu đồ Doughnut: Doanh thu theo sản phẩm
+$donutQuery = $database->select("
+  SELECT p.ProductName, SUM(od.Quantity * od.UnitPrice) AS TotalRevenue
+  FROM product p
+  JOIN orderdetail od ON p.ProductID = od.ProductID
+  JOIN `order` o ON od.OrderID = o.OrderID
+  GROUP BY p.ProductName
+");
+
+$productNames = [];
+$totalRevenueDonut = [];
+
+foreach ($donutQuery as $data) {
+    $productNames[] = $data['ProductName'];
+    $totalRevenueDonut[] = $data['TotalRevenue'];
+}
+?>
+
+
+<script>
+// Khi người dùng nhấn nút thống kê
+document.getElementById("stats-btn").addEventListener("click", function() {
+    // Hiển thị cả 2 canvas (biểu đồ)
+    document.getElementById("myBarChart").style.display = "block";
+    document.getElementById("myDoughnutChart").style.display = "block";
+    
+    // Khởi tạo dữ liệu và vẽ biểu đồ Bar
+    const barLabels = <?php echo json_encode($dates); ?>;
+    const barDataValues = <?php echo json_encode($totalRevenueBar); ?>;
+
+    const barColors = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)',
+    ];
+
+    const barBorderColors = [
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(54, 162, 235)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)',
+    ];
+
+    const barData = {
+      labels: barLabels,
+      datasets: [{
+        label: 'Doanh thu theo thời gian',
+        data: barDataValues,
+        backgroundColor: barColors.slice(0, barDataValues.length),
+        borderColor: barBorderColors.slice(0, barDataValues.length),
+        borderWidth: 1
+      }]
+    };
+
+    const barConfig = {
+      type: 'bar', // Biểu đồ dạng cột (Bar)
+      data: barData,
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+          },
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        }
+      },
+    };
+
+    var myBarChart = new Chart(
+      document.getElementById('myBarChart'),
+      barConfig
+    );
+
+    // Khởi tạo dữ liệu và vẽ biểu đồ Doughnut
+    const donutLabels = <?php echo json_encode($productNames); ?>;
+    const donutDataValues = <?php echo json_encode($totalRevenueDonut); ?>;
+
+    const donutColors = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)',
+    ];
+
+    const donutBorderColors = [
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(54, 162, 235)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)',
+    ];
+
+    const donutData = {
+      labels: donutLabels,
+      datasets: [{
+        label: 'Doanh thu theo sản phẩm',
+        data: donutDataValues,
+        backgroundColor: donutColors.slice(0, donutDataValues.length),
+        borderColor: donutBorderColors.slice(0, donutDataValues.length),
+        borderWidth: 1
+      }]
+    };
+
+    const donutConfig = {
+      type: 'doughnut', // Biểu đồ hình tròn (Doughnut)
+      data: donutData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw.toLocaleString() + ' VND';
+              }
+            }
+          }
+        }
+      },
+    };
+
+    var myDoughnutChart = new Chart(
+      document.getElementById('myDoughnutChart'),
+      donutConfig
+    );
+});
+</script>
+
 
     <!-- Bootstrap core JavaScript-->
     <?php 
