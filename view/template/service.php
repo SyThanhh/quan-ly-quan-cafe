@@ -78,7 +78,7 @@
     $servername = "localhost"; // Hoặc IP của máy chủ MySQL
     $username = "root";        // Tên người dùng MySQL
     $password = "";            // Mật khẩu MySQL
-    $dbname = "code_data_ql3scoffee"; // Tên cơ sở dữ liệu
+    $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
 
     // Tạo kết nối
     $conn = mysqli_connect($servername, $username, $password, $dbname);

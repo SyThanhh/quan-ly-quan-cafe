@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 22, 2024 at 02:02 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th10 10, 2024 lúc 10:27 AM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_ql3scoffee`
+-- Cơ sở dữ liệu: `db_ql3scoffee`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `category`
+-- Cấu trúc bảng cho bảng `category`
 --
 
 CREATE TABLE `category` (
@@ -36,7 +36,7 @@ CREATE TABLE `category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `category`
+-- Đang đổ dữ liệu cho bảng `category`
 --
 
 INSERT INTO `category` (`CategoryID`, `CategoryName`, `Description`, `Status`, `UpdatedAt`) VALUES
@@ -48,7 +48,7 @@ INSERT INTO `category` (`CategoryID`, `CategoryName`, `Description`, `Status`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comment`
+-- Cấu trúc bảng cho bảng `comment`
 --
 
 CREATE TABLE `comment` (
@@ -62,7 +62,7 @@ CREATE TABLE `comment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `comment`
+-- Đang đổ dữ liệu cho bảng `comment`
 --
 
 INSERT INTO `comment` (`CommentID`, `Content`, `Rating`, `Status`, `CreateDate`, `UpdatedAt`, `CustomerID`) VALUES
@@ -75,7 +75,7 @@ INSERT INTO `comment` (`CommentID`, `Content`, `Rating`, `Status`, `CreateDate`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comment_product`
+-- Cấu trúc bảng cho bảng `comment_product`
 --
 
 CREATE TABLE `comment_product` (
@@ -84,7 +84,7 @@ CREATE TABLE `comment_product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `comment_product`
+-- Đang đổ dữ liệu cho bảng `comment_product`
 --
 
 INSERT INTO `comment_product` (`ProductID`, `CommentID`) VALUES
@@ -97,7 +97,7 @@ INSERT INTO `comment_product` (`ProductID`, `CommentID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coupon`
+-- Cấu trúc bảng cho bảng `coupon`
 --
 
 CREATE TABLE `coupon` (
@@ -108,24 +108,27 @@ CREATE TABLE `coupon` (
   `Description` varchar(255) NOT NULL,
   `CouponDiscount` decimal(5,2) NOT NULL DEFAULT 0.00,
   `Status` tinyint(1) NOT NULL DEFAULT 1,
-  `UpdateAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `UpdateAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `image` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `coupon`
+-- Đang đổ dữ liệu cho bảng `coupon`
 --
 
-INSERT INTO `coupon` (`CouponID`, `CouponCode`, `StartDate`, `EndDate`, `Description`, `CouponDiscount`, `Status`, `UpdateAt`) VALUES
-(1, 'COUPON01', '2024-01-01 00:00:00', '2024-12-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-10-21 21:40:43'),
-(2, 'COUPON02', '2024-02-01 00:00:00', '2024-11-30 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-10-21 21:40:43'),
-(3, 'COUPON03', '2024-03-01 00:00:00', '2024-10-31 00:00:00', 'Giảm giá 20%', 20.00, 1, '2024-10-21 21:40:43'),
-(4, 'COUPON04', '2024-04-01 00:00:00', '2024-09-30 00:00:00', 'Giảm giá 29%', 20.00, 1, '2024-10-21 21:40:43'),
-(5, 'COUPON05', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-10-21 21:40:43');
+INSERT INTO `coupon` (`CouponID`, `CouponCode`, `StartDate`, `EndDate`, `Description`, `CouponDiscount`, `Status`, `UpdateAt`, `image`) VALUES
+(1, 'COUPON01', '2024-01-01 00:00:00', '2024-12-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 16:20:03', '1.jpg'),
+(2, 'COUPON02', '2024-02-01 00:00:00', '2024-11-30 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-11-10 16:20:10', '2.jpg'),
+(3, 'COUPON03', '2024-03-01 00:00:00', '2024-10-31 00:00:00', 'Giảm giá 20%', 20.00, 1, '2024-11-10 16:20:17', '3.jpg'),
+(4, 'COUPON04', '2024-04-01 00:00:00', '2024-09-30 00:00:00', 'Giảm giá 29%', 20.00, 1, '2024-11-10 16:20:24', '4.jpg'),
+(5, 'COUPON05', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 16:20:31', '5.jpg'),
+(6, 'COUPON06', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 16:20:31', '6.jpg'),
+(7, 'COUPON07', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-11-10 16:20:31', '7.jpg');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customer`
+-- Cấu trúc bảng cho bảng `customer`
 --
 
 CREATE TABLE `customer` (
@@ -140,7 +143,7 @@ CREATE TABLE `customer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `customer`
+-- Đang đổ dữ liệu cho bảng `customer`
 --
 
 INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `CustomerPassword`, `CustomerPoint`, `Email`, `CreateAt`, `UpdatedAt`) VALUES
@@ -148,12 +151,33 @@ INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `Customer
 (2, 'Trần Thị B', '0123456780', 'password2', 200, 'thib@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
 (3, 'Lê Văn C', '0123456781', 'password3', 50, 'vanc@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
 (4, 'Phạm Thị D', '0123456782', 'password4', 20, 'thid@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43');
+(5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
+(6, 'admin3', '', '123', 0, 'diennguyenba777@gmail.com', '2024-11-01 20:12:27', '2024-11-01 20:12:27'),
+(12, 'admin3', 'null', '123', 0, 'Diennguyenba777@gamil.com', '2024-11-02 12:42:17', '2024-11-02 12:42:17'),
+(16, 'adminweb', '0346172551', '123', 0, 'nguyenbadien2018@gmail.com', '2024-11-02 12:48:41', '2024-11-02 12:48:41'),
+(17, 'admin6', '01636261460', '123', 0, 'diennguyenba77777@gmail.com', '2024-11-02 12:55:39', '2024-11-02 12:55:39'),
+(18, 'admin31', '35654234575', '123', 0, 'fdsfsdfsdfds@gmail.com', '2024-11-02 13:07:12', '2024-11-02 13:07:12'),
+(19, 'admin32', '645645435424', '123', 0, 'diennguyenbdfda777@gmail.com', '2024-11-02 13:19:38', '2024-11-02 13:19:38'),
+(20, 'admin34', '32545675434', '123', 0, 'diennguyencdfdfcba777@gmail.com', '2024-11-02 13:38:12', '2024-11-02 13:38:12'),
+(21, 'admin36', '123456', '', 0, 'diennguyenbdsda777@gmail.com', '2024-11-02 15:46:11', '2024-11-02 15:46:11'),
+(22, 'admin37', '253653535345', '123456', 0, 'Diennguyenbadf777@gamil.com', '2024-11-02 15:52:59', '2024-11-02 15:52:59'),
+(23, 'admin123', '12412412421', '123456', 0, 'Diennguyenba72477@gamil.com', '2024-11-02 17:09:20', '2024-11-02 17:09:20'),
+(24, 'admin39', '23523523532', '123456', 0, 'diennguyenbasds777@gmail.com', '2024-11-03 22:02:49', '2024-11-03 22:02:49'),
+(25, 'admin322', '034617255123', '123456', 0, 'diennguyendsdba777@gmail.com', '2024-11-03 22:03:02', '2024-11-03 22:03:02'),
+(26, 'admin39', '14421412', '123456', 0, 'diennguyensdba777@gmail.com', '2024-11-03 22:07:04', '2024-11-03 22:07:04'),
+(27, 'admin32', '03461725511', '123456', 0, 'diennguyenba7717@gmail.com', '2024-11-03 22:08:12', '2024-11-03 22:08:12'),
+(28, 'admin41', '143243', '', 0, 'dienn1guyenba777@gmail.com', '2024-11-03 22:20:32', '2024-11-03 22:20:32'),
+(33, 'admin3211', '124153232413413', '123456', 0, 'diennguyenba77sdasdas7@gmail.com', '2024-11-03 22:35:19', '2024-11-03 22:35:19'),
+(34, 'admin3211', '12321342142', '123456', 0, 'diennguyenba777sds@gmail.com', '2024-11-03 22:59:06', '2024-11-03 22:59:06'),
+(35, 'admin3333', '32432', '123456', 0, 'dien232nguyenba777@gmail.com', '2024-11-03 23:26:21', '2024-11-03 23:26:21'),
+(36, 'admin3333', '123421412', '123456', 0, 'dienngu2323243yenba777@gmail.com', '2024-11-03 23:36:39', '2024-11-03 23:36:39'),
+(37, 'admin33333', '124141212124124', '123456', 0, 'dienngusfssyenba777@gmail.com', '2024-11-04 11:24:59', '2024-11-04 11:24:59'),
+(38, 'admin111', '153541241', '123456', 0, 'diennguyenb23213a777@gmail.com', '2024-11-04 11:33:24', '2024-11-04 11:33:24');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `employee`
+-- Cấu trúc bảng cho bảng `employee`
 --
 
 CREATE TABLE `employee` (
@@ -170,7 +194,7 @@ CREATE TABLE `employee` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `employee`
+-- Đang đổ dữ liệu cho bảng `employee`
 --
 
 INSERT INTO `employee` (`EmployeeID`, `FirstName`, `LastName`, `Email`, `PhoneNumber`, `Roles`, `Status`, `DateOfBirth`, `CreateAt`, `UpdatedAt`) VALUES
@@ -182,7 +206,7 @@ INSERT INTO `employee` (`EmployeeID`, `FirstName`, `LastName`, `Email`, `PhoneNu
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order`
+-- Cấu trúc bảng cho bảng `order`
 --
 
 CREATE TABLE `order` (
@@ -198,7 +222,7 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `order`
+-- Đang đổ dữ liệu cho bảng `order`
 --
 
 INSERT INTO `order` (`OrderID`, `Discount`, `PaymentMethod`, `TotalAmount`, `Status`, `CreateDate`, `CouponID`, `CustomerID`, `EmployeeID`) VALUES
@@ -211,7 +235,7 @@ INSERT INTO `order` (`OrderID`, `Discount`, `PaymentMethod`, `TotalAmount`, `Sta
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orderdetail`
+-- Cấu trúc bảng cho bảng `orderdetail`
 --
 
 CREATE TABLE `orderdetail` (
@@ -223,7 +247,7 @@ CREATE TABLE `orderdetail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orderdetail`
+-- Đang đổ dữ liệu cho bảng `orderdetail`
 --
 
 INSERT INTO `orderdetail` (`OrderID`, `ProductID`, `UnitPrice`, `Quantity`, `CreateDate`) VALUES
@@ -236,7 +260,7 @@ INSERT INTO `orderdetail` (`OrderID`, `ProductID`, `UnitPrice`, `Quantity`, `Cre
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product`
+-- Cấu trúc bảng cho bảng `product`
 --
 
 CREATE TABLE `product` (
@@ -253,7 +277,7 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product`
+-- Đang đổ dữ liệu cho bảng `product`
 --
 
 INSERT INTO `product` (`ProductID`, `ProductName`, `UnitPrice`, `UnitsInStock`, `Status`, `Description`, `CreateAt`, `UpdatedAt`, `RequestID`, `CategoryID`) VALUES
@@ -266,7 +290,7 @@ INSERT INTO `product` (`ProductID`, `ProductName`, `UnitPrice`, `UnitsInStock`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product_supplier`
+-- Cấu trúc bảng cho bảng `product_supplier`
 --
 
 CREATE TABLE `product_supplier` (
@@ -275,7 +299,7 @@ CREATE TABLE `product_supplier` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product_supplier`
+-- Đang đổ dữ liệu cho bảng `product_supplier`
 --
 
 INSERT INTO `product_supplier` (`ProductID`, `SupplierID`) VALUES
@@ -288,7 +312,7 @@ INSERT INTO `product_supplier` (`ProductID`, `SupplierID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `requestform`
+-- Cấu trúc bảng cho bảng `requestform`
 --
 
 CREATE TABLE `requestform` (
@@ -301,7 +325,7 @@ CREATE TABLE `requestform` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `requestform`
+-- Đang đổ dữ liệu cho bảng `requestform`
 --
 
 INSERT INTO `requestform` (`RequestID`, `RequestQuantity`, `Status`, `ApproveDate`, `CreateDate`, `EmployeeID`) VALUES
@@ -313,7 +337,7 @@ INSERT INTO `requestform` (`RequestID`, `RequestQuantity`, `Status`, `ApproveDat
 -- --------------------------------------------------------
 
 --
--- Table structure for table `supplier`
+-- Cấu trúc bảng cho bảng `supplier`
 --
 
 CREATE TABLE `supplier` (
@@ -326,7 +350,7 @@ CREATE TABLE `supplier` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `supplier`
+-- Đang đổ dữ liệu cho bảng `supplier`
 --
 
 INSERT INTO `supplier` (`SupplierID`, `CompanyName`, `ContactName`, `Address`, `Phone`, `Fax`) VALUES
@@ -339,7 +363,7 @@ INSERT INTO `supplier` (`SupplierID`, `CompanyName`, `ContactName`, `Address`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `workshift`
+-- Cấu trúc bảng cho bảng `workshift`
 --
 
 CREATE TABLE `workshift` (
@@ -350,7 +374,7 @@ CREATE TABLE `workshift` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `workshift`
+-- Đang đổ dữ liệu cho bảng `workshift`
 --
 
 INSERT INTO `workshift` (`ShiftID`, `ShiftType`, `StartDate`, `EndDate`) VALUES
@@ -363,7 +387,7 @@ INSERT INTO `workshift` (`ShiftID`, `ShiftType`, `StartDate`, `EndDate`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `workshift_employee`
+-- Cấu trúc bảng cho bảng `workshift_employee`
 --
 
 CREATE TABLE `workshift_employee` (
@@ -372,7 +396,7 @@ CREATE TABLE `workshift_employee` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `workshift_employee`
+-- Đang đổ dữ liệu cho bảng `workshift_employee`
 --
 
 INSERT INTO `workshift_employee` (`ShiftID`, `EmployeeID`) VALUES
@@ -382,38 +406,38 @@ INSERT INTO `workshift_employee` (`ShiftID`, `EmployeeID`) VALUES
 (3, 4);
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `category`
+-- Chỉ mục cho bảng `category`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`CategoryID`);
 
 --
--- Indexes for table `comment`
+-- Chỉ mục cho bảng `comment`
 --
 ALTER TABLE `comment`
   ADD PRIMARY KEY (`CommentID`),
   ADD KEY `CustomerID` (`CustomerID`);
 
 --
--- Indexes for table `comment_product`
+-- Chỉ mục cho bảng `comment_product`
 --
 ALTER TABLE `comment_product`
   ADD PRIMARY KEY (`ProductID`,`CommentID`),
   ADD KEY `CommentID` (`CommentID`);
 
 --
--- Indexes for table `coupon`
+-- Chỉ mục cho bảng `coupon`
 --
 ALTER TABLE `coupon`
   ADD PRIMARY KEY (`CouponID`),
   ADD UNIQUE KEY `CouponCode` (`CouponCode`);
 
 --
--- Indexes for table `customer`
+-- Chỉ mục cho bảng `customer`
 --
 ALTER TABLE `customer`
   ADD PRIMARY KEY (`CustomerID`),
@@ -421,7 +445,7 @@ ALTER TABLE `customer`
   ADD UNIQUE KEY `Email` (`Email`);
 
 --
--- Indexes for table `employee`
+-- Chỉ mục cho bảng `employee`
 --
 ALTER TABLE `employee`
   ADD PRIMARY KEY (`EmployeeID`),
@@ -429,7 +453,7 @@ ALTER TABLE `employee`
   ADD UNIQUE KEY `PhoneNumber` (`PhoneNumber`);
 
 --
--- Indexes for table `order`
+-- Chỉ mục cho bảng `order`
 --
 ALTER TABLE `order`
   ADD PRIMARY KEY (`OrderID`),
@@ -438,14 +462,14 @@ ALTER TABLE `order`
   ADD KEY `EmployeeID` (`EmployeeID`);
 
 --
--- Indexes for table `orderdetail`
+-- Chỉ mục cho bảng `orderdetail`
 --
 ALTER TABLE `orderdetail`
   ADD PRIMARY KEY (`OrderID`,`ProductID`),
   ADD KEY `ProductID` (`ProductID`);
 
 --
--- Indexes for table `product`
+-- Chỉ mục cho bảng `product`
 --
 ALTER TABLE `product`
   ADD PRIMARY KEY (`ProductID`),
@@ -453,98 +477,98 @@ ALTER TABLE `product`
   ADD KEY `CategoryID` (`CategoryID`);
 
 --
--- Indexes for table `product_supplier`
+-- Chỉ mục cho bảng `product_supplier`
 --
 ALTER TABLE `product_supplier`
   ADD PRIMARY KEY (`ProductID`,`SupplierID`),
   ADD KEY `SupplierID` (`SupplierID`);
 
 --
--- Indexes for table `requestform`
+-- Chỉ mục cho bảng `requestform`
 --
 ALTER TABLE `requestform`
   ADD PRIMARY KEY (`RequestID`),
   ADD KEY `EmployeeID` (`EmployeeID`);
 
 --
--- Indexes for table `supplier`
+-- Chỉ mục cho bảng `supplier`
 --
 ALTER TABLE `supplier`
   ADD PRIMARY KEY (`SupplierID`),
   ADD UNIQUE KEY `CompanyName` (`CompanyName`);
 
 --
--- Indexes for table `workshift`
+-- Chỉ mục cho bảng `workshift`
 --
 ALTER TABLE `workshift`
   ADD PRIMARY KEY (`ShiftID`);
 
 --
--- Indexes for table `workshift_employee`
+-- Chỉ mục cho bảng `workshift_employee`
 --
 ALTER TABLE `workshift_employee`
   ADD PRIMARY KEY (`ShiftID`,`EmployeeID`),
   ADD KEY `EmployeeID` (`EmployeeID`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `category`
+-- AUTO_INCREMENT cho bảng `category`
 --
 ALTER TABLE `category`
   MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `comment`
+-- AUTO_INCREMENT cho bảng `comment`
 --
 ALTER TABLE `comment`
   MODIFY `CommentID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `coupon`
+-- AUTO_INCREMENT cho bảng `coupon`
 --
 ALTER TABLE `coupon`
-  MODIFY `CouponID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `CouponID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `customer`
+-- AUTO_INCREMENT cho bảng `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `CustomerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `CustomerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT for table `employee`
+-- AUTO_INCREMENT cho bảng `employee`
 --
 ALTER TABLE `employee`
   MODIFY `EmployeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `workshift`
+-- AUTO_INCREMENT cho bảng `workshift`
 --
 ALTER TABLE `workshift`
   MODIFY `ShiftID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `comment`
+-- Các ràng buộc cho bảng `comment`
 --
 ALTER TABLE `comment`
   ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`CustomerID`) REFERENCES `customer` (`CustomerID`);
 
 --
--- Constraints for table `comment_product`
+-- Các ràng buộc cho bảng `comment_product`
 --
 ALTER TABLE `comment_product`
   ADD CONSTRAINT `comment_product_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`),
   ADD CONSTRAINT `comment_product_ibfk_2` FOREIGN KEY (`CommentID`) REFERENCES `comment` (`CommentID`);
 
 --
--- Constraints for table `order`
+-- Các ràng buộc cho bảng `order`
 --
 ALTER TABLE `order`
   ADD CONSTRAINT `order_ibfk_1` FOREIGN KEY (`CouponID`) REFERENCES `coupon` (`CouponID`),
@@ -552,34 +576,34 @@ ALTER TABLE `order`
   ADD CONSTRAINT `order_ibfk_3` FOREIGN KEY (`EmployeeID`) REFERENCES `employee` (`EmployeeID`);
 
 --
--- Constraints for table `orderdetail`
+-- Các ràng buộc cho bảng `orderdetail`
 --
 ALTER TABLE `orderdetail`
   ADD CONSTRAINT `orderdetail_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `order` (`OrderID`),
   ADD CONSTRAINT `orderdetail_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`);
 
 --
--- Constraints for table `product`
+-- Các ràng buộc cho bảng `product`
 --
 ALTER TABLE `product`
   ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`RequestID`) REFERENCES `requestform` (`RequestID`),
   ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);
 
 --
--- Constraints for table `product_supplier`
+-- Các ràng buộc cho bảng `product_supplier`
 --
 ALTER TABLE `product_supplier`
   ADD CONSTRAINT `product_supplier_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`),
   ADD CONSTRAINT `product_supplier_ibfk_2` FOREIGN KEY (`SupplierID`) REFERENCES `supplier` (`SupplierID`);
 
 --
--- Constraints for table `requestform`
+-- Các ràng buộc cho bảng `requestform`
 --
 ALTER TABLE `requestform`
   ADD CONSTRAINT `requestform_ibfk_1` FOREIGN KEY (`EmployeeID`) REFERENCES `employee` (`EmployeeID`);
 
 --
--- Constraints for table `workshift_employee`
+-- Các ràng buộc cho bảng `workshift_employee`
 --
 ALTER TABLE `workshift_employee`
   ADD CONSTRAINT `workshift_employee_ibfk_1` FOREIGN KEY (`ShiftID`) REFERENCES `workshift` (`ShiftID`),
