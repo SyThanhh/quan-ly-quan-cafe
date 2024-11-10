@@ -21,12 +21,9 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            justify-content: center;
-            /* Căn giữa các promo-card theo chiều ngang */
-            align-items: center;
-            /* Căn giữa các promo-card theo chiều dọc */
-            margin-top: 20px;
-            /* Khoảng cách giữa header và promo cards */
+            justify-content: center; /* Căn giữa các promo-card theo chiều ngang */
+            align-items: center; /* Căn giữa các promo-card theo chiều dọc */
+            margin-top: 20px; /* Khoảng cách giữa header và promo cards */
         }
 
         /* Promo card style */
@@ -34,17 +31,21 @@
             border: 1px solid #ddd;
             padding: 20px;
             width: 300px;
-            text-align: center;
-            /* Căn giữa nội dung trong mỗi promo card */
+            height: 500px;
+            text-align: center; /* Căn giữa nội dung trong mỗi promo card */
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
         }
 
         /* Image inside promo card */
         .promo-card img {
             width: 100%;
-            height: auto;
-            object-fit: cover;
-            /* Giúp ảnh không bị méo */
+            height: 200px; /* Chiều cao cố định cho hình ảnh để đảm bảo kích cỡ đồng đều */
+            object-fit: cover; /* Giúp ảnh không bị méo */
+            border-radius: 8px; /* Thêm bo góc cho ảnh nếu cần */
         }
 
         /* Text content inside promo card */
@@ -115,7 +116,7 @@
                 // Display image if exists
                 if (!empty($row["image"])) {
                     $imagePath = htmlspecialchars($row["image"]);
-                    echo '<img src="http://localhost/quan-ly-quan-cafe/view/template/' . $imagePath . '" alt="Promo Image">';
+                    echo '<img src="assets/img/coupon/' . $imagePath . '" alt="Promo Image">';
                 }
                  else {
                     echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn
