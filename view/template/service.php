@@ -2,16 +2,94 @@
 <html lang="en">
 
 <head>
-    <?php  include_once('./common/head/head-website.php')    ?>
+    <?php include_once('./common/head/head-website.php'); ?>
+    <style>
+        /* CSS updated to center content */
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Main content grid */
+        .promo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            /* Căn giữa các promo-card theo chiều ngang */
+            align-items: center;
+            /* Căn giữa các promo-card theo chiều dọc */
+            margin-top: 20px;
+            /* Khoảng cách giữa header và promo cards */
+        }
+
+        /* Promo card style */
+        .promo-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            /* Căn giữa nội dung trong mỗi promo card */
+            box-sizing: border-box;
+        }
+
+        /* Image inside promo card */
+        .promo-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            /* Giúp ảnh không bị méo */
+        }
+
+        /* Text content inside promo card */
+        .promo-info {
+            margin-top: 10px;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 60px 0;
+            background-color: #333;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            background-color: #333;
+            padding: 50px 0;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navbar Start -->
-    <?php  include_once('./common/header/navbar.php')    ?>
-    <!-- Navbar End -->
+    <!-- Navbar -->
+    <?php include_once('./common/header/navbar.php'); ?>
+    <?php
+    // Kết nối với cơ sở dữ liệu
+    $servername = "localhost"; // Hoặc IP của máy chủ MySQL
+    $username = "root";        // Tên người dùng MySQL
+    $password = "";            // Mật khẩu MySQL
+    $dbname = "code_data_ql3scoffee"; // Tên cơ sở dữ liệu
 
+    // Tạo kết nối
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-    <!-- Page Header Start -->
+    // Kiểm tra kết nối
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    ?>
+
+    <!-- Page Header -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
         <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
             <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Khuyến mãi</h1>
@@ -22,72 +100,46 @@
             </div>
         </div>
     </div>
-    <!-- Page Header End -->
 
+    <!-- Promo Cards Grid -->
+    <div class="promo-grid">
+        <?php
+        // Query to fetch all coupon data, including image field
+        $sql = "SELECT CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpdateAt, image FROM coupon";
+        $result = mysqli_query($conn, $sql);
 
-    <!-- Service Start -->
-    <div class="container-fluid pt-5">
-        <div class="container">
-            <div class="section-title">
-                <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Our Services</h4>
-                <h1 class="display-4">Fresh & Organic Beans</h1>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 mb-5">
-                    <div class="row align-items-center">
-                        <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="img/service-1.jpg" alt="">
-                        </div>
-                        <div class="col-sm-7">
-                            <h4><i class="fa fa-truck service-icon"></i>Fastest Door Delivery</h4>
-                            <p class="m-0">Sit lorem ipsum et diam elitr est dolor sed duo. Guberg sea et et lorem dolor sed est sit
-                                invidunt, dolore tempor diam ipsum takima erat tempor</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-5">
-                    <div class="row align-items-center">
-                        <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="img/service-2.jpg" alt="">
-                        </div>
-                        <div class="col-sm-7">
-                            <h4><i class="fa fa-coffee service-icon"></i>Fresh Coffee Beans</h4>
-                            <p class="m-0">Sit lorem ipsum et diam elitr est dolor sed duo. Guberg sea et et lorem dolor sed est sit
-                                invidunt, dolore tempor diam ipsum takima erat tempor</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-5">
-                    <div class="row align-items-center">
-                        <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="img/service-3.jpg" alt="">
-                        </div>
-                        <div class="col-sm-7">
-                            <h4><i class="fa fa-award service-icon"></i>Best Quality Coffee</h4>
-                            <p class="m-0">Sit lorem ipsum et diam elitr est dolor sed duo. Guberg sea et et lorem dolor sed est sit
-                                invidunt, dolore tempor diam ipsum takima erat tempor</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-5">
-                    <div class="row align-items-center">
-                        <div class="col-sm-5">
-                            <img class="img-fluid mb-3 mb-sm-0" src="img/service-4.jpg" alt="">
-                        </div>
-                        <div class="col-sm-7">
-                            <h4><i class="fa fa-table service-icon"></i>Online Table Booking</h4>
-                            <p class="m-0">Sit lorem ipsum et diam elitr est dolor sed duo. Guberg sea et et lorem dolor sed est sit
-                                invidunt, dolore tempor diam ipsum takima erat tempor</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        if (mysqli_num_rows($result) > 0) {
+        
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<div class="promo-card">';
+                // Display image if exists
+                if (!empty($row["image"])) {
+                    $imagePath = htmlspecialchars($row["image"]);
+                    echo '<img src="http://localhost/quanlycf/quan-ly-quan-cafe/view/template/' . $imagePath . '" alt="Promo Image">';
+                }
+                 else {
+                    echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn
+                    // echo '<img src="template/path/to/default-image.jpg" alt="Default Promo Image">'; // Đường dẫn cho hình ảnh mặc định
+                }
+                echo '<div class="promo-info">';
+                echo '<h3>' . htmlspecialchars($row["Description"]) . '</h3>';
+                echo '<p><strong>Coupon Code:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
+                echo '<p><strong>Discount:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
+                // echo '<p><strong>Start Date:</strong> ' . htmlspecialchars($row["StartDate"]) . '</p>';
+                // echo '<p><strong>End Date:</strong> ' . htmlspecialchars($row["EndDate"]) . '</p>';
+                echo '<p><strong>Status:</strong> ' . ($row["Status"] ? 'Active' : 'Inactive') . '</p>';
+                // echo '<p><strong>Last Updated:</strong> ' . htmlspecialchars($row["UpdateAt"]) . '</p>';
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+            echo "<p>No promotions available.</p>";
+        }
+        ?>
     </div>
-    <!-- Service End -->
 
 
-   <!-- Footer Start -->
+    <!-- Footer Start -->
    <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
         <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
             <div class="col-lg-3 col-md-6 mb-5">
@@ -133,12 +185,14 @@
     <!-- Footer End -->
 
 
+
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
 
     <!-- JavaScript Libraries -->
     <?php include_once('./common/script/default-template.php')?>
+
 </body>
 
 </html>

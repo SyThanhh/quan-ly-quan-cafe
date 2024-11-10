@@ -7,7 +7,7 @@
     <title>Document</title>
     <!-- Đầu trang -->
     <?php
-        ob_start();
+        //ob_start();
         include_once('./common/head/head.php');    
         include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 

@@ -3,11 +3,113 @@
 
 <head>
     <?php  include_once('./common/head/head-website.php')    ?>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .containerfull,
+        .row {
+            float: left;
+            width: 100%;
+        }
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+        }
+        .box25 {
+            float: left;
+            width: 25%;
+            width: calc(25% - 30px);
+            position: relative;
+        }
+        .box25 img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #999999;
+        }
+        .mr15 {
+            margin-right: 30px;
+        }
+        
+        button {
+            color: #993300;
+            font-size: 13pt;
+            font-weight: bold;
+            width: 100%;
+            border: 1px #993300 dotted;
+            border-radius: 5px;
+            padding: 10px 0px;
+            background-color: #FFFFFF;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24pt;
+            margin: 0px;
+        }
+        .price {
+            text-align: center;
+            color: #993300;
+            font-size: 12pt;
+            float: left;
+            width: 100%;
+            padding: 8px 0px;
+        }
+        a {
+            color: #993300;
+            font-size: 13pt;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #000000;
+        }
+        .boxleft {
+            float: left;
+            width: 20%;
+        }
+        .boxright {
+            float: left;
+            width: 78%;
+        }
+        .mb {
+            margin-bottom: 50px;
+        }
+        .menutrai a {
+            display: block;
+            width: 100%;
+            color: #993300;
+            font-size: 13pt;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px #CCC dotted;
+        }
+        .menutrai a:hover {
+            color: #000000;
+        }
+        .menu{
+            height: 40px;
+            line-height: 40px;
+        }
+        .menu a{
+            margin: 0 20px;
+        }
+
+    </style>
 </head>
 
 <body>
     <!-- Navbar Start -->
     <?php  include_once('./common/header/navbar.php')    ?>
+    
     <!-- Navbar End -->
 
 
@@ -27,80 +129,66 @@
 
    <!-- Menu Start -->
     <div class="container-fluid pt-5">
+    <section class="containerfull">
         <div class="container">
-            <div class="section-title">
-                <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Menu & Giá cả</h4>
-                <h1 class="display-4">Giá cả cạnh tranh</h1>
+            <div class="boxleft mr2pt menutrai">
+                <h1>DANH MỤC</h1><br><br>
+                <a href="#">Cà phê</a>
+             
+                <a href="#">Trà</a>
+                <a href="#">Bánh</a>
             </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <h1 class="mb-5"> Coffee nóng</h1>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-1.jpg" alt="">
-                            <h5 class="menu-price">$5</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Coffee đen</h4>
-                            <p class="m-0">Hạt cà phê Arabica nguyên chất rang mộc, mang đến hương vị đậm đà, thơm lừng</p>
-                        </div>
+            <div class="boxright">
+                <h1>SẢN PHẨM</h1><br>
+                <div class="containerfull mr30">
+                    <div class="box25 mr15 mb">
+                        <div class="best"></div>
+                        <img src="/assets/img/sp1.webp" alt="">
+                        <span class="price">15.000Vnd</span>
+                        <button>Chi tiết</button>
                     </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-2.jpg" alt="">
-                            <h5 class="menu-price">$7</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa</h4>
-                            <p class="m-0">Cà phê đen kết hợp với sữa tươi nguyên chất, tạo nên hương vị thơm ngon, béo ngậy</p>
-                        </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/sp2.webp" alt="">
+                        <span class="price">29.000Vnd</span>
+                        <button>Chi tiết</button>
                     </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-3.jpg" alt="">
-                            <h5 class="menu-price">$9</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa đặc</h4>
-                            <p class="m-0">Cà phê đen kết hợp với sữa đặc, mang đến hương vị đậm đà, ngọt ngào.</p>
-                        </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/menu-1.jpg" alt="">
+                        <span class="price">25.000Vnd</span>
+                        <button>Chi tiết</button>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <h1 class="mb-5">Coffee đá</h1>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-1.jpg" alt="">
-                            <h5 class="menu-price">$5</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê đen đá</h4>
-                            <p class="m-0">Cà phê đen đậm đà, pha cùng đá viên, giải nhiệt ngày hè.</p>
-                        </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/sp3.webp" alt="">
+                        <span class="price">25.000Vnd</span>
+                        <button>Chi tiết</button>
                     </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-2.jpg" alt="">
-                            <h5 class="menu-price">$7</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa đá</h4>
-                            <p class="m-0">Cà phê sữa thơm ngon, pha cùng đá viên, tạo cảm giác sảng khoái.</p>
-                        </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/sp5.jpg" alt="">
+                        <span class="price">19.000Vnd</span>
+                        <button>Chi tiết</button>
                     </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-3.jpg" alt="">
-                            <h5 class="menu-price">$9</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa đá đặc</h4>
-                            <p class="m-0">Cà phê sữa đặc, pha cùng đá viên, mang đến vị ngọt đậm đà.</p>
-                        </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/sp7.webp" alt="">
+                        <span class="price">29.000Vnd</span>
+                        <button>Chi tiết</button>
+                    </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/menu-2.jpg" alt="">
+                        <span class="price">39.000Vnd</span>
+                        <button>Chi tiết</button>
+                    </div>
+                    <div class="box25 mr15 mb">
+                    <img src="/assets/img/menu-3.jpg" alt="">
+                        <span class="price">39.000Vnd</span>
+                        <button>Chi tiết</button>
                     </div>
                 </div>
             </div>
+
+
         </div>
+    </section>
+
     </div>
     <!-- Menu End -->
 
