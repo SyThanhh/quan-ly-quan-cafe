@@ -15,7 +15,7 @@ $(document).ready(function() {
         if (typeof priceString !== 'string') {
             priceString = String(priceString); // Chuyển đổi thành chuỗi
         }
-        return parseInt(priceString.replace(/,/g, '')); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
+        return parseInt(priceString.replace(/\./g, '')); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
     }
 
     function updateGrandTotal() {
@@ -32,7 +32,7 @@ $(document).ready(function() {
 
         if ($existingRow.length) {
             const $quantityInput = $existingRow.find('.quantity-display');
-            let quantity = parseInt($quantityInput.val());
+            let quantity = $quantityInput.val();
             const stock = parseInt(product.stock);
 
             if (quantity < stock) {
@@ -47,7 +47,7 @@ $(document).ready(function() {
             const $row = $(`
                 <tr data-name="${product.name}">
                     <td>${product.name}</td>
-                    <td>${product.price.toLocaleString()} <span>VNĐ</span></td>
+                    <td>${product.price} <span>VNĐ</span></td>
                     <td>
                         <div class="quantity-container">
                             <button class="btn-change btn-plus">+</button>
@@ -55,7 +55,7 @@ $(document).ready(function() {
                             <button class="btn-change btn-minus">-</button>
                         </div>
                     </td>
-                    <td class="total-price">${product.price.toLocaleString()}</td>
+                    <td class="total-price">${product.price}</td>
                     <td><button class="btn-custome btn-remove">Xóa</button></td> 
                 </tr>
             `);
@@ -82,12 +82,15 @@ $(document).ready(function() {
 
             $row.find('.btn-plus').on('click', function(e) {
                 e.preventDefault();
-                let quantity = parseInt($quantityInput.val());
+                let quantity = $quantityInput.val();
                 if (quantity < stock) {
                     quantity++;
                     $quantityInput.val(quantity);
-                    const totalPrice = quantity * product.price;
-                    $row.find('.total-price').text(totalPrice.toLocaleString());
+                    const productPrice = parseInt(product.price.replace(/\./g, ''));
+                    const totalPrice = quantity * productPrice;
+                    console.log("quantity :" , quantity);
+                    console.log("product.price :" , product.price);   
+                    $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                     updateGrandTotal();
                 } else {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
@@ -96,7 +99,7 @@ $(document).ready(function() {
 
             $row.find('.btn-minus').on('click', function(e) {
                  e.preventDefault();
-                let quantity = parseInt($quantityInput.val());
+                let quantity = $quantityInput.val();
                 if (quantity > 1) {
                     quantity--;
                     $quantityInput.val(quantity);
@@ -117,13 +120,13 @@ $(document).ready(function() {
     $('.product-item').on('click', function() {
         const productName = $(this).data('name');
         const productStock = parseInt($(this).data('stock'));
-        const productPrice = parseInt($(this).data('price'));
+        const productPrice = $(this).data('price')                                                                                                                                                                                                                                                                                                                                                                                                                                      ;
         addProductToInvoice({ name: productName, stock: productStock, price: productPrice });
     });
 
     function togglePaymentFields() {
-        const isCash = $('#cash').is(':checked');
-        $('#cashFields').toggle(isCash);
+        const isCash = $('#cash').is(':checked');                                                                                                                                                                   
+        $('#cashFields').toggle(isCash);                                                                                                                                                                                                    
         $('#bankFields').toggle(!isCash);
     }
 
