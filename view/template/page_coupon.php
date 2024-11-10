@@ -38,6 +38,31 @@
         margin: 5px 0;
         box-sizing: border-box; 
     }
+    #search-form .btn-outline-secondary {
+            border: 1px solid #ced4da;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        #search-form .search-button i {
+            font-size: 0.75 rem;
+            color: #495057;
+        }
+
+        #search-form .btn-outline-secondary:hover {
+            background-color: #e2e6ea;
+        }
+
+
+            #search-form .btn-outline-secondary {
+                width: 100%;
+                border-radius: 6px;
+        }
     </style>
     <script>
         // Hàm để tự động cập nhật thời gian vào ô input
@@ -250,11 +275,30 @@
             <div class="header text-left">
                 <h4>QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
             </div>
+            <div class="col-md-6">
+                                        <form method="POST" id="search-form" class="d-flex">
+                                            <input type="text" class="form-control" name="txtSearch" id="name-search" placeholder="Tìm sản phẩm theo mã">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button" type="submit" name="btnSearch">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
             
+                                            </div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button" id="btn-clear">
+                                                    <i class="fas fa-eraser"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                     </div>
             <?php
                 include_once('./controller/cCoupon.php');
                 $p = new cCoupon();
                 $tbl = $p->getCoupon();
+                if(isset($_REQUEST['btnSearch'])){
+                    $tbl = $p -> getCouponByCode($_REQUEST['txtSearch']);
+                }
+
                 if ($tbl) {
                     echo '<table class="table table-bordered table-custom">';
                     echo '<div style="text-align: right;">'; 
@@ -477,12 +521,14 @@
                                     } else {
                                         $kq = $p->cInsertCp($_REQUEST['MaGiamGia'], $_REQUEST['NgayBatDau'], $_REQUEST['NgayKetThuc'], $_REQUEST['MoTa'], $_REQUEST['GiamGia'], $_REQUEST['TrangThai'], $_REQUEST['ThoiDiemCapNhat']);
                                         if ($kq) {
-                                            echo "<script>alert('Thêm thành công!')</script>";
-                                            header('refresh:0.5; url="index.php?page=page_coupon"');
+                                            echo '<script>
+                                            alert("Thêm chương trình khuyến mãi thành công!");
+                                            setTimeout(function(){
+                                                window.location.href = "index.php?page=page_coupon";
+                                            }, 500); // Chuyển hướng sau 0.5 giây
+                                          </script>';
                                         } else {
                                             echo "<script>alert('Thêm thất bại!')</script>";
-                                            header('refresh:0.5; url="index.php?page=page_coupon"');
-                                            exit();
                                         }
                                     }
                                 }

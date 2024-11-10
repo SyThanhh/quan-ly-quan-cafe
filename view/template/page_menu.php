@@ -459,11 +459,14 @@
                                             );
                                             
                                             if ($kq) {
-                                                echo "<script>alert('Thêm thành công!')</script>";
-                                                header('refresh:0.5; url="index.php?page=page_menu"');
+                                                echo '<script>
+                                                alert("Thêm món thành công!");
+                                                setTimeout(function(){
+                                                    window.location.href = "index.php?page=page_menu";
+                                                }, 500); // Chuyển hướng sau 0.5 giây
+                                              </script>';
                                             } else {
-                                                echo "<script>alert('Thêm thất bại!')</script>";
-                                                //header('refresh:0.5; url="index.php?page=page_menu"');
+                                                echo "<script>alert('Thêm món thất bại!')</script>";
                                             }
                                         }
                                 ?>

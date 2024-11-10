@@ -13,6 +13,19 @@
                 echo 'Lỗi kết nối!';
             }
         }
+
+        public function selCouponByCode($CouponCode){
+            $p = new Database();
+            $con = $p -> connect();
+            if($con){
+                $str = "select CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpDateAt from coupon where CouponCode like N'%$CouponCode%'";
+                $tbl = mysqli_query($con, $str);
+                return $tbl;
+            }
+            else{
+                echo 'Lỗi kết nối!';
+            }
+        }
         public function sel01CouponByID($CouponID){
             $p = new Database();
             $con = $p -> connect();

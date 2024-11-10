@@ -30,7 +30,7 @@
                 }
             }
             else{
-                echo 'Lỗi kết nối!';
+                echo 'Không có sản phẩm cần tìm!';
             }
         }
             public function get01ProductByID($ProductID){

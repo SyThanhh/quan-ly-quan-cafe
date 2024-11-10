@@ -17,6 +17,23 @@
                 return false;
             }
         }
+
+        public function getCouponByCode($CouponCode){
+            $p = new mCoupon();
+            $tbl = $p -> selCouponByCode($CouponCode);
+            if($tbl){
+                if(mysqli_num_rows($tbl)>0){
+                    return $tbl;
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                echo 'Không có mã giảm giá cần tìm!';
+            }
+        }
+
             public function get01CouponByID($CouponID){
             $p = new mCoupon();
             $tbl = $p -> sel01CouponByID($CouponID);

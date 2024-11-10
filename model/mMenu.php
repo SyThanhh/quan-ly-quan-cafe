@@ -19,8 +19,7 @@
             $con = $p -> connect();
             if($con){
                 $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where ProductName like N'%$ProductName%'";
-                $tbl = mysqli_query($con, $str);
-                $p -> close($con);
+                $tbl = mysqli_query($con, $str); 
                 return $tbl;
             }
             else{
@@ -110,18 +109,18 @@
             if (is_array($file) && isset($file['tmp_name'])) {
                 $imageFileType = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
                 $name = $file["name"];
-                $target_file = '' . $name;
- 
+                $target_file = "" . $name;
+            
                 if ($file["size"] > 500000) {
                     echo "Tệp của bạn quá lớn.<br>";
                     return false;
                 }
-        
+            
                 if (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
                     echo "Chỉ cho phép tệp JPG, JPEG, PNG & GIF.<br>";
                     return false; 
                 }
-        
+            
                 if (move_uploaded_file($file["tmp_name"], $target_file)) {
                     echo "Tệp " . htmlspecialchars(basename($target_file)) . " đã được upload.<br>";
                     $ProductImage = $target_file;
