@@ -266,7 +266,7 @@
                                     <tbody>
                                         <?php
                                             // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
+                                            $employees = $database->select("SELECT * FROM employee WHERE Roles > 1");
 
                                             // Hiển thị danh sách nhân viên
                                             if ($employees) {
