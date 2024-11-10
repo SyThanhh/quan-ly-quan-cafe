@@ -336,7 +336,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <form method="POST" id="search-form" class="d-flex">
-                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên" value="<?php echo ($_SESSION["searchKeyword"])?$_SESSION["searchKeyword"]:''; ?>">
+                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên" value="<?php echo isset($_SESSION["searchKeyword"]) ? $_SESSION["searchKeyword"] : ''; ?>">
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary search-button" type="submit">
                                                     <i class="fas fa-search"></i>
@@ -682,7 +682,7 @@
     }
     $("#btn-clear").on('click', function(e) {
         clearSearch();
-        e.preventDefault();
+        // e.preventDefault();
     })
     function clearSearch() {
         $('#name-search').val(""); 
