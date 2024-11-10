@@ -241,7 +241,7 @@
                                     echo '</div>';
                                     echo '<tr><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Giá Bán</th><th>Hình Ảnh</th><th>Số Lượng Tồn Kho</th><th>Trạng Thái</th><th>Mô Tả</th><th>Loại Sản Phẩm</th><th colspan=2>Điều chỉnh</th></tr>';
                                     while($r = mysqli_fetch_assoc($tbl)){
-                                        $productImagePath = 'assets/img/' . $r['ProductImage'];
+                                        $productImagePath = 'assets/img/products/' . $r['ProductImage'];
                                         echo "<tr>";
                                         echo "<td>".$r['ProductID']."</td>";
                                         echo "<td>".$r['ProductName']."</td>";

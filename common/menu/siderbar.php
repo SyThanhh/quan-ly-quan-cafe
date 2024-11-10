@@ -7,7 +7,7 @@ ob_start(); // Bắt đầu output buffering
     <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
     </div>
-    <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+    <div class="sidebar-brand-text mx-3">3S Admin <sup></sup></div>
 </a>
 
 <!-- Divider -->
@@ -15,7 +15,7 @@ ob_start(); // Bắt đầu output buffering
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
-    <a class="nav-link" href="index.html">
+    <a class="nav-link" href="index.php?page=manage">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Trang chủ</span></a>
 </li>
@@ -198,18 +198,18 @@ ob_start(); // Bắt đầu output buffering
 </li> -->
 
 <!-- Nav Item - Charts -->
-<li class="nav-item">
+<!-- <li class="nav-item">
     <a class="nav-link" href="charts.html">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Charts</span></a>
-</li>
+</li> -->
 
 <!-- Nav Item - Tables -->
-<li class="nav-item">
+<!-- <li class="nav-item">
     <a class="nav-link" href="tables.html">
         <i class="fas fa-fw fa-table"></i>
         <span>Tables</span></a>
-</li>
+</li> -->
 
 <!-- Divider -->
 <hr class="sidebar-divider d-none d-md-block">
