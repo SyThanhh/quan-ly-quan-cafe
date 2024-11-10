@@ -30,10 +30,61 @@
     .table-custom th {
         background-color: #f8f9fa; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
     }
+    input[type="text"],
+        input[type="datetime-local"],
+        input[type="money"],
+        input[type="int"],
+        select {
+            width: 100%;
+            padding: 8px; 
+            margin: 5px 0;
+            box-sizing: border-box; 
+        }
+
+        #search-form .btn-outline-secondary {
+            border: 1px solid #ced4da;
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+
+        #search-form .search-button i {
+            font-size: 0.75 rem;
+            color: #495057;
+        }
+
+        #search-form .btn-outline-secondary:hover {
+            background-color: #e2e6ea;
+        }
+
+
+            #search-form .btn-outline-secondary {
+                width: 100%;
+                border-radius: 6px;
+        }
+
     </style>
+    <script>
+        // Hàm để tự động cập nhật thời gian vào ô input
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`; // Lấy định dạng YYYY-MM-DDTHH:mm
+            document.getElementById('ThoiDiemCapNhat').value = dateTimeString;
+            document.getElementById('ThoiGianTaoSanPham').value = dateTimeString;
+        }
+    </script>
 </head>
 
-<body>
+<body onload="updateCurrentTime()">
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
         <?php include_once('./common/menu/siderbar.php'); ?>
@@ -229,15 +280,37 @@
                             <div class="header text-left">
                                 <h4>QUẢN LÝ MENU</h4>
                             </div>
-                            
+                            <div class="col-md-6">
+                                        <form method="POST" id="search-form" class="d-flex">
+                                            <input type="text" class="form-control" name="txtSearch" id="name-search" placeholder="Tìm sản phẩm theo tên">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button" type="submit" name="btnSearch">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+            
+                                            </div>
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary search-button" id="btn-clear">
+                                                    <i class="fas fa-eraser"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                     </div>
                             <?php
                                 include_once('./controller/cMenu.php');
                                 $p = new cProduct();
                                 $tbl = $p->getProduct();
+                                if(isset($_REQUEST['btnSearch'])){
+                                    $tbl = $p -> getProductByName($_REQUEST['txtSearch']);
+                                }
+
                                 if($tbl){
                                     echo '<table class="table table-bordered table-custom">';
                                     echo '<div style="text-align: right;">'; 
-                                    echo '<a href="index.php?page=page_add_menu" class="btn btn-primary mb-3"><i class="fas fa-plus"></i>  Thêm Món</a>';
+                                    echo '<button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addMenuModal">
+                                            <i class="fas fa-plus-square"></i>
+                                                Thêm Món Trong Menu
+                                        </button>';
                                     echo '</div>';
                                     echo '<tr><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Giá Bán</th><th>Hình Ảnh</th><th>Số Lượng Tồn Kho</th><th>Trạng Thái</th><th>Mô Tả</th><th>Loại Sản Phẩm</th><th colspan=2>Điều chỉnh</th></tr>';
                                     while($r = mysqli_fetch_assoc($tbl)){
@@ -256,7 +329,7 @@
                                         echo "<td>".$r['CategoryName']."</td>";
                                         echo "<td> <a href='index.php?page=page_update_menu&ProductID=".$r["ProductID"]."' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
                                         echo "<td> <a href='index.php?page=page_delete_menu&ProductID=".$r["ProductID"]. "' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
-                                        echo "</tr>"; // Thêm dòng này để đóng thẻ <tr>
+                                        echo "</tr>";
                                     }
                                     echo '</table>';
                                 } else {
@@ -275,7 +348,131 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal fade" id="addMenuModal" tabindex="-1" role="dialog" aria-labelledby="addMenuModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addMenuModalLabel">Thêm Món Trong Menu</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            <form action="#" method="post" enctype="multipart/form-data">
+                                <table>
+                                    <tr>
+                                        <td>Mã Sản Phẩm</td>
+                                        <td>
+                                            <input type="text" name="MaSanPham" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tên Sản Phẩm</td>
+                                        <td>
+                                            <input type="text" name="TenSanPham" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Giá Bán</td>
+                                        <td><input type="money"  name="GiaBan" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hình Ảnh</td>
+                                        <td><input type="file" name="HinhAnh"  required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Số Lượng Tồn Kho</td>
+                                        <td><input type="int" name="SoLuongTonKho"  required></td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Trạng Thái</td>
+                                        <td>
+                                            <select name="TrangThai" id="TrangThai">
+                                                <option value="1">Hết sản phẩm</option>
+                                                <option value="0">Còn sản phẩm</option>
+                                            </select>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Mô Tả</td>
+                                        <td><input type="text"  name="MoTa" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời Gian Tạo Sản Phẩm</td>
+                                        <td><input type="datetime-local"  name="ThoiGianTaoSanPham" id="ThoiGianTaoSanPham" required readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mã Yêu Cầu</td>
+                                        <td><input type="int"  name="MaYeuCau" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Loại Sản Phẩm</td>
+                                        <td>
+                                            <?php
+                                                include_once('controller/cCategory.php');
+                                                $po = new cCategory();
+                                                $tbl = $po -> getCategory();
+                                                if($tbl){
+                                                    echo '<select name="cboLoaiSP" id="">';
+                                                    while($r = mysqli_fetch_assoc($tbl)){
+                                                            echo '<option value='.$r["CategoryID"].'>'.$r["CategoryName"].'</option>';
+                                                    }
+                                                    echo '</select>';
+                                                }
+                                                else{
+                                                    echo 'Lỗi kết nối!';
+                                                }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Thời Điểm Cập Nhật Cuối Cùng</td>
+                                        <td>
+                                            <input type="datetime-local" id="ThoiDiemCapNhat" name="ThoiDiemCapNhat" required readonly>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <input type="submit" name="btnInsert" class="btn btn-success" value="Thêm">
+                                            <input type="reset" value="Nhập lại" class="btn btn-danger">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+
+                            <?php
+                                if (isset($_REQUEST["btnInsert"])) {
+                                    include_once('controller/cMenu.php');
+                                    $p = new cProduct();
+                                    $kq = $p->cInsertMenu($_REQUEST['MaSanPham'],
+                                                $_REQUEST['TenSanPham'],
+                                                $_REQUEST['GiaBan'],
+                                                $_FILES['HinhAnh'],
+                                                $_REQUEST['SoLuongTonKho'],
+                                                $_REQUEST['TrangThai'],
+                                                $_REQUEST['MoTa'],
+                                                $_REQUEST['ThoiGianTaoSanPham'],
+                                                $_REQUEST['ThoiDiemCapNhat'],
+                                                $_REQUEST['MaYeuCau'],
+                                                $_REQUEST['cboLoaiSP']
+                                            );
+                                            
+                                            if ($kq) {
+                                                echo "<script>alert('Thêm thành công!')</script>";
+                                                header('refresh:0.5; url="index.php?page=page_menu"');
+                                            } else {
+                                                echo "<script>alert('Thêm thất bại!')</script>";
+                                                //header('refresh:0.5; url="index.php?page=page_menu"');
+                                            }
+                                        }
+                                ?>
+                            </div>
+                            <div class="modal-footer">
+                            
+                            </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

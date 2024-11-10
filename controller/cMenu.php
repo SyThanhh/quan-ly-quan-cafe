@@ -17,6 +17,22 @@
                 return false;
             }
         }
+
+        public function getProductByName($ProductName){
+            $p = new mProduct();
+            $tbl = $p -> selProductByName($ProductName);
+            if($tbl){
+                if(mysqli_num_rows($tbl)>0){
+                    return $tbl;
+                }
+                else{
+                    return false;
+                }
+            }
+            else{
+                echo 'Lỗi kết nối!';
+            }
+        }
             public function get01ProductByID($ProductID){
             $p = new mProduct();
             $tbl = $p -> sel01ProductByID($ProductID);

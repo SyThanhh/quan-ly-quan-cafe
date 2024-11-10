@@ -324,6 +324,8 @@
                                     include_once('./controller/cCoupon.php');
                                     $p = new cCoupon();
                                     $currentDate = date('Y-m-d\TH:i'); 
+                                    $StartDate = $_REQUEST['NgayBatDau'];
+                                    $EndDate = $_REQUEST['NgayKetThuc'];
                                     if (strtotime($StartDate) < strtotime($currentDate)) {
                                         echo "<script>alert('Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại!')</script>";
                                     } elseif (strtotime($StartDate) >= strtotime($EndDate)) {
