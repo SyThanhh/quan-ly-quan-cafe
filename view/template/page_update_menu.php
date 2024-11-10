@@ -259,7 +259,7 @@
                                         $UnitPrice = $r["UnitPrice"];
                                         $ProductImage = $r["ProductImage"];
                                         $UnitsInStock = $r["UnitsInStock"];
-                                        $Status = $r["Status"];
+                                        $Status = ($r['Status'] == 1) ? "Còn sản phẩm" : "Hết sản phẩm";
                                         $Description = $r["Description"];
                                         $CreateAt = $r["CreateAt"];
                                         $UpdatedAt = $r["UpdatedAt"];
@@ -295,8 +295,8 @@
                                         <td>Trạng Thái</td>
                                         <td>
                                             <select name="TrangThai" id="TrangThai" value="<?php if (isset($Status)) echo $Status; ?>">
-                                                <option value="1">Hết sản phẩm</option>
-                                                <option value="0">Còn sản phẩm</option>
+                                                <option value="0">Hết sản phẩm</option>
+                                                <option value="1">Còn sản phẩm</option>
                                             </select>
                                         </td> 
                                     </tr>
