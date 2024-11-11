@@ -336,7 +336,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <form method="POST" id="search-form" class="d-flex">
-                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên" value="<?php echo isset($_SESSION["searchKeyword"]) ? $_SESSION["searchKeyword"] : ''; ?>">
+                                            <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="<?php echo isset($_SESSION["searchKeyword"]) ? $_SESSION["searchKeyword"] : ''; ?>">
                                             <div class="input-group-append">
                                                 <button class="btn btn-outline-secondary search-button" type="submit">
                                                     <i class="fas fa-search"></i>
@@ -601,6 +601,7 @@
 
         // Điền dữ liệu vào form
         $('#customerName').val(name);
+        $('#customerName').attr("readonly", true);
         $('#customerEmail').val(email);
         $('#customerPhone').val(phone);
         $('#customerId').val(id);
@@ -663,7 +664,7 @@
         });
 
         $('#name-search').on('input', function() {
-            const searchKeyword = $(this).val();
+            const searchKeyword = $(this).val()
             searchCustomers(searchKeyword);
     });
 

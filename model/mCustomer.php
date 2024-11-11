@@ -11,6 +11,7 @@
 
         public function selectAll($keyword) {
             if ($this->conn) {
+                $keyword = trim($keyword);
                 $str = "SELECT * FROM customer WHERE Status = 1";
         
                 if (!empty($keyword)) {
