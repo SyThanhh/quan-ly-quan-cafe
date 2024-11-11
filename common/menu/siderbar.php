@@ -32,17 +32,11 @@ ob_start(); // Bắt đầu output buffering
 
 <!-- Nav Item - Pages Collapse Menu -->
 <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+    <a class="nav-link collapsed" href="index.php?page=page_sell"
         aria-expanded="true" aria-controls="collapseTwo">
         <i class="fas fa-money-bill-wave"></i>
         <span>Bán hàng</span>
     </a>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Components:</h6>
-            <a class="collapse-item" href="index.php?page=page_sell">Bán hàng</a>
-        </div>
-    </div>
 </li>
 
 
@@ -51,7 +45,7 @@ ob_start(); // Bắt đầu output buffering
 
 
 <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageCustomer"
+    <a class="nav-link collapsed" href="index.php?page=page_customer" data-toggle="collapse" data-target="#manageCustomer"
         aria-expanded="true" aria-controls="manageCustomer">
         <i class="fas fa-users"></i>
         <span>Quản lý khách hàng</span>
@@ -92,19 +86,11 @@ ob_start(); // Bắt đầu output buffering
 
   <!-- Nav Item - Utilities Collapse Menu -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageOrder"
+    <a class="nav-link collapsed" href="index.php?page=page_viewOrder"
         aria-expanded="true" aria-controls="manageOrder">
         <i class="fas fa-receipt"></i>
         <span>Quản lý hóa đơn</span>
     </a>
-    <div id="manageOrder" class="collapse" aria-labelledby="headingUtilities"
-        data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
-            <a class="collapse-item" href="index.php?page=page_viewOrder">Xem hóa đơn chi tiết hóa <br> đơn</a>
-           
-        </div>
-    </div>
 </li>
 
 <li class="nav-item">
