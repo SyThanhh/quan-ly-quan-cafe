@@ -1,6 +1,6 @@
-<?php
+<!-- <?php
 session_start();
-?>
+?> -->
 <head>
 <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
 <!--Get your code at fontawesome.com-->

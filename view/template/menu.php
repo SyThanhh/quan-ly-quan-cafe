@@ -116,7 +116,7 @@
     <!-- Page Header Start -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
         <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Menu</h1>
+            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">MENU</h1>
             <div class="d-inline-flex mb-lg-5">
                 <p class="m-0 text-white"><a class="text-white" href="">Trang chủ</a></p>
                 <p class="m-0 text-white px-2">/</p>
@@ -143,45 +143,48 @@
                 <div class="containerfull mr30">
                     <div class="box25 mr15 mb">
                         <div class="best"></div>
-                        <img src="/assets/img/sp1.webp" alt="">
+                        <img src="assets/img/sp1.webp" alt="">
                         <span class="price">15.000Vnd</span>
-                        <button>Chi tiết</button>
+                        <a href="index.php?page=page_productdetail&id=1">
+                            <button>Chi tiết</button>
+                        </a>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/sp2.webp" alt="">
+                    <img src="assets/img/sp2.webp" alt="">
                         <span class="price">29.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/menu-1.jpg" alt="">
+                    <img src="assets/img/menu-1.jpg" alt="">
                         <span class="price">25.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/sp3.webp" alt="">
+                    <img src="assets/img/sp3.webp" alt="">
                         <span class="price">25.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/sp5.jpg" alt="">
+                    <img src="assets/img/sp5.jpg" alt="">
                         <span class="price">19.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/sp7.webp" alt="">
+                    <img src="assets/img/sp7.webp" alt="">
                         <span class="price">29.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/menu-2.jpg" alt="">
+                    <img src="assets/img/menu-2.jpg" alt="">
                         <span class="price">39.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
                     <div class="box25 mr15 mb">
-                    <img src="/assets/img/menu-3.jpg" alt="">
+                    <img src="assets/img/menu-3.jpg" alt="">
                         <span class="price">39.000Vnd</span>
                         <button>Chi tiết</button>
                     </div>
+
                 </div>
             </div>
 
@@ -250,3 +253,18 @@
 </body>
 
 </html>
+<script>
+        function showProductDetails(productId) {
+            // Hide all product details
+            var details = document.querySelectorAll('.product-details');
+            details.forEach(function (detail) {
+                detail.style.display = 'none';
+            });
+
+            // Show the selected product details
+            var productDetail = document.getElementById('product-details-' + productId);
+            if (productDetail) {
+                productDetail.style.display = 'block';
+            }
+        }
+    </script>
