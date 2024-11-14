@@ -1,4 +1,6 @@
-
+<?php   
+    session_start();
+?>
 <?php
 
    $page = isset($_GET['page']) ? $_GET['page'] : null; // Mặc định là null
