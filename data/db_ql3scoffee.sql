@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 10, 2024 lúc 10:27 AM
+-- Thời gian đã tạo: Th10 10, 2024 lúc 02:24 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.2.12
+-- Phiên bản PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,10 +40,11 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`CategoryID`, `CategoryName`, `Description`, `Status`, `UpdatedAt`) VALUES
-(1, 'Cafe pha máy', 'Các loại Cafe pha máy', 1, '2024-10-21 21:40:43'),
+(1, 'Cafe pha máy', 'Các loại Cafe pha máy', 1, '2024-11-10 09:55:02'),
 (2, 'Cafe pha phin', 'Các loại Cafe pha phin', 1, '2024-10-21 21:40:43'),
 (3, 'Nước ép', 'Các loại nước ép', 1, '2024-10-21 21:40:43'),
-(4, 'Trà', 'Các loại nước ép', 1, '2024-10-21 21:40:43');
+(4, 'Trà', 'Các loại nước ép', 1, '2024-10-21 21:40:43'),
+(5, 'Nước ngot', 'Nước ngọt', 1, '2024-11-10 09:57:26');
 
 -- --------------------------------------------------------
 
@@ -117,13 +118,13 @@ CREATE TABLE `coupon` (
 --
 
 INSERT INTO `coupon` (`CouponID`, `CouponCode`, `StartDate`, `EndDate`, `Description`, `CouponDiscount`, `Status`, `UpdateAt`, `image`) VALUES
-(1, 'COUPON01', '2024-01-01 00:00:00', '2024-12-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 16:20:03', '1.jpg'),
-(2, 'COUPON02', '2024-02-01 00:00:00', '2024-11-30 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-11-10 16:20:10', '2.jpg'),
-(3, 'COUPON03', '2024-03-01 00:00:00', '2024-10-31 00:00:00', 'Giảm giá 20%', 20.00, 1, '2024-11-10 16:20:17', '3.jpg'),
-(4, 'COUPON04', '2024-04-01 00:00:00', '2024-09-30 00:00:00', 'Giảm giá 29%', 20.00, 1, '2024-11-10 16:20:24', '4.jpg'),
-(5, 'COUPON05', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 16:20:31', '5.jpg'),
-(6, 'COUPON06', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 16:20:31', '6.jpg'),
-(7, 'COUPON07', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-11-10 16:20:31', '7.jpg');
+(1, 'COUPON01', '2024-01-01 00:00:00', '2024-12-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 18:51:49', '1.jpg'),
+(2, 'COUPON02', '2024-02-01 00:00:00', '2024-11-30 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-11-10 18:53:41', '2.jpg'),
+(3, 'COUPON03', '2024-03-01 00:00:00', '2024-10-31 00:00:00', 'Giảm giá 20%', 20.00, 1, '2024-11-10 18:53:46', '3.jpg'),
+(4, 'COUPON04', '2024-04-01 00:00:00', '2024-09-30 00:00:00', 'Giảm giá 20%', 20.00, 1, '2024-11-10 18:54:16', '4.jpg'),
+(5, 'COUPON05', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 18:53:56', '5.jpg'),
+(6, 'COUPON06', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 10%', 10.00, 1, '2024-11-10 18:54:02', '6.jpg'),
+(7, 'COUPON07', '2024-05-01 00:00:00', '2024-08-31 00:00:00', 'Giảm giá 15%', 15.00, 1, '2024-10-21 21:40:43', '7.jpg');
 
 -- --------------------------------------------------------
 
@@ -139,40 +140,21 @@ CREATE TABLE `customer` (
   `CustomerPoint` int(10) NOT NULL DEFAULT 0,
   `Email` varchar(50) NOT NULL,
   `CreateAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `customer`
 --
 
-INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `CustomerPassword`, `CustomerPoint`, `Email`, `CreateAt`, `UpdatedAt`) VALUES
-(1, 'Nguyễn Văn A', '0123456789', 'password1', 100, 'vana@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(2, 'Trần Thị B', '0123456780', 'password2', 200, 'thib@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(3, 'Lê Văn C', '0123456781', 'password3', 50, 'vanc@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(4, 'Phạm Thị D', '0123456782', 'password4', 20, 'thid@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.com', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(6, 'admin3', '', '123', 0, 'diennguyenba777@gmail.com', '2024-11-01 20:12:27', '2024-11-01 20:12:27'),
-(12, 'admin3', 'null', '123', 0, 'Diennguyenba777@gamil.com', '2024-11-02 12:42:17', '2024-11-02 12:42:17'),
-(16, 'adminweb', '0346172551', '123', 0, 'nguyenbadien2018@gmail.com', '2024-11-02 12:48:41', '2024-11-02 12:48:41'),
-(17, 'admin6', '01636261460', '123', 0, 'diennguyenba77777@gmail.com', '2024-11-02 12:55:39', '2024-11-02 12:55:39'),
-(18, 'admin31', '35654234575', '123', 0, 'fdsfsdfsdfds@gmail.com', '2024-11-02 13:07:12', '2024-11-02 13:07:12'),
-(19, 'admin32', '645645435424', '123', 0, 'diennguyenbdfda777@gmail.com', '2024-11-02 13:19:38', '2024-11-02 13:19:38'),
-(20, 'admin34', '32545675434', '123', 0, 'diennguyencdfdfcba777@gmail.com', '2024-11-02 13:38:12', '2024-11-02 13:38:12'),
-(21, 'admin36', '123456', '', 0, 'diennguyenbdsda777@gmail.com', '2024-11-02 15:46:11', '2024-11-02 15:46:11'),
-(22, 'admin37', '253653535345', '123456', 0, 'Diennguyenbadf777@gamil.com', '2024-11-02 15:52:59', '2024-11-02 15:52:59'),
-(23, 'admin123', '12412412421', '123456', 0, 'Diennguyenba72477@gamil.com', '2024-11-02 17:09:20', '2024-11-02 17:09:20'),
-(24, 'admin39', '23523523532', '123456', 0, 'diennguyenbasds777@gmail.com', '2024-11-03 22:02:49', '2024-11-03 22:02:49'),
-(25, 'admin322', '034617255123', '123456', 0, 'diennguyendsdba777@gmail.com', '2024-11-03 22:03:02', '2024-11-03 22:03:02'),
-(26, 'admin39', '14421412', '123456', 0, 'diennguyensdba777@gmail.com', '2024-11-03 22:07:04', '2024-11-03 22:07:04'),
-(27, 'admin32', '03461725511', '123456', 0, 'diennguyenba7717@gmail.com', '2024-11-03 22:08:12', '2024-11-03 22:08:12'),
-(28, 'admin41', '143243', '', 0, 'dienn1guyenba777@gmail.com', '2024-11-03 22:20:32', '2024-11-03 22:20:32'),
-(33, 'admin3211', '124153232413413', '123456', 0, 'diennguyenba77sdasdas7@gmail.com', '2024-11-03 22:35:19', '2024-11-03 22:35:19'),
-(34, 'admin3211', '12321342142', '123456', 0, 'diennguyenba777sds@gmail.com', '2024-11-03 22:59:06', '2024-11-03 22:59:06'),
-(35, 'admin3333', '32432', '123456', 0, 'dien232nguyenba777@gmail.com', '2024-11-03 23:26:21', '2024-11-03 23:26:21'),
-(36, 'admin3333', '123421412', '123456', 0, 'dienngu2323243yenba777@gmail.com', '2024-11-03 23:36:39', '2024-11-03 23:36:39'),
-(37, 'admin33333', '124141212124124', '123456', 0, 'dienngusfssyenba777@gmail.com', '2024-11-04 11:24:59', '2024-11-04 11:24:59'),
-(38, 'admin111', '153541241', '123456', 0, 'diennguyenb23213a777@gmail.com', '2024-11-04 11:33:24', '2024-11-04 11:33:24');
+INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `CustomerPassword`, `CustomerPoint`, `Email`, `CreateAt`, `UpdatedAt`, `status`) VALUES
+(1, 'Nguyễn Văn Anh', '0123456789', 'password1', 100, 'vana@example.ed', '2024-05-21 21:40:43', '2024-11-07 01:47:10', 1),
+(2, 'Trần Thị Bảnh', '0123456780', 'password2', 200, 'thib@example.com', '2024-10-21 21:40:43', '2024-11-05 00:21:02', 1),
+(3, 'Lê Văn Thành', '0123456781', 'password3', 50, 'vanc@example.vnd', '2024-11-21 21:40:43', '2024-11-07 01:47:20', 1),
+(4, 'Phạm Thị Duyên', '0123456782', 'password4', 20, 'thid@example.com', '2024-11-07 21:40:43', '2024-11-07 01:47:33', 1),
+(5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.edu', '2024-10-21 21:40:43', '2024-11-05 14:40:13', 1),
+(18, 'Thanh Nguyen', '0823820302', '123456', 0, 'vana@example.edu', '2024-11-05 22:30:38', '2024-11-06 17:33:04', 1);
 
 -- --------------------------------------------------------
 
@@ -226,11 +208,11 @@ CREATE TABLE `order` (
 --
 
 INSERT INTO `order` (`OrderID`, `Discount`, `PaymentMethod`, `TotalAmount`, `Status`, `CreateDate`, `CouponID`, `CustomerID`, `EmployeeID`) VALUES
-('HD0001', 0.00, 'Tiền mặt', 100.00, 0, '2024-10-21 21:40:43', 1, 1, 2),
-('HD0002', 5.00, 'Chuyển khoản', 150.00, 1, '2024-10-21 21:40:43', 2, 2, 2),
-('HD0003', 10.00, 'Chuyển khoản', 200.00, 1, '2024-10-21 21:40:43', 3, 3, 2),
+('HD0001', 0.00, 'Tiền mặt', 100.00, 0, '2024-07-21 21:40:41', 1, 1, 2),
+('HD0002', 5.00, 'Chuyển khoản', 150.00, 1, '2024-11-21 21:40:43', 2, 2, 2),
+('HD0003', 10.00, 'Chuyển khoản', 200.00, 1, '2024-12-21 21:40:43', 3, 3, 2),
 ('HD0004', 0.00, 'Tiền mặt', 250.00, 0, '2024-10-21 21:40:43', 4, 4, 2),
-('HD0005', 15.00, 'Chuyển khoản', 300.00, 1, '2024-10-21 21:40:43', 5, 5, 2);
+('HD0005', 15.00, 'Chuyển khoản', 300.00, 1, '2024-01-21 21:40:43', 5, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -241,7 +223,7 @@ INSERT INTO `order` (`OrderID`, `Discount`, `PaymentMethod`, `TotalAmount`, `Sta
 CREATE TABLE `orderdetail` (
   `OrderID` varchar(6) NOT NULL,
   `ProductID` varchar(6) NOT NULL,
-  `UnitPrice` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `UnitPrice` decimal(10,3) NOT NULL DEFAULT 0.000,
   `Quantity` int(11) NOT NULL DEFAULT 1,
   `CreateDate` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -251,11 +233,11 @@ CREATE TABLE `orderdetail` (
 --
 
 INSERT INTO `orderdetail` (`OrderID`, `ProductID`, `UnitPrice`, `Quantity`, `CreateDate`) VALUES
-('HD0001', 'PR0001', 50.00, 2, '2024-10-21 21:40:43'),
-('HD0002', 'PR0002', 30.00, 3, '2024-10-21 21:40:43'),
-('HD0003', 'PR0003', 20.00, 1, '2024-10-21 21:40:43'),
-('HD0004', 'PR0004', 15.00, 4, '2024-10-21 21:40:43'),
-('HD0005', 'PR0005', 10.00, 5, '2024-10-21 21:40:43');
+('HD0001', 'PR0001', 50.000, 2, '2024-10-21 21:40:43'),
+('HD0002', 'PR0002', 30.000, 3, '2024-10-21 21:40:43'),
+('HD0003', 'PR0003', 20.000, 1, '2024-10-21 21:40:43'),
+('HD0004', 'PR0004', 15.000, 4, '2024-10-21 21:40:43'),
+('HD0005', 'PR0005', 10.000, 5, '2024-10-21 21:40:43');
 
 -- --------------------------------------------------------
 
@@ -266,7 +248,8 @@ INSERT INTO `orderdetail` (`OrderID`, `ProductID`, `UnitPrice`, `Quantity`, `Cre
 CREATE TABLE `product` (
   `ProductID` varchar(10) NOT NULL,
   `ProductName` varchar(100) NOT NULL,
-  `UnitPrice` decimal(10,2) NOT NULL,
+  `UnitPrice` decimal(10,3) NOT NULL,
+  `ProductImage` varchar(100) DEFAULT NULL,
   `UnitsInStock` int(11) DEFAULT NULL,
   `Status` tinyint(4) DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL,
@@ -280,12 +263,12 @@ CREATE TABLE `product` (
 -- Đang đổ dữ liệu cho bảng `product`
 --
 
-INSERT INTO `product` (`ProductID`, `ProductName`, `UnitPrice`, `UnitsInStock`, `Status`, `Description`, `CreateAt`, `UpdatedAt`, `RequestID`, `CategoryID`) VALUES
-('PR0001', 'Cà phê', 50.00, 100, 1, 'Cà phê ngon', '2024-10-21 21:40:43', '2024-10-21 21:40:43', 'RQ0001', 1),
-('PR0002', 'Trà', 30.00, 150, 1, 'Trà xanh', '2024-10-21 21:40:43', '2024-10-21 21:40:43', 'RQ0002', 1),
-('PR0003', 'Bánh ngọt', 20.00, 200, 1, 'Bánh ngọt tự làm', '2024-10-21 21:40:43', '2024-10-21 21:40:43', 'RQ0003', 2),
-('PR0004', 'Nước ngọt', 15.00, 250, 1, 'Nước ngọt giải khát', '2024-10-21 21:40:43', '2024-10-21 21:40:43', 'RQ0004', 2),
-('PR0005', 'Mì ăn liền', 10.00, 300, 1, 'Mì ăn liền tiện lợi', '2024-10-21 21:40:43', '2024-10-21 21:40:43', 'RQ0003', 3);
+INSERT INTO `product` (`ProductID`, `ProductName`, `UnitPrice`, `ProductImage`, `UnitsInStock`, `Status`, `Description`, `CreateAt`, `UpdatedAt`, `RequestID`, `CategoryID`) VALUES
+('PR0001', 'Cà phê truyền thống', 45.000, 'cafe-truyen-thong.jpg', 100, 1, 'Cà phê truyền thống được chọn lọc kĩ càng từ nhiều thương hiệu cafe uy tín, đảm bảo về chất lượng', '2024-10-21 21:40:43', '2024-11-10 10:03:51', 'RQ0001', 1),
+('PR0002', 'Trà Đào cam xả', 40.000, 'tra-dao.jpg', 150, 1, 'Trà Đào', '2024-10-21 21:40:43', '2024-11-10 10:05:06', 'RQ0002', 4),
+('PR0003', 'Cà phê nóng', 45.000, 'cf_nong.JPG', 200, 1, 'Cà phê nóng', '2024-10-21 21:40:43', '2024-11-10 10:01:48', 'RQ0003', 1),
+('PR0004', 'Nước ép táo', 25.000, 'nuoc-ep-tao.jpg', 250, 1, 'Nước ép giải khát', '2024-10-21 21:40:43', '2024-11-10 10:07:15', 'RQ0004', 3),
+('PR0005', '7 Up', 15.000, '7up.png', 300, 1, 'Nước ngọt giải khát', '2024-10-21 21:40:43', '2024-11-10 10:19:34', 'RQ0003', 5);
 
 -- --------------------------------------------------------
 
@@ -518,7 +501,7 @@ ALTER TABLE `workshift_employee`
 -- AUTO_INCREMENT cho bảng `category`
 --
 ALTER TABLE `category`
-  MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `CategoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `comment`
@@ -536,7 +519,7 @@ ALTER TABLE `coupon`
 -- AUTO_INCREMENT cho bảng `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `CustomerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `CustomerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `employee`

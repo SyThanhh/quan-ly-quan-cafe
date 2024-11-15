@@ -327,7 +327,7 @@
                                 <div class="form-group">
                                     <label for="product-search">Tên Sản Phẩm:</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="product-search" placeholder="Nhập tên sản phẩm...">
+                                        <input type="text" class="form-control" id="product-search" name = "tim" placeholder="Nhập tên sản phẩm...">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary search-button m-0" type="button">
                                                 <i class="fas fa-search"></i>
@@ -356,26 +356,43 @@
                                         <p>Sản phẩm 1</p>
                                         <p class="stock">Tồn kho: 1</p>
                                     </div> -->
-                                    <?php
-                                        $query = "SELECT ProductName, UnitsInStock, UnitPrice, ProductImage FROM product"; // Giả sử bảng của bạn là 'products' và có các cột name, stock, price
-                                        $products = $database->select($query);
-                                        
-                                        // Kiểm tra kết quả và hiển thị danh sách sản phẩm
-                                        if ($products) {
-                                            while ($product = $products->fetch_assoc()) {
-                                                echo '<div class="product-item" data-name="'.$product['ProductName'].'" data-stock="'.$product['UnitsInStock'].'" data-price="'.$product['UnitPrice'].'">';
-                                                echo '<img src="assets/img/products/'.$product["ProductImage"].'" alt="'.$product['ProductName'].'">';
-                                                echo '<p>'.$product['ProductName'].'</p>';
-                                                echo '<p class="stock">Tồn kho: '.$product['UnitsInStock'].'</p>';
-                                                echo '<p class="price">Giá: '.number_format($product['UnitPrice'], 3, ',', '.').'₫</p>';
-                                                echo '</div>';
-                                            }
-                                        } else {
-                                            echo "Không có sản phẩm nào.";
+                                    <!-- <div class="product-list" id="product-list"> -->
+                                <?php
+                                    $query = "SELECT ProductName, UnitsInStock, UnitPrice, ProductImage FROM product";
+                                    $products = $database->select($query);
+
+                                    if ($products) {
+                                        while ($product = $products->fetch_assoc()) {
+                                            echo '<div class="product-item" data-name="'.$product['ProductName'].'" data-stock="'.$product['UnitsInStock'].'" data-price="'.$product['UnitPrice'].'">';
+                                            echo '<img src="assets/img/products/'.$product["ProductImage"].'" alt="'.$product['ProductName'].'">';
+                                            echo '<p>'.$product['ProductName'].'</p>';
+                                            echo '<p class="stock">Tồn kho: '.$product['UnitsInStock'].'</p>';
+                                            echo '<p class="price">Giá: '.number_format($product['UnitPrice'], 3, ',', '.').'₫</p>';
+                                            echo '</div>';
                                         }
-                                    ?>
+                                    } else {
+                                        echo "Không có sản phẩm nào.";
+                                    }
+                                ?> 
                                    
                                 </div>
+
+                                <script>
+                                    document.getElementById("product-search").addEventListener("input", function() {
+                                        const searchTerm = this.value.toLowerCase();
+                                        const products = document.querySelectorAll(".product-item");
+
+                                        products.forEach(product => {
+                                            const productName = product.getAttribute("data-name").toLowerCase();
+                                            if (productName.includes(searchTerm)) {
+                                                product.style.display = "block";
+                                            } else {
+                                                product.style.display = "none";
+                                            }
+                                        });
+                                    });
+                                </script>
+
                         </div>
                     </div>
                 </div>

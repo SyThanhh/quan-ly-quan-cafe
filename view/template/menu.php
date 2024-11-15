@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +14,26 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .containerfull,
+        .containerfull {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .boxleft {
+            width: 20%;
+            padding-right: 20px;
+        }
+
+        .boxright {
+            width: 78%;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 cột mỗi hàng */
+            gap: 20px; /* Khoảng cách giữa các sản phẩm */
+        }
         .row {
             float: left;
             width: 100%;
@@ -102,13 +122,145 @@
         .menu a{
             margin: 0 20px;
         }
+        /* Phong cách tổng thể cho form tìm kiếm */
+        .search-form {
+            display: flex;                 /* Sử dụng Flexbox để căn chỉnh các phần tử trong cùng một hàng */
+            justify-content: center;       /* Căn giữa các phần tử */
+            align-items: center;           /* Căn chỉnh các phần tử theo chiều dọc */
+            gap: 10px;                     /* Khoảng cách giữa các phần tử */
+            margin: 30px auto;
+            max-width: 600px;
+            margin-left:90px;
+        }
 
+        .search-form form {
+            display: flex;                 /* Flexbox cho form */
+            width: 100%;
+            justify-content: center;       /* Căn giữa các phần tử trong form */
+            align-items: center;           /* Căn chỉnh các phần tử theo chiều dọc */
+        }
+
+        .search-form input[type="text"] {
+            font-size: 16px;
+            padding: 10px;
+            width: 300px;                  /* Đặt chiều rộng cho ô input */
+            border: 2px solid #333;
+            border-radius: 15px;
+            background-color: #f4f4f9;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-form input[type="text"]:focus {
+            background-color: #fff;
+        }
+
+        .search-form button {
+            font-size: 13px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-left: 20px;
+            transition: background-color 0.3s ease;
+            width: 112px;
+        }
+
+        .search-form a {
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 15px;  /* bo tròn */
+            padding: 10px 20px;
+            width: 112px;
+            margin-left: 20px;
+            background-color: #28a745 ; 
+            /* #28a745 */
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .search-form button:hover, .search-form a:hover {
+            background-color: #218838;
+        }
+
+        .search-form button:active, .search-form a:active {
+            background-color: #1e7e34;
+        }
+
+
+
+    .product-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+}
+
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.product-card p:nth-of-type(3) {
+    color: #E74C3C;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.product-card p:nth-of-type(4) {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.menu-item {
+    margin-left: 50px;
+}
     </style>
 </head>
 
 <body>
+<?php include_once('./common/header/navbar.php'); ?>
+    <?php
+    // Kết nối với cơ sở dữ liệu
+    $servername = "localhost"; // Hoặc IP của máy chủ MySQL
+    $username = "root";        // Tên người dùng MySQL
+    $password = "";            // Mật khẩu MySQL
+    $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
+
+    // Tạo kết nối
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+    // Kiểm tra kết nối
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    ?>
     <!-- Navbar Start -->
-    <?php  include_once('./common/header/navbar.php')    ?>
+    
     
     <!-- Navbar End -->
 
@@ -126,73 +278,85 @@
     </div>
     <!-- Page Header End -->
 
+    <!-- Form tìm kiếm -->
+    <div class="search-form">
+        <form action="" method="post">
+            <input type="text" name="tim" placeholder="Nhập tên sản phẩm..." required>
+            <button type="submit">TÌM KIẾM</button>
+
+            <a href="?page=menu" id='a1'>Quay Lại</a>
+        </form>
+    </div>
 
    <!-- Menu Start -->
     <div class="container-fluid pt-5">
-    <section class="containerfull">
-        <div class="container">
-            <div class="boxleft mr2pt menutrai">
+        <section class="containerfull">
+            <div class="boxleft">
                 <h1>DANH MỤC</h1><br><br>
-                <a href="#">Cà phê</a>
-             
-                <a href="#">Trà</a>
-                <a href="#">Bánh</a>
+                <a href="#" class="menu-item">Cà phê</a><br>
+                <a href="#" class="menu-item">Trà</a>
+            </div>    
+
+                <div class="product-grid">
+                <?php
+                    // Kiểm tra nếu có từ khóa tìm kiếm
+                    $searchTerm = isset($_REQUEST['tim']) ? $_REQUEST['tim'] : '';
+
+                    if (!empty($searchTerm)) {
+                        // Câu truy vấn khi có từ khóa
+                        $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status 
+                                FROM product 
+                                WHERE ProductName LIKE ?";
+                        $stmt = mysqli_prepare($conn, $sql);
+                        $likeSearchTerm = "%" . $searchTerm . "%";
+                        mysqli_stmt_bind_param($stmt, "s", $likeSearchTerm);
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+                    } else {
+                        // Câu truy vấn mặc định nếu không có từ khóa
+                        $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status FROM product";
+                        $result = mysqli_query($conn, $sql);
+                    }
+
+                    // Hiển thị sản phẩm
+                    if (mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<div class='product-card'>";
+                            
+                            // Hiển thị ảnh sản phẩm hoặc ảnh mặc định
+                            if (!empty($row['ProductImage'])) {
+                                echo "<img src='assets/img/products/" . htmlspecialchars($row['ProductImage']) . "' alt='" . htmlspecialchars($row['ProductName']) . "'>";
+                            } else {
+                                echo "<img src='assets/img/default-product.jpg' alt='Default Product Image'>";
+                            }
+                            echo "<a href='index.php?page=page_productdetail&ProductID=" . $row['ProductID'] . "'>";
+                            // Hiển thị tên sản phẩm
+                            echo "<h3>" . htmlspecialchars($row['ProductName']) . "</h3>";
+                            echo "</a>"; // Đóng thẻ <a>
+
+                            // Thông tin thêm về sản phẩm
+                            echo "<p><strong>Price:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
+                            echo "<p><strong>In Stock:</strong> " . $row['UnitsInStock'] . "</p>";
+                            echo "<p><strong>Status:</strong> " . ($row['Status'] == 1 ? 'Available' : 'Out of Stock') . "</p>";
+                            echo "</div>";
+                        }
+                    } else {
+                        echo "<p>No products available.</p>";
+                    }
+
+                    // Đóng statement nếu đã dùng
+                    if (!empty($searchTerm)) {
+                        mysqli_stmt_close($stmt);
+                    }
+
+                    mysqli_close($conn);
+                ?>
             </div>
-            <div class="boxright">
-                <h1>SẢN PHẨM</h1><br>
-                <div class="containerfull mr30">
-                    <div class="box25 mr15 mb">
-                        <div class="best"></div>
-                        <img src="assets/img/sp1.webp" alt="">
-                        <span class="price">15.000Vnd</span>
-                        <a href="index.php?page=page_productdetail&id=1">
-                            <button>Chi tiết</button>
-                        </a>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/sp2.webp" alt="">
-                        <span class="price">29.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/menu-1.jpg" alt="">
-                        <span class="price">25.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/sp3.webp" alt="">
-                        <span class="price">25.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/sp5.jpg" alt="">
-                        <span class="price">19.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/sp7.webp" alt="">
-                        <span class="price">29.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/menu-2.jpg" alt="">
-                        <span class="price">39.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
-                    <div class="box25 mr15 mb">
-                    <img src="assets/img/menu-3.jpg" alt="">
-                        <span class="price">39.000Vnd</span>
-                        <button>Chi tiết</button>
-                    </div>
 
-                </div>
             </div>
-
-
-        </div>
-    </section>
-
+        </section>
     </div>
+
     <!-- Menu End -->
 
 

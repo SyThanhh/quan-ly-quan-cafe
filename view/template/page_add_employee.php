@@ -29,7 +29,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -40,7 +40,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -192,7 +192,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin-name</span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>
@@ -253,6 +253,10 @@
                                         <td><input type="text" class="form-control" id="firstName" name="firstName" required></td>
                                     </tr>
                                     <tr>
+                                        <th><label for="email">Email:</label></th>
+                                        <td><input type="text" class="form-control" id="email" name="email" required></td>
+                                    </tr>
+                                    <tr>
                                         <th><label for="phoneNumber">Số Điện Thoại:</label></th>
                                         <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required></td>
                                     </tr>
@@ -274,7 +278,7 @@
                                                             $positionLabel = 'Nhân viên pha chế';
                                                             break;
                                                     }
-                                                    echo "<option value='{$position['id']}'>{$positionLabel}</option>";
+                                                    echo "<option value='{$position['Roles']}'>{$positionLabel}</option>";
                                                 }
                                                 ?>
                                             </select>
@@ -291,12 +295,48 @@
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
                                     <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add">Thêm Nhân Viên</button>
+                                    <button type="submit" class="btn btn-primary btn-add" name="addEmployee">Thêm Nhân Viên</button>
                                 </div>
                             </form>        
                         </div>
                     </div>
                 </div>
+
+                <!-- Thêm nhân viên -->
+                <?php
+                if (isset($_POST['addEmployee'])) {
+                    // Nhận dữ liệu từ form
+                    $employeeID = $_POST['employeeID'];
+                    $lastName = trim($_POST['lastName']);
+                    $firstName = trim($_POST['firstName']);
+                    $email = trim($_POST['email']);
+                    $phoneNumber = trim($_POST['phoneNumber']);
+                    $position = $_POST['position'];
+                    $birthDate = $_POST['birthDate'];
+                
+                    // Kiểm tra nếu các trường đều đã được điền
+                    // Chuẩn bị câu truy vấn SQL để thêm nhân viên
+                    $status=1;
+                    $query = "INSERT INTO employee (EmployeeID, FirstName, LastName, Email, PhoneNumber, Roles, Status, DateOfBirth)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param("issssisi", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate);
+            
+                    // Thực thi câu truy vấn
+                    if ($stmt->execute()) {
+                        // Hiển thị thông báo "Thêm thành công" và chuyển hướng
+                        echo "<script>
+                                window.location.href = 'index.php?page=page_employee';
+                                alert('Thêm thành công');
+                                </script>";
+                        exit;
+                    } else {
+                        echo "<p>Đã có lỗi xảy ra: " . $stmt->error . "</p>";
+                    }
+                    $stmt->close();
+                }
+                ?>
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>

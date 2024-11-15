@@ -68,6 +68,20 @@
             background-color: #333;
             padding: 50px 0;
         }
+
+        /* */
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #555542;
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -92,54 +106,58 @@
 
     <!-- Page Header -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
-        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Khuyến mãi</h1>
-            <div class="d-inline-flex mb-lg-5">
-                <p class="m-0 text-white"><a class="text-white" href="">Trang chủ</a></p>
-                <p class="m-0 text-white px-2">/</p>
-                <p class="m-0 text-white">Khuyến mãi</p>
-            </div>
+        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 260px">
+            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">ĐIỂM TÍCH LŨY</h1>
+            
         </div>
     </div>
 
-    <!-- Promo Cards Grid -->
-    <div class="promo-grid">
-        <?php
-        // Query to fetch all coupon data, including image field
-        $sql = "SELECT CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpdateAt, image FROM coupon";
+
+    <?php
+        // Kết nối với cơ sở dữ liệu
+        $servername = "localhost"; // Hoặc IP của máy chủ MySQL
+        $username = "root";        // Tên người dùng MySQL
+        $password = "";            // Mật khẩu MySQL
+        $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
+
+        // Tạo kết nối
+        $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+        // Kiểm tra kết nối
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error());
+        }
+
+        // Lấy dữ liệu từ bảng customer
+        $sql = "SELECT CustomerID, CustomerName, CustomerPhone, CustomerPoint FROM customer";
         $result = mysqli_query($conn, $sql);
 
+        // Kiểm tra nếu có kết quả
         if (mysqli_num_rows($result) > 0) {
-        
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo '<div class="promo-card">';
-                // Display image if exists
-                if (!empty($row["image"])) {
-                    $imagePath = htmlspecialchars($row["image"]);
-                    echo '<img src="view/template/' . $imagePath . '" alt="Promo Image">';
-                    echo '<img src="assets/img/coupon/' . $imagePath . '" alt="Promo Image">';
-
-                }
-                 else {
-                    echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn
-                    // echo '<img src="template/path/to/default-image.jpg" alt="Default Promo Image">'; // Đường dẫn cho hình ảnh mặc định
-                }
-                echo '<div class="promo-info">';
-                echo '<h3>' . htmlspecialchars($row["Description"]) . '</h3>';
-                echo '<p><strong>Coupon Code:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
-                echo '<p><strong>Discount:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
-                // echo '<p><strong>Start Date:</strong> ' . htmlspecialchars($row["StartDate"]) . '</p>';
-                // echo '<p><strong>End Date:</strong> ' . htmlspecialchars($row["EndDate"]) . '</p>';
-                echo '<p><strong>Status:</strong> ' . ($row["Status"] ? 'Active' : 'Inactive') . '</p>';
-                // echo '<p><strong>Last Updated:</strong> ' . htmlspecialchars($row["UpdateAt"]) . '</p>';
-                echo '</div>';
-                echo '</div>';
+            // Hiển thị dữ liệu
+            echo "<table border='1'>
+                    <tr>
+                        <th>CustomerID</th>
+                        <th>CustomerName</th>
+                        <th>CustomerPhone</th>
+                        <th>CustomerPoint</th>
+                    </tr>";
+            while($row = mysqli_fetch_assoc($result)) {
+                echo "<tr>
+                        <td>" . $row["CustomerID"] . "</td>
+                        <td>" . $row["CustomerName"] . "</td>
+                        <td>" . $row["CustomerPhone"] . "</td>
+                        <td>" . $row["CustomerPoint"] . "</td>
+                    </tr>";
             }
+            echo "</table>";
         } else {
-            echo "<p>No promotions available.</p>";
+            echo "0 results";
         }
+
+        // Đóng kết nối
+        mysqli_close($conn);
         ?>
-    </div>
 
 
     <!-- Footer Start -->
@@ -185,15 +203,8 @@
         </div>
         
     </div>
-    <!-- Footer End -->
 
-
-
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
     <?php include_once('./common/script/default-template.php')?>
 
 </body>

@@ -29,7 +29,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
+                    <!-- <form
                         class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
@@ -40,7 +40,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> -->
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -192,7 +192,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin-name</span>
                                 <img class="img-profile rounded-circle"
                                     src="img/undraw_profile.svg">
                             </a>
@@ -259,14 +259,14 @@
                                             <th>Tên</th>
                                             <th>Email</th>
                                             <th>Số điện thoại</th>
-                                            <th>Vai trò</th>
+                                            <th>Vị trí làm việc</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                             // Truy vấn danh sách nhân viên
-                                            $employees = $database->select("SELECT * FROM employee");
+                                            $employees = $database->select("SELECT * FROM employee WHERE Roles > 1");
 
                                             // Hiển thị danh sách nhân viên
                                             if ($employees) {

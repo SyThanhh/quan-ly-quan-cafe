@@ -1,199 +1,329 @@
 <?php
-// Mảng sản phẩm ví dụ (thực tế sẽ lấy từ cơ sở dữ liệu)
-$products = [
-    1 => [
-        'name' => 'Bánh Mì',
-        'description' => 'Bánh mì được thêm gia vị như tương ớt, mayonnaise, hoặc pate.',
-        'price' => '15,000 VND',
-        'image' => 'assets/img/sp1.webp',
-        'sizes' => ['S' => '15,000 VND', 'M' => '25,000 VND']
-    ],
-    2 => [
-        'name' => 'Cà Phê',
-        'description' => 'Cà phê rang xay nguyên chất.',
-        'price' => '20,000 VND',
-        'image' => 'assets/img/sp2.webp',
-        'sizes' => ['S' => '20,000 VND', 'M' => '30,000 VND']
-    ],
-    // Thêm các sản phẩm khác nếu cần
-];
+    include_once('./connect/database.php');
+    $database = new Database();
+    $conn = $database->connect();
 
-// Lấy ID sản phẩm từ URL
-$productId = isset($_GET['id']) ? $_GET['id'] : null;
+    // Kiểm tra nếu ProductID tồn tại trong URL
+    if (isset($_GET['ProductID']) && !empty($_GET['ProductID'])) {
+        $productID = $_GET['ProductID'];
 
-if ($productId && isset($products[$productId])) {
-    $product = $products[$productId];
-} else {
-    echo 'Sản phẩm không tồn tại.';
-    exit;
-}
+        // Truy vấn chi tiết sản phẩm từ cơ sở dữ liệu
+        $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status 
+                FROM product 
+                WHERE ProductID = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $productID);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        // Kiểm tra nếu sản phẩm tồn tại
+        if (mysqli_num_rows($result) > 0) {
+            $product = mysqli_fetch_assoc($result);
+        } else {
+            echo "<p>Không tìm thấy sản phẩm!</p>";
+            exit;
+        }
+    } else {
+        echo "<p>Không tồn tại mã sản phẩm!</p>";
+        exit;
+    }
+
+    $carouselSql = "SELECT ProductID, ProductName, UnitPrice, ProductImage FROM product WHERE Status = 1 LIMIT 5";  // Bạn có thể thay đổi LIMIT
+    $carouselResult = mysqli_query($conn, $carouselSql);
+
+    mysqli_stmt_close($stmt);
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <?php include_once('./common/head/head-website.php') ?>
     <style>
-        /* CSS cho trang chi tiết sản phẩm */
-        .product-detail {
-            margin: 20px;
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            justify-content: space-between;
         }
-
-        .product-detail img {
-            width: 400px;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px #999;
-            margin-top: 10px;
-        }
-
-        .product-detail h1 {
-            text-align: center;
-            font-size: 24px;
-            color: #993300;
-            margin-left: 0px;
-            margin-top: 20px;
-        }
-
-        .product-detail .price {
-            color: #993300;
-            font-size: 18px;
-            font-weight: bold;
-            margin-left: 50px;
-        }
-
-        .product-detail .description {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-        }
-
-        .product-detail .sizes {
-            margin-top: 20px;
+        .containerfull {
             display: flex;
-            justify-content: center;
-            margin-left: 50px;
+            justify-content: space-between;
+            padding: 0 20px;
         }
 
-        .product-detail .sizes a {
-            margin: 0 10px;
+        .boxleft {
+            width: 20%;
+            padding-right: 20px;
+        }
+
+        .boxright {
+            width: 78%;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 cột mỗi hàng */
+            gap: 20px; /* Khoảng cách giữa các sản phẩm */
+        }
+        .row {
+            float: left;
+            width: 100%;
+        }
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+        }
+        .box25 {
+            float: left;
+            width: 25%;
+            width: calc(25% - 30px);
+            position: relative;
+        }
+        .box25 img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #999999;
+        }
+        .mr15 {
+            margin-right: 30px;
+        }
+        
+        button {
             color: #993300;
-            text-decoration: none;
+            font-size: 13pt;
             font-weight: bold;
-            margin-left: 50px;
+            width: 100%;
+            border: 1px #993300 dotted;
+            border-radius: 5px;
+            padding: 10px 0px;
+            background-color: #FFFFFF;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24pt;
+            margin: 0px;
+        }
+        .price {
+            text-align: center;
+            color: #993300;
+            font-size: 12pt;
+            float: left;
+            width: 100%;
+            padding: 8px 0px;
+        }
+        a {
+            color: #993300;
+            font-size: 13pt;
+            font-weight: bold;
+            text-decoration: none;
         }
 
-        .product-detail .sizes a:hover {
+        a:hover {
             color: #000000;
         }
-        .col-md-6>img{
-            margin-left: 50px;
+        .boxleft {
+            float: left;
+            width: 20%;
         }
-        .productBox{
-            margin-left: 100px;
+        .boxright {
+            float: left;
+            width: 78%;
         }
-        .size ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex; /* Đặt các phần tử con theo hàng ngang */
+        .mb {
+            margin-bottom: 50px;
         }
-
-        .size li {
-            margin-right: 10px; /* Khoảng cách giữa các item */
-            border: 1px solid #ccc; /* Đóng khung */
-            padding: 8px 15px;
-            border-radius: 5px;
-            background-color: #f5f5f5; /* Màu nền cho các phần tử */
-            cursor: pointer;
-            text-align: center; /* Căn giữa nội dung */
-            transition: background-color 0.3s ease; /* Hiệu ứng khi hover */
-        }
-
-        .size li:last-child {
-            margin-right: 0; /* Loại bỏ margin bên phải của phần tử cuối cùng */
-        }
-
-        .size li a {
-            color: #333; /* Màu chữ */
-            text-decoration: none; /* Xóa gạch chân */
-            font-weight: bold; /* In đậm */
-        }
-
-        .size li:hover {
-            background-color: red; /* Thay đổi màu nền khi hover */
-        }
-
-        .size li.selected {
-            background-color: #993300; /* Màu nền khi kích cỡ được chọn */
-            color: white; /* Màu chữ khi kích cỡ được chọn */
-        }
-
-        #slideOther .slick-slider {
-            width: 50%; /* Đảm bảo slider chiếm toàn bộ chiều rộng của container */
-        }
-
-        #slideOther .slick-track {
-            display: flex; /* Sử dụng Flexbox để các item sắp xếp theo chiều ngang */
-        }
-
-        #slideOther .item {
-            flex: 0 0 auto; /* Đảm bảo mỗi item có kích thước cố định */
-            width: 20%; /* Hiển thị 5 items trên mỗi dòng, có thể điều chỉnh tùy nhu cầu */
-            margin-right: 10px; /* Khoảng cách giữa các item */
-        }
-
-        .img>a>img{
-            width: 200px;
-            height: auto;
-        }
-        .tend2{
-            size: 10px;
-            margin-left: 18px;
-        }
-        input[type="text"],
-        textarea, select {
+        .menutrai a {
+            display: block;
             width: 100%;
-            padding: 8px; 
-            margin: 5px 0;
-            box-sizing: border-box; 
+            color: #993300;
+            font-size: 13pt;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px #CCC dotted;
         }
-        .fa-star {
-            color: #f39c12; /* Màu vàng cho ngôi sao */
-            font-size: 18px;
-            margin-right: 3px;
+        .menutrai a:hover {
+            color: #000000;
         }
-    </style>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#slideOther').slick({
-                autoplay: true,            // Bật chế độ tự động chạy
-                autoplaySpeed: 3000,       // Thời gian chuyển slide (3 giây)
-                dots: true,                // Hiển thị dấu chấm dưới slider
-                arrows: true,              // Hiển thị nút điều hướng (next/prev)
-                infinite: true,            // Chế độ lặp lại vô hạn
-                slidesToShow: 4,           // Số lượng slide hiển thị trên một trang
-                slidesToScroll: 1          // Mỗi lần cuộn 1 slide
-            });
-    });
-</script>
-</head>
+        .menu{
+            height: 40px;
+            line-height: 40px;
+        }
+        .menu a{
+            margin: 0 20px;
+        }
+        .search-form {
+            display: flex;                
+            justify-content: center;    
+            align-items: center;           
+            gap: 10px;                     
+            margin: 30px auto;
+            max-width: 600px;
+            margin-left:90px;
+        }
 
+        .search-form form {
+            display: flex;             
+            width: 100%;
+            justify-content: center;       
+            align-items: center;           
+        }
+
+        .search-form input[type="text"] {
+            font-size: 14px;
+            padding: 10px;
+            width: 300px;                
+            border: 2px solid #333;
+            border-radius: 15px;
+            background-color: #f4f4f9;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-form input[type="text"]:focus {
+            background-color: #fff;
+        }
+
+        .search-form button {
+            font-size: 13px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-left: 20px;
+            transition: background-color 0.3s ease;
+            width: 112px;
+        }
+
+        .search-form a {
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 15px;  /* bo tròn */
+            padding: 10px 20px;
+            width: 112px;
+            margin-left: 20px;
+            background-color: #28a745 ; 
+            /* #28a745 */
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .search-form button:hover, .search-form a:hover {
+            background-color: #218838;
+        }
+
+        .search-form button:active, .search-form a:active {
+            background-color: #1e7e34;
+        }
+
+        .product-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    .product-detail img{
+        margin-top: 50px;
+    }
+
+    .product-card h3 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .product-card p {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .product-card p:nth-of-type(3) {
+        color: #E74C3C;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .product-card p:nth-of-type(4) {
+        color: #2ecc71;
+        font-weight: bold;
+    }
+
+    .menu-item {
+        margin-left: 50px;
+    }
+  
+    .star-rating {
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    .star {
+        color: gray; 
+        padding: 0 5px;
+    }
+    .row .container .text-center{
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 10px; 
+        margin-left: 20px;
+    }
+
+    .col-md-2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .product-image-wrapper {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .col-md-2 h5, .col-md-2 p {
+        text-align: center;
+    }
+    </style>
+</head>
 <body>
-    <!-- Navbar Start -->
-    <?php include_once('./common/header/navbar.php') ?>
-    <!-- Navbar End -->
+    <?php include_once('./common/header/navbar.php'); ?>
 
     <!-- Page Header Start -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
         <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase"><?php echo $product['name']; ?></h1>
+            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">CHI TIẾT SẢN PHẨM</h1>
             <div class="d-inline-flex mb-lg-5">
-                <p class="m-0 text-white"><a class="text-white" href="index.php">Trang chủ</a></p>
+                <p class="m-0 text-white"><a class="text-white" href="index.php">Menu</a></p>
                 <p class="m-0 text-white px-2">/</p>
                 <p class="m-0 text-white">Chi tiết sản phẩm</p>
             </div>
@@ -201,210 +331,224 @@ if ($productId && isset($products[$productId])) {
     </div>
     <!-- Page Header End -->
 
-    <!-- Product Detail Start -->
-    <div class="product-detail">
-        <div class="row">
-            <div class="col-md-6">
-                <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>">
-                <h1><?php echo $product['name']; ?></h1>
-            </div>
-            <div class="col-md-6">
-                <div class="description"><?php echo $product['description']; ?></div>
-                <img alt="65-dat-mua-kmk" data-ck-zoom="yes" src="https://highlandscoffee.com.vn/vnt_upload/product/04_2020/65-dat-mua-kmk.png" style="width: 400px; height: 99px;">
-                <p>&nbsp;</p>
-                <div class="productBox">
-                    <div class="title-box">Size :</div>
-                    <div class="content-box mb-5">
-                        <div class="size">
-                            <ul>
-                                <?php foreach ($product['sizes'] as $size => $price) : ?>
-                                    <li class=""><a href="javascript:void(0)" data-id="<?php echo $size; ?>" data-price="<?php echo $price; ?>"><?php echo $size?></a></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="price" bis_skin_checked="1">Giá : <strong id="ext_price"><?php echo $product['price']; ?></strong></div>
-                </div>
-            </div>
-            <script>
-                document.querySelectorAll('.size a').forEach(function(sizeElement) {
-                sizeElement.addEventListener('click', function(event) {
-                    // Lấy giá từ thuộc tính 'data-price' của liên kết được nhấp
-                    var newPrice = sizeElement.getAttribute('data-price');
-                    
-                    // Cập nhật giá hiển thị trong phần tử có ID 'ext_price'
-                    document.getElementById('ext_price').innerText = newPrice;
-                });
-            });
-            </script>
-        </div>
-        <div class="row">
-            <div class="box_mid">
-                <div class="mid-title">
-                    <div class="titleL"><h2>Khác</h2></div>
-                    <div class="titleR"></div>
-                </div>
+    <!-- Form tìm kiếm -->
+    <div class="search-form mb-5">
+        <form action="" method="get">
+            <input type="text" name="tim" placeholder="Nhập tên sản phẩm..." required>
+            <button type="submit">TÌM KIẾM</button>
+            <a href="index.php?page=menu" id='a1'>Quay Lại</a>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h1 style="margin-left: -80px">DANH MỤC</h1><br><br>
+            <a href="#" class="menu-item">Cà phê</a><br>
+            <a href="#" class="menu-item">Trà</a>
+         </div>
+        <div class="col-md-4">
+            <div class="product-detail">
+                <?php if (!empty($product['ProductImage'])): ?>
+                    <img src="assets/img/products/<?php echo htmlspecialchars($product['ProductImage']); ?>" alt="<?php echo htmlspecialchars($product['ProductName']); ?>" class="img-fluid">
+                <?php else: ?>
+                    <img src="assets/img/default-product.jpg" alt="Default Product Image" class="img-fluid">
+                <?php endif; ?>
 
-                <div class="mid-content">
-                    <div id="slideOther" class="slick-slider">
-                        <div class="slick-list">
-                            <div class="slick-track">
-                                <!-- Item 1 -->
-                                <div class="item slick-slide">
-                                    <div class="product mb-3">
-                                        <div class="img mb-3">
-                                            <a href="https://www.highlandscoffee.com.vn/vn/tra-thach-dao.html">
-                                                <img src="https://www.highlandscoffee.com.vn/vnt_upload/product/06_2023/thumbs/270_crop_HLC_New_logo_5.1_Products__TRA_THANH_DAO-09.jpg" alt="Trà Thạch Đào">
-                                            </a>
-                                        </div>
-                                        <div class="tend2">
-                                            <h4><a href="https://www.highlandscoffee.com.vn/vn/tra-thach-dao.html">Trà Thạch Đào</a></h4>
-                                        </div>
-                                        <div class="price">Giá: <strong>45,000 VNĐ</strong></div>
-                                    </div>
-                                </div>
-
-                                <!-- Item 2 -->
-                                <div class="item slick-slide">
-                                    <div class="product mb-3">
-                                        <div class="img mb-3">
-                                            <a href="https://www.highlandscoffee.com.vn/vn/tra-thanh-d.html">
-                                                <img src="https://www.highlandscoffee.com.vn/vnt_upload/product/06_2023/thumbs/270_crop_HLC_New_logo_5.1_Products__TRA_THANH_DAO-08.jpg" alt="Trà Thanh Đào">
-                                            </a>
-                                        </div>
-                                        <div class="tend2">
-                                            <h4><a href="https://www.highlandscoffee.com.vn/vn/tra-thanh-d.html">Trà Thanh Đào</a></h4>
-                                        </div>
-                                        <div class="price">Giá: <strong>45,000 VNĐ</strong></div>
-                                    </div>
-                                </div>
-
-                                <!-- Item 3 -->
-                                <div class="item slick-slide">
-                                    <div class="product mb-3">
-                                        <div class="img mb-3">
-                                            <a href="https://www.highlandscoffee.com.vn/vn/tra-sen-vang-sen-.html">
-                                                <img src="https://www.highlandscoffee.com.vn/vnt_upload/product/06_2023/thumbs/270_crop_HLC_New_logo_5.1_Products__TSV.jpg" alt="Trà Sen Vàng (Sen)">
-                                            </a>
-                                        </div>
-                                        <div class="tend2">
-                                            <h4><a href="https://www.highlandscoffee.com.vn/vn/tra-sen-vang-sen-.html">Trà Sen Vàng</a></h4>
-                                        </div>
-                                        <div class="price">Giá: <strong>45,000 VNĐ</strong></div>
-                                    </div>
-                                </div>
-
-                                <!-- Item 4 -->
-                                <div class="item slick-slide">
-                                    <div class="product mb-3">
-                                        <div class="img mb-3">
-                                            <a href="https://www.highlandscoffee.com.vn/vn/tra-xanh-dau-d.html">
-                                                <img src="https://www.highlandscoffee.com.vn/vnt_upload/product/06_2023/thumbs/270_crop_HLC_New_logo_5.1_Products__TRA_XANH_DAU_DO.jpg" alt="Trà Xanh Đậu Đỏ">
-                                            </a>
-                                        </div>
-                                        <div class="tend2">
-                                            <h4><a href="https://www.highlandscoffee.com.vn/vn/tra-xanh-dau-d.html">Trà Xanh Đậu Đỏ</a></h4>
-                                        </div>
-                                        <div class="price">Giá: <strong>45,000 VNĐ</strong></div>
-                                    </div>
-                                </div>
-
-                                <!-- Item 5 -->
-                                <div class="item slick-slide">
-                                    <div class="product mb-3">
-                                        <div class="img mb-3">
-                                            <a href="https://www.highlandscoffee.com.vn/vn/tra-thac-vai.html">
-                                                <img src="https://www.highlandscoffee.com.vn/vnt_upload/product/06_2023/thumbs/270_crop_HLC_New_logo_5.1_Products__TRA_TACH_VAI.jpg" alt="Trà Thạch Vải">
-                                            </a>
-                                        </div>
-                                        <div class="tend2">
-                                            <h4><a href="https://www.highlandscoffee.com.vn/vn/tra-thac-vai.html">Trà Thạch Vải</a></h4>
-                                        </div>
-                                        <div class="price">Giá: <strong>45,000 VNĐ</strong></div>
-                                    </div>
-                                </div>
-
-                                <!-- Thêm các item khác nếu cần -->
-                            </div>
-                        </div>
-                        <!-- <button class="slick-prev slick-arrow" aria-label="Previous" type="button"><</button>
-                        <button class="slick-next slick-arrow" aria-label="Next" type="button">></button> -->
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="row mb-5">
-            <div class="col-md-12">
-                <div class="product-review">
-                    <h2 style="margin-left:-370px;">Đánh giá sản phẩm</h2>
-                    <?php
+        <div class="col-md-5">
+                <h1><?php echo htmlspecialchars($product['ProductName']); ?></h1>
+                <p><strong>Giá:</strong> <?php echo number_format($product['UnitPrice'], 0, ',', '.'); ?> VND</p>
+                <p><strong>Mô tả:</strong> <?php echo htmlspecialchars($product['Description']); ?></p>
+                <p><strong>Số lượng trong kho:</strong> <?php echo $product['UnitsInStock']; ?></p>
+                <p><strong>Trạng thái:</strong> <?php echo $product['Status'] == 1 ? 'Còn hàng' : 'Hết hàng'; ?></p>
 
-                        // Mảng để lưu các đánh giá
-                        if (!isset($_SESSION['reviews'])) {
-                            $_SESSION['reviews'] = [];
-                        }
-
-                        // Xử lý form khi người dùng gửi đánh giá
-                        if (isset($_POST['submit_review'])) {
-                            $name = $_POST['name'];
-                            $rating = $_POST['rating'];
-                            $comment = $_POST['comment'];
-                            
-                            // Thêm đánh giá vào mảng session
-                            $_SESSION['reviews'][] = [
-                                'name' => $name,
-                                'rating' => $rating,
-                                'comment' => $comment
-                            ];
-                        }
-                        $reviews = $_SESSION['reviews'];
-                    ?>
-                    <form action="" method="POST">
-                        <div>
-                            <label for="name">Tên của bạn:</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div>
-                            <label for="rating">Đánh giá:</label>
-                            <select id="rating" name="rating" required>
-                                <option value="1">1 sao</option>
-                                <option value="2">2 sao</option>
-                                <option value="3">3 sao</option>
-                                <option value="4">4 sao</option>
-                                <option value="5">5 sao</option>
-                            </select>
-                        </div>
-                        <h2 style="margin-left:-370px;">Bình luận sản phẩm</h2>
-                        <div>
-                            <label for="comment">Bình luận:</label>
-                            <textarea id="comment" name="comment" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" style="margin-left:100px;" name="submit_review">Gửi phản hồi</button>
-                    </form>
-
-                    <?php if (!empty($reviews)) : ?>
-                        <div class="review-list">
-                            <h3>Đánh giá từ khách hàng:</h3>
-                            <?php foreach ($reviews as $review) : ?>
-                                <div class="review-item">
-                                    <strong><?php echo htmlspecialchars($review['name']); ?></strong>
-                                    <div>Đánh giá: <?php echo str_repeat('<i class="fas fa-star"></i>', $review['rating']); ?></div>
-                                    <p><?php echo htmlspecialchars($review['comment']); ?></p>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
+                <form action="#" method="POST">
+                    <input type="hidden" name="ProductID" value="<?php echo $product['ProductID']; ?>">
+                    <button type="submit" class="btn btn-primary">Thêm vào giỏ hàng</button>
+                </form>
+            <a href="index.php?page=menu" style="margin-left:150px" class="btn btn-secondary mt-3">Quay lại danh sách sản phẩm</a>
         </div>
     </div>
-    <!-- Product Detail End -->
+    <div class="row mb-5">
+        <div class="container mt-5">
+            <h2 class="text-center">Sản phẩm nổi bật</h2>
+            <div id="productCarousel" class="carouselslide" data-ride="carousel" data-interval="5000">
+                <div class="carousel-inner">
+                    <?php 
+                        $isActive = true;
+                        $count = 0; 
+                        echo '<div class="carousel-item '.($isActive ? 'active' : '').'">';
+                    ?>
+                    <div class="row d-flex justify-content-start">
+                        <?php 
+                            while ($carouselProduct = mysqli_fetch_assoc($carouselResult)): 
+                        ?>
+                            <div class="col-md-2 text-center">
+                                <div class="product-image-wrapper">
+                                    <img src="assets/img/products/<?php echo htmlspecialchars($carouselProduct['ProductImage']); ?>" 
+                                        class="product-image" 
+                                        alt="<?php echo htmlspecialchars($carouselProduct['ProductName']); ?>">
+                                </div>
+                                <h5><?php echo htmlspecialchars($carouselProduct['ProductName']); ?></h5>
+                                <p><?php echo number_format($carouselProduct['UnitPrice'], 0, ',', '.'); ?> VND</p>
+                            </div>
+                        <?php 
+                            $count++; 
+                        endwhile; 
+                        ?>
+                    </div>
+                    </div> <!-- Đóng slide -->
+                </div>
+            </div>
+                <!-- Điều hướng carousel -->
+                <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="container mt-5">
+            <div class="product-review">
+                <h3>Đánh giá sản phẩm</h3>
+                <?php
+                    if (session_status() == PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                ?>
+                <?php
+                    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
+                ?>
+                        <form action="index.php?page=page_review" method="POST">
+                            <input type="hidden" name="ProductID" value="<?php echo $product['ProductID']; ?>">
+                            <input type="hidden" name="rating" id="rating" value="0">
+                            <b><?php echo htmlspecialchars($_SESSION['username']); ?></b>
+                            <br><br>
+                            
+                            <label for="rating">Đánh giá:</label>
+                            <div class="star-rating">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </div>
+                            <br><br>
 
+                            <label for="comment">Bình luận:</label><br>
+                            <textarea name="comment" id="comment" rows="4" cols="50" required></textarea><br><br>
+
+                            <button type="submit" class="btn btn-primary" style="width: 41.5%">Gửi phản hồi</button>
+                        </form>
+
+                        <script>
+                            // JavaScript để xử lý sự kiện khi người dùng click vào ngôi sao
+                            const stars = document.querySelectorAll('.star');
+                            const ratingInput = document.getElementById('rating');
+
+                            stars.forEach(star => {
+                                star.addEventListener('mouseover', function() {
+                                    const value = this.getAttribute('data-value');
+                                    highlightStars(value);
+                                });
+
+                                star.addEventListener('mouseout', function() {
+                                    highlightStars(ratingInput.value);
+                                });
+
+                                star.addEventListener('click', function() {
+                                    const value = this.getAttribute('data-value');
+                                    ratingInput.value = value;
+                                    highlightStars(value);
+                                });
+                            });
+
+                            function highlightStars(rating) {
+                                stars.forEach(star => {
+                                    if (star.getAttribute('data-value') <= rating) {
+                                        star.style.color = 'gold'; // Ngôi sao sáng
+                                    } else {
+                                        star.style.color = 'gray'; // Ngôi sao mờ
+                                    }
+                                });
+                            }
+                        </script>
+                        <?php
+                    } else {
+                        // Nếu người dùng chưa đăng nhập
+                        echo "<p>Vui lòng <a href='index.php?page=login'>đăng nhập</a> để đánh giá sản phẩm.</p>";
+                    }
+                    ?>
+                
+                <?php
+                        $sql = "SELECT c.CommentID, c.Content, c.Rating, c.CreateDate, cu.CustomerName
+                                FROM comment c JOIN comment_product cp ON cp.CommentID = c.CommentID
+                                JOIN customer cu ON cu.CustomerID = c.CustomerID 
+                                WHERE cp.ProductID = ? 
+                                ORDER BY c.CreateDate DESC";
+                        $stmt = mysqli_prepare($conn, $sql);
+                        if (!$stmt) {
+                            echo "Lỗi trong câu truy vấn: " . mysqli_error($conn);
+                            exit;
+                        }
+                        
+                        mysqli_stmt_bind_param($stmt, "s", $productID);
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+
+                        if (mysqli_num_rows($result) > 0):
+                    ?>
+                    <?php while ($review = mysqli_fetch_assoc($result)): ?>
+                        <div class="review">
+                            <p><b><?php echo htmlspecialchars($review['CustomerName']); ?>:</b>
+                        <?php 
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= $review['Rating']) {
+                                    echo '★';
+                                } else {
+                                    echo '☆';
+                                }
+                            }
+                            ?> (<?php echo $review['Rating']; ?>/5)
+                        </p>
+                            <p><?php echo nl2br(htmlspecialchars($review['Content'])); ?></p>
+                            <p><small><?php echo date('d/m/Y H:i', strtotime($review['CreateDate'])); ?></small></p>
+                        </div>
+                        <hr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>Chưa có đánh giá cho sản phẩm này.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+            <?php
+                mysqli_stmt_close($stmt);
+            ?>
     <!-- Footer Start -->
-    <?php include_once('./common/footer/footer.php') ?>
+    <?php include_once('./common/footer/footer.php'); ?>
     <!-- Footer End -->
 
     <!-- JavaScript Libraries -->
-    <?php include_once('./common/script/default-template.php') ?>
+    <script src="./assets/vendor/jquery/jquery.min.js"></script>
+    <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <?php include_once('./common/script/default-template.php')?>
+    <script>
+        $(document).ready(function() {
+            $('#productCarousel').carousel({
+                interval: 5000 // thời gian chuyển slide tự động (5000ms = 5s)
+            });
+        });
+    </script>
 </body>
-
 </html>
+
+<?php
+    mysqli_close($conn);
+?>

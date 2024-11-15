@@ -3,11 +3,92 @@
 
 <head>
 <?php  include_once('./common/head/head-website.php')    ?>
+<style>
+        /* CSS updated to center content */
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Main content grid */
+        .promo-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center; /* Căn giữa các promo-card theo chiều ngang */
+            align-items: center; /* Căn giữa các promo-card theo chiều dọc */
+            margin-top: 20px; /* Khoảng cách giữa header và promo cards */
+        }
+
+        /* Promo card style */
+        .promo-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            width: 300px;
+            height: 500px;
+            text-align: center; /* Căn giữa nội dung trong mỗi promo card */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Image inside promo card */
+        .promo-card img {
+            width: 100%;
+            height: 200px; /* Chiều cao cố định cho hình ảnh để đảm bảo kích cỡ đồng đều */
+            object-fit: cover; /* Giúp ảnh không bị méo */
+            border-radius: 8px; /* Thêm bo góc cho ảnh nếu cần */
+        }
+
+        /* Text content inside promo card */
+        .promo-info {
+            margin-top: 10px;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 60px 0;
+            background-color: #333;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            background-color: #333;
+            padding: 50px 0;
+        }
+    </style>
 
 </head>
 <body>
     <!-- Navbar Start -->
     <?php  include_once('./common/header/navbar.php')    ?>
+    <?php
+    // Kết nối với cơ sở dữ liệu
+    $servername = "localhost"; // Hoặc IP của máy chủ MySQL
+    $username = "root";        // Tên người dùng MySQL
+    $password = "";            // Mật khẩu MySQL
+    $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
+
+    // Tạo kết nối
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+    // Kiểm tra kết nối
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    ?>
     <!-- Navbar End -->
 
     <!-- Carousel Start -->
@@ -145,84 +226,43 @@
     <!-- Offer End -->
 
 
-    <!-- Menu Start -->
-    <div class="container-fluid pt-5">
-        <div class="container">
-            <div class="section-title">
-                <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Menu & Giá cả</h4>
-                <h1 class="display-4">Giá cả cạnh tranh</h1>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <h1 class="mb-5"> Coffee nóng</h1>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-1.jpg" alt="">
-                            <h5 class="menu-price">$5</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Coffee đen</h4>
-                            <p class="m-0">Hạt cà phê Arabica nguyên chất rang mộc, mang đến hương vị đậm đà, thơm lừng</p>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-2.jpg" alt="">
-                            <h5 class="menu-price">$7</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa</h4>
-                            <p class="m-0">Cà phê đen kết hợp với sữa tươi nguyên chất, tạo nên hương vị thơm ngon, béo ngậy</p>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-3.jpg" alt="">
-                            <h5 class="menu-price">$9</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa đặc</h4>
-                            <p class="m-0">Cà phê đen kết hợp với sữa đặc, mang đến hương vị đậm đà, ngọt ngào.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <h1 class="mb-5">Coffee đá</h1>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-1.jpg" alt="">
-                            <h5 class="menu-price">$5</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê đen đá</h4>
-                            <p class="m-0">Cà phê đen đậm đà, pha cùng đá viên, giải nhiệt ngày hè.</p>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-2.jpg" alt="">
-                            <h5 class="menu-price">$7</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa đá</h4>
-                            <p class="m-0">Cà phê sữa thơm ngon, pha cùng đá viên, tạo cảm giác sảng khoái.</p>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-5">
-                        <div class="col-4 col-sm-3">
-                            <img class="w-100 rounded-circle mb-3 mb-sm-0" src="./assets/img/menu-3.jpg" alt="">
-                            <h5 class="menu-price">$9</h5>
-                        </div>
-                        <div class="col-8 col-sm-9">
-                            <h4>Cà phê sữa đá đặc</h4>
-                            <p class="m-0">Cà phê sữa đặc, pha cùng đá viên, mang đến vị ngọt đậm đà.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Promo Cards Grid -->
+    <div class="promo-grid">
+        <?php
+        // Query to fetch all coupon data, including image field
+        $sql = "SELECT CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpdateAt, image FROM coupon";
+        $result = mysqli_query($conn, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+        
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo '<div class="promo-card">';
+                // Display image if exists
+                if (!empty($row["image"])) {
+                    $imagePath = htmlspecialchars($row["image"]);
+                    echo '<img src="assets/img/coupon/' . $imagePath . '" alt="Promo Image">';
+                }
+                 else {
+                    echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn
+                    // echo '<img src="template/path/to/default-image.jpg" alt="Default Promo Image">'; // Đường dẫn cho hình ảnh mặc định
+                }
+                echo '<div class="promo-info">';
+                echo '<h3>' . htmlspecialchars($row["Description"]) . '</h3>';
+                echo '<p><strong>Coupon Code:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
+                echo '<p><strong>Discount:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
+                // echo '<p><strong>Start Date:</strong> ' . htmlspecialchars($row["StartDate"]) . '</p>';
+                // echo '<p><strong>End Date:</strong> ' . htmlspecialchars($row["EndDate"]) . '</p>';
+                echo '<p><strong>Status:</strong> ' . ($row["Status"] ? 'Active' : 'Inactive') . '</p>';
+                // echo '<p><strong>Last Updated:</strong> ' . htmlspecialchars($row["UpdateAt"]) . '</p>';
+                echo '</div>';
+                echo '</div>';
+            }
+        } else {
+            echo "<p>No promotions available.</p>";
+        }
+        ?>
     </div>
-    <!-- Menu End -->
+
 
 
 

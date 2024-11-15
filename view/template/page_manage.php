@@ -346,8 +346,8 @@
             <table class="table table-bordered text-center">
             <thead class="custom-thead"> 
                 <tr> <th class="text-white">STT</th> 
-                <th class="text-white">Loại Sản Phẩm</th> 
-                <th class="text-white">Số lượng</th> 
+                <th class="text-white">Ngày bán</th> 
+                <th class="text-white">Hình thức thanh toán</th> 
                 <th class="text-white">Doanh thu</th> 
             </tr> 
         </thead>
@@ -369,8 +369,8 @@
         while ($row = $supplier->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
             echo "<tr>";
             echo "<td>{$row['ProductID']}</td>";
-            echo "<td>{$row['ProductName']}</td>";
-            echo "<td>{$row['Quantity']}</td>";
+            echo "<td>{$row['CreateDate']}</td>";
+            echo "<td>{$row['PaymentMethod']}</td>";
             echo "<td>{$row['TotalAmount']}</td>";
             
             // Cộng tổng doanh thu

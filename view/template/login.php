@@ -1,12 +1,13 @@
 <?php
 // Bắt đầu phiên làm việc
-session_start();
+// session_start();
 
 // Kiểm tra nếu người dùng đã đăng nhập thì chuyển hướng về trang chủ
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     header("Location: index.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>

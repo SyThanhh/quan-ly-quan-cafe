@@ -68,6 +68,19 @@
             background-color: #333;
             padding: 50px 0;
         }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #555542;
+            color: white;
+            font-weight: bold;
+        }
+        
     </style>
 </head>
 
@@ -92,55 +105,71 @@
 
     <!-- Page Header -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
-        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Khuyến mãi</h1>
-            <div class="d-inline-flex mb-lg-5">
-                <p class="m-0 text-white"><a class="text-white" href="">Trang chủ</a></p>
-                <p class="m-0 text-white px-2">/</p>
-                <p class="m-0 text-white">Khuyến mãi</p>
-            </div>
+        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 260px">
+            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">LỊCH SỬ GIAO DỊCH</h1>
+            
         </div>
     </div>
 
-    <!-- Promo Cards Grid -->
-    <div class="promo-grid">
-        <?php
-        // Query to fetch all coupon data, including image field
-        $sql = "SELECT CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpdateAt, image FROM coupon";
-        $result = mysqli_query($conn, $sql);
 
-        if (mysqli_num_rows($result) > 0) {
-        
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo '<div class="promo-card">';
-                // Display image if exists
-                if (!empty($row["image"])) {
-                    $imagePath = htmlspecialchars($row["image"]);
-                    echo '<img src="view/template/' . $imagePath . '" alt="Promo Image">';
-                    echo '<img src="assets/img/coupon/' . $imagePath . '" alt="Promo Image">';
+    <?php
+    // Kết nối với cơ sở dữ liệu
+    $servername = "localhost"; // Hoặc IP của máy chủ MySQL
+    $username = "root";        // Tên người dùng MySQL
+    $password = "";            // Mật khẩu MySQL
+    $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
 
-                }
-                 else {
-                    echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn
-                    // echo '<img src="template/path/to/default-image.jpg" alt="Default Promo Image">'; // Đường dẫn cho hình ảnh mặc định
-                }
-                echo '<div class="promo-info">';
-                echo '<h3>' . htmlspecialchars($row["Description"]) . '</h3>';
-                echo '<p><strong>Coupon Code:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
-                echo '<p><strong>Discount:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
-                // echo '<p><strong>Start Date:</strong> ' . htmlspecialchars($row["StartDate"]) . '</p>';
-                // echo '<p><strong>End Date:</strong> ' . htmlspecialchars($row["EndDate"]) . '</p>';
-                echo '<p><strong>Status:</strong> ' . ($row["Status"] ? 'Active' : 'Inactive') . '</p>';
-                // echo '<p><strong>Last Updated:</strong> ' . htmlspecialchars($row["UpdateAt"]) . '</p>';
-                echo '</div>';
-                echo '</div>';
-            }
-        } else {
-            echo "<p>No promotions available.</p>";
+    // Tạo kết nối
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+    // Kiểm tra kết nối
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+
+    // SQL Query to join the `customer` and `order` tables
+    $sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email, o.TotalAmount, o.CreateDate 
+            FROM customer c 
+            JOIN `order` o ON c.CustomerID = o.CustomerID";
+
+    // Execute query
+    $result = mysqli_query($conn, $sql);
+
+    // Check if there are results
+    if (mysqli_num_rows($result) > 0) {
+        echo '<table class="table table-bordered mt-3">
+                <thead class="table-header">
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Customer Phone</th>
+                        <th>Email</th>
+                        <th>Total Amount</th>
+                        <th>Create Date</th>
+                    </tr>
+                </thead>
+                <tbody>';
+
+        // Fetch and display each row
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo '<tr>
+                    <td>' . $row['CustomerID'] . '</td>
+                    <td>' . $row['CustomerName'] . '</td>
+                    <td>' . $row['CustomerPhone'] . '</td>
+                    <td>' . $row['Email'] . '</td>
+                    <td>' . number_format($row['TotalAmount'], 2) . ' VND</td>
+                    <td>' . $row['CreateDate'] . '</td>
+                </tr>';
         }
-        ?>
-    </div>
+        echo '</tbody>
+            </table>';
+    } else {
+        echo "No records found.";
+    }
 
+    // Close connection
+    mysqli_close($conn);
+    ?>
 
     <!-- Footer Start -->
    <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
@@ -185,15 +214,8 @@
         </div>
         
     </div>
-    <!-- Footer End -->
 
-
-
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
     <?php include_once('./common/script/default-template.php')?>
 
 </body>

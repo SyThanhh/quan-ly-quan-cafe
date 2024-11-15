@@ -324,7 +324,7 @@
                     }
                     echo '</table>';
                 } else {
-                    echo 'Lỗi kết nối!';
+                    echo 'Không có Mã cần tìm ';
                 }
             ?>
             <div class="row">

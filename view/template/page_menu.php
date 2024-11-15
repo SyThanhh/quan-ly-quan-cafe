@@ -333,7 +333,7 @@
                                     }
                                     echo '</table>';
                                 } else {
-                                    echo 'Lỗi kết nối!';
+                                    echo 'Không có sản phẩm cần tìm ';
                                 }
                                 ?>
                                 <div class="row">
