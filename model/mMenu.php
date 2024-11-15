@@ -18,7 +18,8 @@
             $p = new Database();
             $con = $p -> connect();
             if($con){
-                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where ProductName like N'%$ProductName%'";
+                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, 
+                c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where ProductName like N'%$ProductName%'";
                 $tbl = mysqli_query($con, $str); 
                 return $tbl;
             }
@@ -31,7 +32,8 @@
             $p = new Database();
             $con = $p -> connect();
             if($con){
-                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where p.ProductID = '$ProductID'";
+                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, c.CategoryName 
+                from product p join category c on p.CategoryID = c.CategoryID where p.ProductID = '$ProductID'";
                 $tbl = mysqli_query($con, $str);
                 return $tbl;
             }
