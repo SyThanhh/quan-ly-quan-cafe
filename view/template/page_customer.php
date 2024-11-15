@@ -432,7 +432,7 @@
                     </div>
                 </div>
                                         <!--Modal Customer-->
-                <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+                <!-- <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -469,7 +469,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                                         <!--Modal delete-->
                 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
               
