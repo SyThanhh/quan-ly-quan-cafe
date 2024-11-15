@@ -26,8 +26,11 @@
         public function SaveCustomer($id, $name, $email, $phone) {
             $id = $id ? intval($id) : null;
         
-            if (!$this->mCustomer->checkEmailUnique($id, $email)) {
+            if (!$this->mCustomer->checkEmailUnique($id, $email)) { 
                 return ["success" => false, "message" => "Email đã tồn tại."];
+            }
+            if (!$this->mCustomer->checkPhoneUnique($id, $phone)) { 
+                return ["success" => false, "message" => "Phone đã tồn tại."];
             }
         
             if ($id !== null) {

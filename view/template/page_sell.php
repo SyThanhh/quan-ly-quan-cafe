@@ -1,15 +1,13 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <?php
-        include_once('./common/head/head.php')  ; 
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
-
-        // Tạo một đối tượng Database để kết nối
-        $database = new Database();
-        $conn = $database->connect(); // Lấy kết nối 
+        include_once('./common/head/head.php') ; 
     ?>
  
     <link rel="stylesheet" href="./assets/css/sell.css">
@@ -21,7 +19,23 @@
         }
     </style>
 </head>
+<?php
+    include_once('./connect/database.php'); 
+    include_once('./controller/CustomerController.php'); 
 
+    $database = new Database();
+    $conn = $database->connect(); // Lấy kết nối   
+    $CustomerControler = new CustomerController();
+    $searchKeyword = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['search'])) {
+            $_SESSION['searchKeyword'] = $_POST['search']; // Lưu từ khóa tìm kiếm
+            var_dump($_SESSION['searchKeyword']);
+        } elseif (isset($_POST['clear'])) {
+            unset($_SESSION['searchKeyword']); // Xóa từ khóa tìm kiếm
+        }
+    }
+?>
 <body id="page-top">
   
     <!-- Page Wrapper -->
@@ -248,19 +262,33 @@
                         <div class="header text-center">
                             <h4>THÔNG TIN KHÁCH HÀNG</h4>
                         </div>
-                        
-                        <form>
+                        <div id="message-notification" class="alert" style="display: none;">
+                            <strong></strong> <span class="message-content"></span>
+                        </div>
+                        <!-- <form id="formInfoOrder" action="?page=page_sell"> -->
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="phone">Số điện thoại</label>
-                                    <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại" value=0823820302>
-                                    <button type="button" class="btn btn-primary btn-add">Thêm mới</button>
-                                    <button type="button" class="btn btn-primary btn-search">search</button>
-                                    <button type="button" class="btn btn-primary btn-clear">Clear</button>
+                                    <form method="POST" id="search-form" class="d-flex flex-column">
+                                        <label for="phone">Số điện thoại</label>
+                                        <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="<?php echo isset($_SESSION["searchKeyword"]) ? $_SESSION["searchKeyword"] : ''; ?>">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary search-button" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary search-button" id="btn-clear">
+                                                <i class="fas fa-eraser"></i>
+                                            </button>
+                                            <button type="button" id="btnAddCustomerPageSell" class="btn btn-primary btn-add">
+                                                <i class="fas fa-plus-square"></i>
+                                                Thêm mới
+                                            </button>
+                                        </div>
+                                    </form>
+                                  
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="customerName">Tên khách hàng</label>
-                                    <input type="text" class="form-control" id="customerName" placeholder="Nhập tên khách hàng" value="thanh">
+                                    <input type="text" class="form-control" id="customerNameSell" name="customerNameSell" placeholder="Nhập tên khách hàng" value="">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -316,14 +344,14 @@
             
                         </div>
                 
-                        </form>
+                        <!-- </form> -->
                        
                         <div class="col-md-6">
                             <div class="header text-center">
                                 <h4>BỘ LỌC</h4>
                             </div>
                             
-                            <form>
+                            <form id="formProduct" method="post">
                                 <div class="form-group">
                                     <label for="product-search">Tên Sản Phẩm:</label>
                                     <div class="input-group">
@@ -382,7 +410,44 @@
             
               
               <!-- Modal -->
-              
+              <div class="modal fade" id="addCustomerModalSell" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCustomerModalLabel">Thêm Khách Hàng</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            <!-- method="post" action="?page=processing_customer" -->
+                                <form id="customerFormSell">
+                                    <div class="form-group">
+                                        <label for="customerName">Họ Tên</label>
+                                        <input type="text" class="form-control" id="customerName" value="" name="customerFormName" placeholder="Nhập họ tên" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerEmail">Email</label>
+                                        <input type="email" class="form-control" id="customerEmail" value="" name="customerFormEmail" placeholder="Nhập email" required>
+                                        <span id="emailFeedback"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerPhone">Số Điện Thoại</label>
+                                        <input type="tel" class="form-control" id="customerPhone" value="" name="customerFormPhone" placeholder="Nhập số điện thoại" required>
+                                        <span id="phoneFeedback"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-primary" id="btnConFirmAddCustomerSell">Xác Nhận</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
             
                 <!-- Modal cho phương thức thanh toán -->
                  <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
@@ -452,9 +517,150 @@
     </a>
 
     <!--Thanh toán-->
-   <script>
-        <?php include_once('./assets/js/sell.js') ?>
+    <script>
+    $(document).ready(function() {
+        $("#btnAddCustomerPageSell").on('click', function() {
+            $("#addCustomerModalSell").modal('show');
+        });
+
+        // Kiểm tra email
+        $('#customerEmail').on('input', function() {
+            const email = $(this).val();
+            const id = null;// Lấy ID của khách hàng hiện tại
+            
+            if (email) {
+                $.ajax({
+                    url: '?page=check_email_customer',
+                    type: 'GET',
+                    data: { email: email, id: id }, // Gửi cả email và id
+                    success: function(response) {
+                        if (response.exists) {
+                            $('#emailFeedback').text("Email đã tồn tại.").css("color", "red");
+                        } else {
+                            $('#emailFeedback').text("Email có thể sử dụng.").css("color", "green");
+                        }
+                    }
+                });
+            }
+        });
+
+    // Kiểm tra số điện thoại
+    $('#customerPhone').on('input', function() {
+        const phone = $(this).val();
+        const id = null;
         
+        if (phone && phone.length !== 10) {
+            $('#phoneFeedback').text("Số điện thoại phải có 10 chữ số.").css("color", "red");
+        } else if (phone) {
+            $.ajax({
+                url: '?page=check_phone_customer', 
+                type: 'POST',
+                data: { phone: phone, id: id  },
+                success: function(response) {
+                    if (response.exists) {
+                        $('#phoneFeedback').text("Số điện thoại đã tồn tại.").css("color", "red");
+                    } else {
+                        $('#phoneFeedback').text("Số điện thoại có thể sử dụng.").css("color", "green");
+                    }
+                }
+            });
+        } else {
+            $('#phoneFeedback').text('Số điện thoại không hợp lệ ').css("color", "red");
+        }
+    });
+
+    $('#btnConFirmAddCustomerSell').on('click', function(e) {
+            const id = null;
+            const name = $('#customerName').val();
+            const email = $('#customerEmail').val();
+            const phone = $('#customerPhone').val();
+            const form =  $('#customerFormSell')[0];
+            const message = $("#message-notification");
+            const action = 'add';
+            e.preventDefault();
+            $.ajax({
+                url: '?page=processing_customer',
+                type: 'POST',
+                data: { action, id, name, email, phone },
+                success: function(response) {
+                    if (response.success) {
+                        form.reset();
+                        showMessage(response.message, 'success'); 
+                    } else {
+                        showMessage(response.message, 'danger'); // Hiển thị thông báo lỗi
+                    }
+                    console.log(response);
+                    $('#addCustomerModalSell').modal('hide'); 
+                },
+                error: function(error) {
+                    showMessage('Đã xảy ra lỗi: ' + error.statusText, 'danger');
+                }
+            });
+    });
+
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+            
+            $('#search-button').on('click', function(e) {
+                e.preventDefault();
+                    const searchKeyword = $('#name-search').val();
+                    searchCustomers(searchKeyword);
+                });
+
+                $('#name-search').on('input', function() {
+                    const searchKeyword = $(this).val()
+                    searchCustomers(searchKeyword);
+            });
+            function searchCustomers(keyword) {
+                $.ajax({
+                    url: '?page=page_customer', 
+                    type: 'POST',
+                    data: { search: keyword },
+                    success: function(response) {
+                        $('#search-results').html(response); 
+                    },
+                    error: function() {
+                        $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
+                    }
+                });
+            }
+            $("#btn-clear").on('click', function(e) {
+                clearSearch();
+                // e.preventDefault();
+            })
+            function clearSearch() {
+                $('#name-search').val(""); 
+                $.ajax({
+                    url: '?page=page_customer', 
+                    data: { clear: true }, 
+                    success: function(response) {
+                        $('#search-results').html(response);
+                    },
+                    error: function() {
+                        $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
+                    }
+                });
+            }
+
+            function showMessage(message, type) {
+                const alertDiv = $('#message-notification');
+                
+                alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
+                
+                alertDiv.find('strong').text(type === 'success' ? 'Thành công!' : 'Lỗi!');
+                
+                alertDiv.find('.message-content').text(message);
+                
+                alertDiv.show();
+                
+                setTimeout(() => {
+                    alertDiv.hide();
+                }, 8000);
+            }
+        });
+
     </script>
     
     <!-- Bootstrap core JavaScript-->
@@ -462,7 +668,11 @@
     include_once('./common/script/default.php')
     ?>
 
-
+    <script>
+        <?php include_once('./assets/js/sell.js') ?>
+        
+    </script>
+   
 </body>
 
 </html>
