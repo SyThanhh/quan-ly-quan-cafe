@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="assets/css/table.css">
     <!-- Đầu trang -->
     <?php
-        session_start();
+        // session_start();
         include_once('./common/head/head.php');   
         include_once('./controller/CustomerController.php'); // Đường dẫn vào file kết nối database
         $CustomerControler = new CustomerController();

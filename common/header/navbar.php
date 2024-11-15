@@ -1,5 +1,6 @@
 <?php
-session_start();
+// session_start();
+// error_reporting(0);
 ?>
 <head>
 <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
@@ -39,6 +40,9 @@ session_start();
                             <a href="profile.php" class="dropdown-item">Thông tin cá nhân</a>
                             <a href="membership.php" class="dropdown-item">Khách hàng thành viên</a>
                             <a href="reviews.php" class="dropdown-item">Sản phẩm đã đánh giá</a>
+                            <a href="index.php?page=view_transaction" class="dropdown-item">Lịch sử giao dịch</a>
+                            <a href="index.php?page=point" class="dropdown-item">Điểm tích lũy</a>
+
                             <div class="dropdown-divider"></div>
                             <!-- <a href="logout.php" class="dropdown-item">Đăng xuất</a> -->
                             <a href="index.php?page=logout" class="dropdown-item">Đăng xuất</a>
