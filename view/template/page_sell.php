@@ -1,5 +1,5 @@
 <?php
-    session_start();
+    // session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,19 +22,64 @@
 <?php
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
+    include_once('./controller/cCoupon.php'); 
 
+    $invoiceData = isset($_SESSION['invoiceData']) ? $_SESSION['invoiceData'] : [];
     $database = new Database();
     $conn = $database->connect(); // Lấy kết nối   
-    $CustomerControler = new CustomerController();
+    $CustomerController = new CustomerController();
+    $CouponController = new cCoupon();
     $searchKeyword = '';
+   
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (isset($_POST['search'])) {
-            $_SESSION['searchKeyword'] = $_POST['search']; // Lưu từ khóa tìm kiếm
-            var_dump($_SESSION['searchKeyword']);
-        } elseif (isset($_POST['clear'])) {
-            unset($_SESSION['searchKeyword']); // Xóa từ khóa tìm kiếm
+        if (isset($_POST['search-sell'])) {
+            $_SESSION['searchKeywordSell'] = $_POST['search-sell']; // Lưu từ khóa tìm kiếm
+            $searchKeyword = $_SESSION['searchKeywordSell'];
+            $customerBySearch = $CustomerController->getAllCustomersByPhone($searchKeyword);
+            if (is_array($customerBySearch)) {
+                $_SESSION["CustomerName"] =  $customerBySearch['CustomerName'] ?  $customerBySearch['CustomerName'] : "";
+                $_SESSION["CustomerPhone"] =  $customerBySearch['CustomerPhone'] ?  $customerBySearch['CustomerPhone'] : "";
+                $_SESSION["CustomerPoint"] =  $customerBySearch['CustomerPoint'] ?  $customerBySearch['CustomerPoint'] : "0";
+            }
+        }
+        if (isset($_POST['clearSell'])) {
+            $_SESSION["CustomerName"] = null;
+            $_SESSION['CustomerPhone'] = null;
+            $_SESSION['CustomerPoint'] = null;
+            unset($_SESSION['searchKeywordSell']); 
         }
     }
+
+   
+    if (isset($_SESSION['customerID'])) {
+        $customerID = $_SESSION['customerID'];
+        $customer = $CustomerController->getCustomerById($customerID);
+        
+        if (isset($_POST['clearSell'])) {
+
+            $searchKeyword = null;
+            unset($_SESSION['searchKeywordSell']);
+            unset($_SESSION['customerID']);
+
+            $customer['CustomerName'] = null;
+            unset($_SESSION['CustomerName']); 
+
+            $customer['CustomerPhone'] = null;
+            unset($_SESSION['CustomerPhone']); 
+
+            $customer['CustomerPoint'] = null;
+            unset($_SESSION['CustomerPoint']); 
+        } else {
+            $_SESSION["CustomerName"] = $customer['CustomerName'] ? $customer['CustomerName'] : "";
+            $_SESSION["CustomerPhone"] = $customer['CustomerPhone'] ? $customer['CustomerPhone'] : "";
+            $_SESSION["CustomerPoint"] = $customer['CustomerPoint'] ? $customer['CustomerPoint'] : "0";
+        
+        }
+    }
+
+   
+    
 ?>
 <body id="page-top">
   
@@ -265,12 +310,23 @@
                         <div id="message-notification" class="alert" style="display: none;">
                             <strong></strong> <span class="message-content"></span>
                         </div>
+
                         <!-- <form id="formInfoOrder" action="?page=page_sell"> -->
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <form method="POST" id="search-form" class="d-flex flex-column">
                                         <label for="phone">Số điện thoại</label>
-                                        <input type="text" class="form-control" name="search" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="<?php echo isset($_SESSION["searchKeyword"]) ? $_SESSION["searchKeyword"] : ''; ?>">
+                                       
+                                        <?php
+                                            if (isset($_SESSION['searchKeywordSell']) && !empty($_SESSION['searchKeywordSell'])) {
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="' . $_SESSION["searchKeywordSell"] . '">';
+                                            } elseif (isset($_SESSION['CustomerPhone']) && !empty($_SESSION['CustomerPhone'])) {
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="' . $_SESSION["CustomerPhone"] . '">';
+                                            } else {
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="">';
+                                            }
+                                        ?>
+
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary search-button" type="submit">
                                                 <i class="fas fa-search"></i>
@@ -288,25 +344,36 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="customerName">Tên khách hàng</label>
-                                    <input type="text" class="form-control" id="customerNameSell" name="customerNameSell" placeholder="Nhập tên khách hàng" value="">
+                                    <input type="text" class="form-control" id="customerNameSell" name="customerNameSell" placeholder="Nhập tên khách hàng" value="<?php echo isset($_SESSION["CustomerName"]) ? $_SESSION["CustomerName"] : ''; ?>">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="points">Điểm</label>
-                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="50">
+                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="<?php echo isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0'; ?>">
                                     <!-- <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button> -->
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="discountCode">Mã KM</label>
                                     <select class="form-control" id="discountCode">
                                         <option value="">Chọn mã KM</option>
-                                        <option value="KM01">KM01</option>
-                                        <option value="KM02">KM02</option>
+                                    <?php
+                                        $point = isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0';
+                                        $coupons = $CouponController->getCouponByPoint($point);
+                                        if ($coupons) {
+                                            while ($cpon = mysqli_fetch_assoc($coupons)) {
+                                                echo "<option value='".$cpon["CouponID"]."'>".$cpon["CouponCode"]."</option>";
+                                            }
+                                        } else {
+                                            echo "<option>Không đủ điểm</option>";
+                                        }
+                                    ?>
+                                   
                                     </select>
                                 </div>
                             </div>
                             <div class="form-row">
+                                
                                 <div class="form-group col-md-6">
                                     <label for="reduction">Giảm</label>
                                     <input type="text" class="form-control" id="reduction" placeholder="Giảm giá" readonly>
@@ -576,7 +643,7 @@
             const phone = $('#customerPhone').val();
             const form =  $('#customerFormSell')[0];
             const message = $("#message-notification");
-            const action = 'add';
+            const action = 'addSell';
             e.preventDefault();
             $.ajax({
                 url: '?page=processing_customer',
@@ -584,24 +651,29 @@
                 data: { action, id, name, email, phone },
                 success: function(response) {
                     if (response.success) {
-                        form.reset();
-                        showMessage(response.message, 'success'); 
-                    } else {
-                        showMessage(response.message, 'danger'); // Hiển thị thông báo lỗi
-                    }
-                    console.log(response);
+                        showMessage(response.message, 'success');
+            
+                        setTimeout(function() {
+                            update();
+                        }, 2000);
+
+                        resetForm(); 
+                        
+                    }  
                     $('#addCustomerModalSell').modal('hide'); 
                 },
                 error: function(error) {
                     showMessage('Đã xảy ra lỗi: ' + error.statusText, 'danger');
                 }
-            });
+        });
+
+        
     });
 
-        function validateEmail(email) {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return regex.test(email);
-        }
+        // function validateEmail(email) {
+        //     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        //     return regex.test(email);
+        // }
             
             $('#search-button').on('click', function(e) {
                 e.preventDefault();
@@ -615,7 +687,7 @@
             });
             function searchCustomers(keyword) {
                 $.ajax({
-                    url: '?page=page_customer', 
+                    url: '?page=page_sell', 
                     type: 'POST',
                     data: { search: keyword },
                     success: function(response) {
@@ -628,21 +700,26 @@
             }
             $("#btn-clear").on('click', function(e) {
                 clearSearch();
-                // e.preventDefault();
+                e.preventDefault();
             })
+
             function clearSearch() {
                 $('#name-search').val(""); 
-                $.ajax({
-                    url: '?page=page_customer', 
-                    data: { clear: true }, 
-                    success: function(response) {
-                        $('#search-results').html(response);
-                    },
-                    error: function() {
-                        $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
-                    }
+                $('#customerNameSell').val("");
+                $('#points').val("");
+
+                // Gửi yêu cầu POST để xóa session
+                $.post('?page=page_sell', { clearSell: true }, function(response) {
+                    // Hiển thị phản hồi từ server trong console
+                    console.log(response);
+                    $('#search-results').html(response);
+                }).fail(function() {
+                    $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
                 });
             }
+
+
+          
 
             function showMessage(message, type) {
                 const alertDiv = $('#message-notification');
@@ -661,6 +738,55 @@
             }
         });
 
+        function resetForm() {
+            $('#customerName').val('');
+            $('#customerEmail').val('');
+            $('#customerPhone').val('');
+            $('#emailFeedback').text(''); 
+            $('#phoneFeedback').text(''); 
+        }
+
+        function update() {
+            $.get("index.php?page=page_sell", function(data) {
+                $("body").html(data);
+            
+            });
+        }
+
+        $('#discountCode').on('change', function() {
+            var couponID = $(this).val(); 
+
+            if (couponID) {
+                $.ajax({
+                    url: '?page=processing_coupon',  
+                    type: 'GET',
+                    data: { couponID: couponID },  // Gửi CouponID qua GET
+                    success: function(response) {
+                        // Kiểm tra nếu server trả về dữ liệu hợp lệ
+                        console.log(response);
+
+                        if (response.success) {
+                            var couponDiscount = response.couponDiscount;  // Nhận CouponDiscount từ phản hồi
+                            var couponCode = response.couponCode;  // Nhận CouponCode từ phản hồi
+                            
+                            // Hiển thị thông tin lên giao diện
+                            $('#reduction').val('Giảm giá: ' + couponDiscount + '%');
+                        } else {
+                            alert('Không tìm thấy mã khuyến mãi');
+                        }
+                    },
+                    error: function(error) {
+                        alert('Đã xảy ra lỗi: ' + error.statusText);
+                    }
+                });
+            } else {
+                // Nếu không có mã nào được chọn
+                $('#couponDiscount').text('');
+                $('#couponCode').text('');
+            }
+        });
+
+        
     </script>
     
     <!-- Bootstrap core JavaScript-->
@@ -668,10 +794,8 @@
     include_once('./common/script/default.php')
     ?>
 
-    <script>
-        <?php include_once('./assets/js/sell.js') ?>
-        
-    </script>
+    
+    <script src="./assets/js/sell.js"></script> <!-- Đảm bảo file JS đã được tải -->
    
 </body>
 

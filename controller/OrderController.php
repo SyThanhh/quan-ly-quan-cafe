@@ -23,12 +23,12 @@
             }
         }
 
-        public function addOrder($discount, $payment, $total, $couponID, $customerID, $employeeID) {
+        public function SaveOrder($discount, $payment, $total, $couponID, $customerID, $employeeID) {
                
            
             $result = $this->mOrder->add($discount, $payment, $total, $couponID, $customerID, $employeeID);
         
-            // Kiểm tra kết quả thực thi
+            
             if ($result) {
                 return true; // Thêm đơn hàng thành công
             } else {
