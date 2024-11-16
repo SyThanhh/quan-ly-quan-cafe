@@ -1,3 +1,7 @@
+
+<!-- <?php
+session_start();
+?> -->
 <?php
 // session_start();
 // error_reporting(0);
