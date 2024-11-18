@@ -299,11 +299,9 @@
 
                 <div class="product-grid">
                 <?php
-                    // Kiểm tra nếu có từ khóa tìm kiếm
                     $searchTerm = isset($_REQUEST['tim']) ? $_REQUEST['tim'] : '';
 
                     if (!empty($searchTerm)) {
-                        // Câu truy vấn khi có từ khóa
                         $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status 
                                 FROM product 
                                 WHERE ProductName LIKE ?";
@@ -313,28 +311,23 @@
                         mysqli_stmt_execute($stmt);
                         $result = mysqli_stmt_get_result($stmt);
                     } else {
-                        // Câu truy vấn mặc định nếu không có từ khóa
                         $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status FROM product";
                         $result = mysqli_query($conn, $sql);
                     }
 
-                    // Hiển thị sản phẩm
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<div class='product-card'>";
                             
-                            // Hiển thị ảnh sản phẩm hoặc ảnh mặc định
                             if (!empty($row['ProductImage'])) {
                                 echo "<img src='assets/img/products/" . htmlspecialchars($row['ProductImage']) . "' alt='" . htmlspecialchars($row['ProductName']) . "'>";
                             } else {
                                 echo "<img src='assets/img/default-product.jpg' alt='Default Product Image'>";
                             }
                             echo "<a href='index.php?page=page_productdetail&ProductID=" . $row['ProductID'] . "'>";
-                            // Hiển thị tên sản phẩm
                             echo "<h3>" . htmlspecialchars($row['ProductName']) . "</h3>";
-                            echo "</a>"; // Đóng thẻ <a>
+                            echo "</a>";
 
-                            // Thông tin thêm về sản phẩm
                             echo "<p><strong>Price:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
                             echo "<p><strong>In Stock:</strong> " . $row['UnitsInStock'] . "</p>";
                             echo "<p><strong>Status:</strong> " . ($row['Status'] == 1 ? 'Available' : 'Out of Stock') . "</p>";
@@ -344,7 +337,6 @@
                         echo "<p>No products available.</p>";
                     }
 
-                    // Đóng statement nếu đã dùng
                     if (!empty($searchTerm)) {
                         mysqli_stmt_close($stmt);
                     }
