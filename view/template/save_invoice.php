@@ -17,23 +17,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     // Kiểm tra nếu hành động là xóa hóa đơn
     if ($action === 'delete_invoice') {
-        unset($_SESSION['invoiceData']); // Xóa dữ liệu hóa đơn khỏi session
-        echo json_encode(['status' => 'success', 'message' => 'Dữ liệu hóa đơn đã bị xóa']);
+        unset($_SESSION['invoiceData']); 
+        unset($_SESSION['customerData']); 
+        echo json_encode(['status' => 'success', 'message' => 'Dữ liệu hóa đơn và khách hàng đã bị xóa']);
         exit;
     }
 
     // Kiểm tra nếu hành động là cập nhật hóa đơn
     if ($action === 'update_invoice' && isset($_POST['invoiceData'])) {
         $invoiceData = json_decode($_POST['invoiceData'], true);
+        $customerData = json_decode($_POST['customerData'], true);
 
-        if ($invoiceData === null) {
+        // Kiểm tra nếu dữ liệu không hợp lệ
+        if ($invoiceData === null || $customerData === null) {
             echo json_encode(['status' => 'error', 'message' => 'Dữ liệu không hợp lệ']);
             exit;
         }
 
         $_SESSION['invoiceData'] = $invoiceData;
-
-        echo json_encode(['status' => 'success', 'data' => $_SESSION['invoiceData']]);
+        $_SESSION['customerData'] = $customerData;
+        echo json_encode(['status' => 'success', 'data' => $_SESSION['invoiceData'], 'dataCustomer' =>  $_SESSION['customerData']]);
         exit;
     }
 

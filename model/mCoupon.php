@@ -32,7 +32,6 @@
             $con = $p->connect();
         
             if ($con) {
-                // Điều chỉnh truy vấn SQL dựa trên số điểm và sử dụng CURDATE() để lấy ngày hiện tại
                 if ($point >= 100) {
                     // Hạng Kim Cương: 100 điểm trở lên, giảm 20%
                     $str = "SELECT CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpDateAt 

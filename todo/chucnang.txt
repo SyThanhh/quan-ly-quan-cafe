@@ -18,8 +18,8 @@
 
 
 + Chức năng cho Khách hàng:
-●	Tìm kiếm sản phẩm : Quyên
-●	Xem menu sản phẩm : Quyên
+●	Tìm kiếm sản phẩm : Quyên ( còn thiếu danh mục)
+●	Xem menu sản phẩm : Quyên ✔
 ●	Đánh giá sản phẩm : Phước
 ●	Bình luận sản phẩm : Phước
 ●	Xem lịch sử giao dịch : Quyên

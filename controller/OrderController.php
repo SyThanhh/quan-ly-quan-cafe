@@ -24,16 +24,20 @@
         }
 
         public function SaveOrder($discount, $payment, $total, $couponID, $customerID, $employeeID) {
+            // $couponID = empty($couponID) ? 6 : trim($couponID);
+            $id = $this->mOrder->generateNewId();
+            
+            // $couponID = empty($couponID) ? 6 : trim($couponID);
                
            
-            $result = $this->mOrder->add($discount, $payment, $total, $couponID, $customerID, $employeeID);
+            $result = $this->mOrder->add($id, $discount, $payment, $total, $couponID, $customerID, $employeeID);
         
             
-            if ($result) {
-                return true; // Thêm đơn hàng thành công
-            } else {
-                return false; // Thêm đơn hàng không thành công
-            }
+            return $result ? $id : false;
+        }
+
+        public function test() {
+            return $this->mOrder->createID();
         }
         
         public function getOrder($id) {
@@ -46,6 +50,13 @@
             }
         }
 
+        public function listOrders($fromdate, $todate, $limit, $offset) {
+            return $this->mOrder->getOrders($limit, $offset, $fromdate, $todate);
+        }
+        public function getTotalPages($fromdate, $todate, $limit) {
+            $totalOrders = $this->mOrder->getTotalOrders($fromdate, $todate);
+            return ceil($totalOrders / $limit);
+        }
         
         
 

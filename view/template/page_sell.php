@@ -23,6 +23,8 @@
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
     include_once('./controller/cCoupon.php'); 
+    include_once('./controller/OrderController.php'); 
+    $orderController = new OrderController();
 
     $invoiceData = isset($_SESSION['invoiceData']) ? $_SESSION['invoiceData'] : [];
     $database = new Database();
@@ -30,8 +32,9 @@
     $CustomerController = new CustomerController();
     $CouponController = new cCoupon();
     $searchKeyword = '';
-   
 
+    
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['search-sell'])) {
             $_SESSION['searchKeywordSell'] = $_POST['search-sell']; // Lưu từ khóa tìm kiếm
@@ -48,6 +51,7 @@
             $_SESSION['CustomerPhone'] = null;
             $_SESSION['CustomerPoint'] = null;
             unset($_SESSION['searchKeywordSell']); 
+
         }
     }
 
@@ -350,13 +354,13 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="points">Điểm</label>
-                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="<?php echo isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0'; ?>">
+                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="<?php echo isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0'; ?>" readonly>
                                     <!-- <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button> -->
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="discountCode">Mã KM</label>
                                     <select class="form-control" id="discountCode">
-                                        <option value="">Chọn mã KM</option>
+                                        <option value="0">Chọn mã KM</option>
                                     <?php
                                         $point = isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0';
                                         $coupons = $CouponController->getCouponByPoint($point);
@@ -375,8 +379,8 @@
                             <div class="form-row">
                                 
                                 <div class="form-group col-md-6">
-                                    <label for="reduction">Giảm</label>
-                                    <input type="text" class="form-control" id="reduction" placeholder="Giảm giá" readonly>
+                                    <label for="reduction">Giảm Giá (%) </label>
+                                    <input type="text" class="form-control" id="reduction" placeholder="" readonly>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <!-- Ô trống để tạo sự cân bằng -->
@@ -401,7 +405,7 @@
                                 </tbody>
                             </table>
                             <div class="text-right">
-                                <h5 id="grand-total">Tổng tất cả: <span id="total-amount">25000</span> VNĐ</h5>
+                                <h5 id="grand-total">Tổng tất cả: <span id="total-amount">0.0</span> VNĐ</h5>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button>
@@ -453,7 +457,7 @@
                                     </div> -->
                                     <!-- <div class="product-list" id="product-list"> -->
                                 <?php
-                                    $query = "SELECT ProductName, UnitsInStock, UnitPrice, ProductImage FROM product";
+                                    $query = "SELECT ProductID,ProductName, UnitsInStock, UnitPrice, ProductImage FROM product";
                                     $products = $database->select($query);
 
                                     if ($products) {
@@ -463,6 +467,7 @@
                                             echo '<p>'.$product['ProductName'].'</p>';
                                             echo '<p class="stock">Tồn kho: '.$product['UnitsInStock'].'</p>';
                                             echo '<p class="price">Giá: '.number_format($product['UnitPrice'], 3, ',', '.').'₫</p>';
+                                            echo ' <input type="text" name="productID" id="productID" value="'.$product['ProductID'].'" hidden/>';
                                             echo '</div>';
                                         }
                                     } else {
@@ -545,7 +550,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-check">
-                                        <input type="radio" name="paymentMethod" id="cash" value="cash" class="form-check-input" checked>
+                                        <input type="radio" name="paymentMethod" id="cash" value="Tiền mặt" class="form-check-input" checked>
                                         <label for="cash" class="form-check-label">Thanh toán tiền mặt</label>
                                     </div>
                                     <div class="form-check">
@@ -602,6 +607,18 @@
 
     <!--Thanh toán-->
     <script>
+    function validateEmail(email) {
+        var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    
+         return regex.test(email);
+    }
+
+    function validatePhone(phone) {
+        var regex = /^(09|03|08|07|05)[0-9]{8}$/;
+        return regex.test(phone);
+}
+
+
     $(document).ready(function() {
         $("#btnAddCustomerPageSell").on('click', function() {
             $("#addCustomerModalSell").modal('show');
@@ -609,20 +626,41 @@
 
         // Kiểm tra email
         $('#customerEmail').on('input', function() {
-            const email = $(this).val();
-            const id = null;// Lấy ID của khách hàng hiện tại
-            
-            if (email) {
+            const email = $(this).val().trim(); // Lấy giá trị email và xóa khoảng trắng hai đầu
+            const id = ''; 
+
+            // Kiểm tra định dạng email
+            let checkEmail = validateEmail(email);
+            if (!checkEmail) {
+                $('#emailFeedback')
+                    .text("Email không hợp lệ. Vui lòng sử dụng định dạng ví dụ: thanh@gmail.com hoặc thanh_298@gmail.com")
+                    .css("color", "red");
+                    $('#btnConFirmAddCustomerSell').prop('disabled', true);
+                return;
+            } else {
+                $('#emailFeedback').text("").css("color", ""); 
+                $('#btnConFirmAddCustomerSell').prop('disabled', false);
+            }
+
+            // Nếu email hợp lệ, thực hiện kiểm tra xem email có tồn tại không
+            if (checkEmail) {
                 $.ajax({
-                    url: '?page=check_email_customer',
-                    type: 'GET',
-                    data: { email: email, id: id }, // Gửi cả email và id
+                    url: '?page=check_email_customer', 
+                    type: 'POST',
+                    data: { email: email, id: id },
                     success: function(response) {
                         if (response.exists) {
                             $('#emailFeedback').text("Email đã tồn tại.").css("color", "red");
+                            $('#btnConFirmAddCustomerSell').prop('disabled', true);
                         } else {
                             $('#emailFeedback').text("Email có thể sử dụng.").css("color", "green");
+                            $('#btnConFirmAddCustomerSell').prop('disabled', false);
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#emailFeedback').text("Có lỗi xảy ra. Vui lòng thử lại sau.").css("color", "red");
+                        console.error('Error:', error);
+                        $('#btnConFirmAddCustomerSell').prop('disabled', false);
                     }
                 });
             }
@@ -630,26 +668,47 @@
 
     // Kiểm tra số điện thoại
     $('#customerPhone').on('input', function() {
-        const phone = $(this).val();
-        const id = null;
-        
+        const phone = $(this).val().trim(); 
+        const id = ''; 
+
         if (phone && phone.length !== 10) {
-            $('#phoneFeedback').text("Số điện thoại phải có 10 chữ số.").css("color", "red");
-        } else if (phone) {
+            $('#phoneFeedback')
+                .text("Số điện thoại phải có 10 chữ số.")
+                .css("color", "red");
+                $('#btnConFirmAddCustomerSell').prop('disabled', true); 
+            return; // Dừng tại đây nếu số không có độ dài đúng
+        }
+        let checkPhone = validatePhone(phone);
+        if (!checkPhone) {
+            $('#phoneFeedback')
+                .text("Số điện thoại không hợp lệ. Số điện thoại phải bắt đầu bằng 09, 03, 08, 07, hoặc 05 và có 10 chữ số.")
+                .css("color", "red");
+                $('#btnConFirmAddCustomerSell').prop('disabled', true); 
+            return; // Dừng kiểm tra nếu định dạng không hợp lệ
+        } else {
+            $('#phoneFeedback').text("").css("color", ""); // Xóa thông báo nếu định dạng hợp lệ
+        }
+
+        if (phone) {
             $.ajax({
-                url: '?page=check_phone_customer', 
+                url: '?page=check_phone_customer', // Đường dẫn đến script xử lý
                 type: 'POST',
-                data: { phone: phone, id: id  },
+                data: { phone: phone, id: id }, // Gửi cả số điện thoại và ID nếu cần
                 success: function(response) {
                     if (response.exists) {
                         $('#phoneFeedback').text("Số điện thoại đã tồn tại.").css("color", "red");
+                        $('#btnConFirmAddCustomerSell').prop('disabled', true); 
                     } else {
                         $('#phoneFeedback').text("Số điện thoại có thể sử dụng.").css("color", "green");
+                        $('#btnConFirmAddCustomerSell').prop('disabled', false);
                     }
+                },
+                error: function(xhr, status, error) {
+                    $('#phoneFeedback').text("Có lỗi xảy ra. Vui lòng thử lại sau.").css("color", "red");
+                    $('#btnConFirmAddCustomerSell').prop('disabled', true); 
+                    console.error('Error:', error);
                 }
             });
-        } else {
-            $('#phoneFeedback').text('Số điện thoại không hợp lệ ').css("color", "red");
         }
     });
 
@@ -676,7 +735,9 @@
 
                         resetForm(); 
                         
-                    }  
+                    } else {
+                        showMessage(response.message, 'danger');
+                    } 
                     $('#addCustomerModalSell').modal('hide'); 
                 },
                 error: function(error) {
@@ -724,6 +785,7 @@
                 $('#name-search').val(""); 
                 $('#customerNameSell').val("");
                 $('#points').val("");
+                $('#discountCode').val("");
 
                 // Gửi yêu cầu POST để xóa session
                 $.post('?page=page_sell', { clearSell: true }, function(response) {
@@ -789,6 +851,8 @@
                             // Hiển thị thông tin lên giao diện
                             $('#reduction').val('Giảm giá: ' + couponDiscount + '%');
                         } else {
+                            $('#reduction').val('Giảm giá: ' + 0 + '%');
+
                             alert('Không tìm thấy mã khuyến mãi');
                         }
                     },
