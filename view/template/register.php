@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 // Kiểm tra nếu người dùng đã đăng nhập thì chuyển hướng về trang chủ
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
@@ -75,7 +75,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                                     <input type="phone" name="phone" id="phone" class="form-control" required>
                                 </div>
                             </div>
-                           <!-- <div class="form-group">
+                          <!-- <div class="form-group">
                                 <label for="password">Mật khẩu</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -91,8 +91,8 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                     </div>
                                     <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
-                                </div>-->
-                            </div>
+                                </div> 
+                            </div> -->
                             <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
                         </form>
                     </div>

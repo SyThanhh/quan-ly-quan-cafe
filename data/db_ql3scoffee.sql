@@ -141,20 +141,24 @@ CREATE TABLE `customer` (
   `Email` varchar(50) NOT NULL,
   `CreateAt` datetime NOT NULL DEFAULT current_timestamp(),
   `UpdatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `status` tinyint(4) NOT NULL
+  `status` tinyint(4) NOT NULL,
+  `role` enum('admin','user') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `customer`
 --
 
-INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `CustomerPassword`, `CustomerPoint`, `Email`, `CreateAt`, `UpdatedAt`, `status`) VALUES
-(1, 'Nguyễn Văn Anh', '0123456789', 'password1', 100, 'vana@example.ed', '2024-05-21 21:40:43', '2024-11-07 01:47:10', 1),
-(2, 'Trần Thị Bảnh', '0123456780', 'password2', 200, 'thib@example.com', '2024-10-21 21:40:43', '2024-11-05 00:21:02', 1),
-(3, 'Lê Văn Thành', '0123456781', 'password3', 50, 'vanc@example.vnd', '2024-11-21 21:40:43', '2024-11-07 01:47:20', 1),
-(4, 'Phạm Thị Duyên', '0123456782', 'password4', 20, 'thid@example.com', '2024-11-07 21:40:43', '2024-11-07 01:47:33', 1),
-(5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.edu', '2024-10-21 21:40:43', '2024-11-05 14:40:13', 1),
-(18, 'Thanh Nguyen', '0823820302', '123456', 0, 'vana@example.edu', '2024-11-05 22:30:38', '2024-11-06 17:33:04', 1);
+INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `CustomerPassword`, `CustomerPoint`, `Email`, `CreateAt`, `UpdatedAt`, `status`, `role`) VALUES
+(1, 'Nguyễn Văn Anh', '0123456789', 'password1', 100, 'vana@example.ed', '2024-05-21 21:40:43', '2024-11-07 01:47:10', 1, 'user'),
+(2, 'Trần Thị Bảnh', '0123456780', 'password2', 200, 'thib@example.com', '2024-10-21 21:40:43', '2024-11-05 00:21:02', 1, 'user'),
+(3, 'Lê Văn Thành', '0123456781', 'password3', 50, 'vanc@example.vnd', '2024-11-21 21:40:43', '2024-11-07 01:47:20', 1, 'user'),
+(4, 'Phạm Thị Duyên', '0123456782', 'password4', 20, 'thid@example.com', '2024-11-07 21:40:43', '2024-11-07 01:47:33', 1, 'user'),
+(5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.edu', '2024-10-21 21:40:43', '2024-11-05 14:40:13', 1, 'user'),
+(18, 'Thanh Nguyen', '0823820302', '123456', 0, 'thanhnguyen@gmail.com', '2024-11-05 22:30:38', '2024-11-20 15:35:03', 1, 'user'),
+(19, 'new_admin', '', 'admin456', 0, 'admin@example.com', '2024-11-20 15:20:25', '2024-11-20 15:20:25', 1, 'admin'),
+(21, 'Thắng', '0914476792', 'thang', 0, 'badaotulong123@gmail.com', '2024-11-20 15:27:49', '2024-11-20 15:27:49', 0, 'user');
+
 
 -- --------------------------------------------------------
 
