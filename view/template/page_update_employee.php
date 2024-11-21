@@ -247,12 +247,12 @@
                                     <td><input type="text" class="form-control" id="employeeID" name="employeeID" value="<?php echo $employee['EmployeeID']; ?>" readonly></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="lastName">Họ:</label></th>
-                                    <td><input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $employee['FirstName']; ?>" required></td>
+                                    <th><label for="firstName">Họ:</label></th>
+                                    <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $employee['FirstName']; ?>" required></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="firstName">Tên:</label></th>
-                                    <td><input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo $employee['LastName']; ?>" required></td>
+                                    <th><label for="lastName">Tên:</label></th>
+                                    <td><input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo $employee['LastName']; ?>" required></td>
                                 </tr>
                                 <tr>
                                     <th><label for="email">Email:</label></th>
@@ -272,12 +272,46 @@
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
                                     <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add">Cập nhật</button>
+                                    <button type="submit" class="btn btn-primary btn-add" name="updateEmployee">Cập nhật</button>
                                 </div>
                             </form>        
                         </div>
                     </div>
                 </div>
+                <!-- Xử lý cập nhật thông tin nhân viên -->
+                <?php
+                    if (isset($_POST['updateEmployee'])) {
+                        // Nhận dữ liệu từ form
+                        $employeeID = $_POST['employeeID'];
+                        $firstName = trim($_POST['firstName']);
+                        $lastName = trim($_POST['lastName']);
+                        $email = trim($_POST['email']);
+                        $phoneNumber = trim($_POST['phoneNumber']);
+                        $birthDate = $_POST['birthDate'];
+                        
+                        // Chuẩn bị câu truy vấn SQL để cập nhật thông tin nhân viên
+                        $query = "UPDATE employee 
+                                SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, DateOfBirth = ?
+                                WHERE EmployeeID = ?";
+                        
+                        // Chuẩn bị câu truy vấn và ràng buộc tham số
+                        $stmt = $conn->prepare($query);
+                        $stmt->bind_param("sssssi", $firstName, $lastName, $email, $phoneNumber, $birthDate, $employeeID);
+
+                        // Thực thi câu truy vấn
+                        if ($stmt->execute()) {
+                            // Hiển thị thông báo "Cập nhật thành công" và chuyển hướng
+                            echo "<script>
+                                    window.location.href = 'index.php?page=page_employee';
+                                    alert('Cập nhật thành công');
+                                    </script>";
+                            exit;
+                        } else {
+                            echo "<p>Đã có lỗi xảy ra: " . $stmt->error . "</p>";
+                        }
+                        $stmt->close();
+                    }
+                ?>
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
