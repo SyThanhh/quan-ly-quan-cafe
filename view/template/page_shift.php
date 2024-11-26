@@ -248,7 +248,34 @@
                             </div>
                             </br>
 
-                            <!-- Danh sách nhân viên -->
+                            <?php
+                            // Số bản ghi trên mỗi trang
+                            $recordsPerPage = 5;
+
+                            // Tính tổng số bản ghi
+                            $totalRecordsQuery = "SELECT COUNT(*) as total FROM workshift";
+                            $totalRecordsResult = $database->select($totalRecordsQuery);
+                            $totalRecords = $totalRecordsResult->fetch_assoc()['total'];
+
+                            // Tính tổng số trang
+                            $totalPages = ceil($totalRecords / $recordsPerPage);
+
+                            // Lấy trang hiện tại từ URL, mặc định là trang 1
+                            $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
+                            $page = ($page > $totalPages) ? $totalPages : $page;
+                            $page = ($page < 1) ? 1 : $page;
+
+                            // Tính offset để lấy dữ liệu
+                            $offset = ($page - 1) * $recordsPerPage;
+
+                            // Truy vấn danh sách lịch làm việc với phân trang
+                            $query = "SELECT * FROM workshift LIMIT $offset, $recordsPerPage";
+                            $shifts = $database->select($query);
+                            
+                            
+                            ?>
+
+                            <!-- Danh sách lịch -->
                             <div class="mt-8">
                                 <table class="table table-bordered">
                                     <thead align="center">
@@ -257,38 +284,122 @@
                                             <th>Loại ca</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th colspan='3'>Thao tác</th>
+                                            <th colspan="2">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $shifts = $database->select("SELECT * FROM workshift");
+                                    <?php
+                                    // Hiển thị danh sách lịch làm việc
+                                    if ($shifts) {
+                                        while ($row = $shifts->fetch_assoc()) {
+                                            echo "<tr>";
+                                            echo "<td>{$row['ShiftID']}</td>";
+                                            echo "<td>{$row['ShiftType']}</td>";
+                                            echo "<td>{$row['StartDate']}</td>";
+                                            echo "<td>{$row['EndDate']}</td>";
+                                            echo "<td>
+                                                <button type='button' class='btn btn-info' data-toggle='modal' data-target='#detailsModal{$row['ShiftID']}'>
+                                                    <i class='fas fa-eye'></i>
+                                                </button>
+                                                </td>";
+                                            echo "<td>
+                                                <a href='index.php?page=page_update_shift&id={$row['ShiftID']}' class='btn btn-success' style='color:white'>
+                                                    <i class='fas fa-edit'></i>
+                                                </a></td>";
+                                            echo "<td>
+                                                <button type='button' class='btn btn-danger' onclick='confirmDelete({$row['ShiftID']})'>
+                                                    <i class='fas fa-trash'></i>
+                                                </button>
+                                            </td>";
+                                            echo "</tr>";
 
-                                            // Hiển thị danh sách nhân viên
-                                            if ($shifts) {
-                                                while ($row = $shifts->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['ShiftID']}</td>";
-                                                    echo "<td>{$row['ShiftType']}</td>";
-                                                    echo "<td>{$row['StartDate']}</td>";
-                                                    echo "<td>{$row['EndDate']}</td>";
-                                                    
-                                                    echo "<td>
-                                                        <a href='index.php?page=page_update_shift&id={$row['ShiftID']}' class='btn btn-success' style='color:white'>
-                                                            <i class='fas fa-edit'></i>
-                                                        </a></td> <td>
-                                                        <button type='button' class='btn btn-danger'onclick='confirmDelete({$row['ShiftID']})'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
+                                            // Tạo modal hiển thị thông tin chi tiết
+                                            echo "
+                                            <div class='modal fade' id='detailsModal{$row['ShiftID']}' tabindex='-1' role='dialog' aria-labelledby='detailsModalLabel{$row['ShiftID']}' aria-hidden='true'>
+                                                <div class='modal-dialog' role='document'>
+                                                    <div class='modal-content'>
+                                                        <div class='modal-header'>
+                                                            <h5 class='modal-title' id='detailsModalLabel{$row['ShiftID']}'>Chi Tiết Lịch Làm</h5>
+                                                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                                                                <span aria-hidden='true'>&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class='modal-body'>
+                                                            <p><strong>Mã Ca Làm:</strong> {$row['ShiftID']}</p>
+                                                            <p><strong>Loại Ca Làm:</strong> {$row['ShiftType']}</p>
+                                                            <p><strong>Ngày Bắt Đầu:</strong> {$row['StartDate']}</p>
+                                                            <p><strong>Ngày Kết Thúc:</strong> {$row['EndDate']}</p>";
+
+                                            // Truy vấn nhân viên của lịch làm
+                                            $employeeQuery = "
+                                                SELECT e.FirstName, e.LastName, e.Roles
+                                                FROM workshift_employee AS we
+                                                INNER JOIN employee AS e ON we.EmployeeID = e.EmployeeID
+                                                WHERE we.ShiftID = {$row['ShiftID']}
+                                            ";
+                                            $employees = $database->select($employeeQuery);
+
+                                            if ($employees && $employees->num_rows > 0) {
+                                                echo "<p><strong>Nhân Viên (đoạn này chưa được, để sửa sau nhé):</strong></p><ul>";
+                                                while ($employee = $employees->fetch_assoc()) {
+                                                    $role = match ($employee['Roles']) {
+                                                        2 => 'Đứng Quầy',
+                                                        3 => 'Kế Toán',
+                                                        4 => 'Pha Chế',
+                                                        default => 'Khác',
+                                                    };
+                                                    echo "<li>{$employee['LastName']} {$employee['FirstName']} ({$role})</li>";
                                                 }
+                                                echo "</ul>";
                                             } else {
-                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
+                                                echo "<p><strong>Nhân Viên:</strong> Không có</p>";
+                                            }
+
+                                            echo "
+                                                        </div>
+                                                        <div class='modal-footer'>
+                                                            <button type='button' class='btn btn-secondary' data-dismiss='modal'>Đóng</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='6' class='text-center'>Không có dữ liệu</td></tr>";
+                                    }
+                                    ?>
+                                </tbody>
                                 </table>
+                            </div>
+
+                            <!-- Phân trang -->
+                            <div class="row justify-content-end mr-1">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <!-- Nút Previous -->
+                                        <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                                            <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo ($page > 1) ? $page - 1 : 1; ?>" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+
+                                        <!-- Các trang số -->
+                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                            <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+                                                <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo $i; ?>">
+                                                    <?php echo $i; ?>
+                                                </a>
+                                            </li>
+                                        <?php endfor; ?>
+
+                                        <!-- Nút Next -->
+                                        <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                                            <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo ($page < $totalPages) ? $page + 1 : $totalPages; ?>" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>
