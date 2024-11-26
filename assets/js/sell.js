@@ -2,6 +2,8 @@ $(document).ready(function() {
    
     const $invoiceListBody = $('#invoice-list-body');
     const $totalAmountDisplay = $('#total-amount');
+    const $totalAmountDiscount = $("#total-amount-discount").val();
+    const $reductionDisplay = extractDiscount($('#reduction').val());
     let isCheck = false;
 
    
@@ -30,12 +32,17 @@ $(document).ready(function() {
     // cập nhật total amount
     function updateGrandTotal() {
         let grandTotal = 0;
+        let grantToTalDiscount = 0;
         $invoiceListBody.find('tr').each(function() {
             const total = convertToNumber($(this).find('.total-price').text());
        
             grandTotal += total;
         });
-        $totalAmountDisplay.text(grandTotal.toLocaleString());
+        grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
+        $totalAmountDisplay.text(grantToTalDiscount.toLocaleString());
+        let discount = (grandTotal* ($reductionDisplay/100));
+        
+        $("#total-amount-discount").text(discount.toLocaleString());
     }
 
     // xáo session
@@ -65,7 +72,7 @@ $(document).ready(function() {
             const $quantityInput = $existingRow.find('.quantity-display');
             let quantity = $quantityInput.val();
             const stock = parseInt(product.stock);
-    
+            
             if (quantity < stock) {
                 quantity++;
                 $quantityInput.val(quantity);
@@ -162,14 +169,28 @@ $(document).ready(function() {
     
 
     // click vào sản phẩm
+    $('.product-item').each(function() {
+        const productStock = parseInt($(this).data('stock'));
+
+        // Nếu stock bằng 0, thêm lớp 'out-of-stock'
+        if (productStock === 0) {
+            $(this).addClass('out-of-stock');
+
+            $(this).append('<div class="out-of-stock-message">Tạm hết hàng</div>');
+        }
+    });
+
+    // Xử lý sự kiện click khi sản phẩm được chọn
     $('.product-item').on('click', function() {
         const productID = $(this).find('#productID').val();
-
         const productName = $(this).data('name');
         const productStock = parseInt($(this).data('stock'));
         const productPrice = $(this).data('price');
 
-        addProductToInvoice({ id: productID, name: productName, stock: productStock, price: productPrice });
+        // Chỉ thêm vào hóa đơn nếu stock lớn hơn 0
+        if (productStock > 0) {
+            addProductToInvoice({ id: productID, name: productName, stock: productStock, price: productPrice });
+        }
     });
 
     function togglePaymentFields() {
@@ -224,14 +245,12 @@ $(document).ready(function() {
     });
     
     $('#processPayment').on('click', function() {
-        let cashAmountInput = $('#cashAmount').val().trim(); // Lấy giá trị nhập vào và loại bỏ khoảng trắng
-        let cashAmount = parseFloat(cashAmountInput.replace(/,/g, '')); // Chuyển đổi thành số
+        let cashAmountInput = $('#cashAmount').val().trim(); 
+        let cashAmount = parseFloat(cashAmountInput.replace(/,/g, '')); 
         let errorSpan = $('#cashAmountError'); // Thông báo lỗi
         let totalAmount = $("#total-amount").val().replace(/,/g, '');
 
         errorSpan.text('').hide();
-        console.log("cashAmountInput : ", cashAmountInput);
-        console.log(" cashAmount : ",  cashAmount);
         if (cashAmountInput === '' || isNaN(cashAmount) || cashAmount < totalAmount) {
             if (cashAmountInput === '' || isNaN(cashAmount)) {
                 errorSpan.html('Vui lòng nhập số tiền hợp lệ.<br>').show();
@@ -241,9 +260,10 @@ $(document).ready(function() {
             return; 
         }
     
-        // Nếu tất cả đều hợp lệ, thực hiện thanh toán
         sendOrderData(); 
     });
+
+   
 
 
     // alert notifiction
@@ -336,7 +356,6 @@ $(document).ready(function() {
 
     // Hàm khởi tạo hóa đơn từ dữ liệu đã lưu
     function initializeInvoice(savedInvoiceData) {
-        console.log('initializeInvoice được gọi', savedInvoiceData); 
         savedInvoiceData.forEach(function(product) {
             // Quá trình thêm các sản phẩm vào bảng hoặc xử lý hóa đơn
             const $existingRow = $invoiceListBody.find(`tr[data-id="${product.id}"]`);
@@ -580,6 +599,7 @@ $(document).ready(function() {
         amountReturn.val("");
         totalAmount.text("0.000");
         $invoiceListBody.empty(); // Xóa nội dung bảng
+        $totalAmountDiscount.text("");
     }
 
     // Gọi hàm để lấy dữ liệu hóa đơn

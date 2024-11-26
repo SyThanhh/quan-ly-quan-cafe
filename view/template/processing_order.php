@@ -62,10 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($OrderID!== false) {
             // Nếu lưu thành công
             echo json_encode([
-                'checkPointCustomerWithCoupon'=> $checkPointCustomerWithCoupon,
-                'checkProductInstock '=> $checkProductInstock,
-                'checkPointCustomer '=> $checkPointCustomer,
-                'checkOrderDetail '=> $checkOrderDetail,
+                // 'checkPointCustomerWithCoupon'=> $checkPointCustomerWithCoupon,
+                // 'checkProductInstock '=> $checkProductInstock,
+                // 'checkPointCustomer '=> $checkPointCustomer,
+                // 'checkOrderDetail '=> $checkOrderDetail,
                 'success' => true,
                 'message' => 'Đơn hàng đã được lưu thành công!',
                 'data' => [
@@ -85,10 +85,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Nếu lưu thất bại
             echo json_encode([
-                'checkPointCustomerWithCoupon'=> $checkPointCustomerWithCoupon,
-                'checkProductInstock '=> $checkProductInstock,
-                'checkPointCustomer '=> $checkPointCustomer,
-                'checkOrderDetail '=> $checkOrderDetail,
+                // 'checkPointCustomerWithCoupon'=> $checkPointCustomerWithCoupon,
+                // 'checkProductInstock '=> $checkProductInstock,
+                // 'checkPointCustomer '=> $checkPointCustomer,
+                // 'checkOrderDetail '=> $checkOrderDetail,
                 'success' => false,
                 'message' => 'Đơn hàng không được lưu thành công. Vui lòng thử lại!',
                 'data' => [
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'customerName' => $customerName,
                     'couponID' => $couponID,
                     'reduction' => $reduction,
-                    'items' => $items,
+                    'products' => $products,
                     'paymentMethod' => $paymentMethod,
                     'totalAmount' => $totalAmount,
                     'cashAmount' => $cashAmount,
