@@ -95,5 +95,17 @@
                 $p = new mCoupon();
                 return $p -> mDeleteCp($CouponID);
             }
+
+            public function listCoupon($searchKeyword, $limit, $offset) {
+                $p = new mCoupon();
+                return $p->getCoupon($searchKeyword, $limit, $offset);  // Gọi phương thức từ model
+            }
+        
+            // Lấy tổng số trang cho phân trang
+            public function getTotalPageCoupon($searchKeyword, $limit) {
+                $p = new mCoupon();
+                $totalCoupon = $p->getTotalCoupon($searchKeyword);  // Lấy tổng số sản phẩm theo từ khóa tìm kiếm
+                return ceil($totalCoupon / $limit);  // Tính tổng số trang
+            }
     }
 ?>

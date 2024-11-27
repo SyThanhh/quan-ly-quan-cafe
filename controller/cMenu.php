@@ -75,5 +75,18 @@
                 $p = new mProduct();
                 return $p -> mDeleteMenu($ProductID);
             }
+
+            public function listMenu($searchKeyword, $limit, $offset) {
+                $p = new mProduct();
+                return $p->getMenu($searchKeyword, $limit, $offset);  // Gọi phương thức từ model
+            }
+        
+            // Lấy tổng số trang cho phân trang
+            public function getTotalPages($searchKeyword, $limit) {
+                $p = new mProduct();
+                $totalMenu = $p->getTotalMenu($searchKeyword);  // Lấy tổng số sản phẩm theo từ khóa tìm kiếm
+                return ceil($totalMenu / $limit);  // Tính tổng số trang
+            }
+
     }
 ?>

@@ -330,12 +330,63 @@
             <div class="row">
                 <div class="col-10"></div>
                 <div class="col-2 text-right">
-                    <ul class="pagination">
-                        <li class="page-item disabled"><a class="page-link" href="#"><<</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">>></a></li>
-                    </ul>
+                <?php
+                                        // session_start();
+                                        include_once('./common/head/head.php');   
+                                        include_once('./controller/cCoupon.php'); // Đường dẫn vào file kết nối database
+                                        $cCoupon = new cCoupon();
+
+                                        // Xử lý khi có yêu cầu POST
+                                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                            if (isset($_POST['search'])) {
+                                                $_SESSION['searchKeyword'] = $_POST['search']; // Lưu từ khóa tìm kiếm vào session
+                                            } elseif (isset($_POST['clear'])) {
+                                                unset($_SESSION['searchKeyword']); // Xóa từ khóa tìm kiếm
+                                            }
+                                        }
+
+                                        
+                                        // Lấy từ khóa tìm kiếm từ session nếu có
+                                        $searchKeyword = isset($_POST['search']) ? $_POST['search'] : '';
+
+                                        // Xử lý phân trang
+                                        $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
+                                        $limit = 5;
+                                        $offset = ($page - 1) * $limit;
+                                        
+                                        // Lấy dữ liệu từ model
+                                        $Coupon = $cCoupon->listCoupon($searchKeyword, $limit, $offset);
+                                        $totalPages  = $cCoupon->getTotalPageCoupon($searchKeyword, $limit);
+                                    ?>
+                                        <!-- Phân trang -->
+                                        <div class="row justify-content-end mr-1">
+                                            <nav aria-label="Page navigation example">
+                                                <ul class="pagination">
+                                                    <!-- Nút Previous -->
+                                                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                                                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo ($page > 1) ? $page - 1 : 1; ?><?php echo isset($searchKeyword) && $searchKeyword !== '' ? '&search=' . urlencode($searchKeyword) : ''; ?>" aria-label="Previous">
+                                                            <span aria-hidden="true">&laquo;</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <!-- Các trang số -->
+                                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                                        <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+                                                            <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $i; ?><?php echo isset($searchKeyword) && $searchKeyword !== '' ? '&search=' . urlencode($searchKeyword) : ''; ?>">
+                                                                <?php echo $i; ?>
+                                                            </a>
+                                                        </li>
+                                                    <?php endfor; ?>
+
+                                                    <!-- Nút Next -->
+                                                    <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                                                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo ($page < $totalPages) ? $page + 1 : $totalPages; ?><?php echo isset($searchKeyword) && $searchKeyword !== '' ? '&search=' . urlencode($searchKeyword) : ''; ?>" aria-label="Next">
+                                                            <span aria-hidden="true">&raquo;</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
+                                        </div>
                 </div>
             </div>
         </div>

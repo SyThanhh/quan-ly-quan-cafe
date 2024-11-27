@@ -294,7 +294,9 @@
             <div class="boxleft">
                 <h1>DANH MỤC</h1><br><br>
                 <a href="#" class="menu-item">Cà phê</a><br>
-                <a href="#" class="menu-item">Trà</a>
+                <a href="#" class="menu-item">Trà</a><br>
+                <a href="#" class="menu-item">Nước ép</a><br>
+                <a href="#" class="menu-item">Nước ngọt</a>
             </div>    
 
                 <div class="product-grid">

@@ -157,6 +157,88 @@
             }
         }
 
+        public function getMenu($limit, $offset, $keyword = '') {
+            // Bắt đầu xây dựng truy vấn SQL cho bảng product
+            $p = new Database();  // Tạo đối tượng kết nối
+            $con = $p->connect();  // Kết nối đến cơ sở dữ liệu
+            
+            // Bắt đầu truy vấn SQL
+            $query = "SELECT * FROM product WHERE Status = 1";
+            
+            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho ProductName
+            if (!empty($keyword)) {
+                $query .= " AND ProductName LIKE ?";
+            }
+            
+            // Thêm phần LIMIT và OFFSET
+            $query .= " LIMIT ? OFFSET ?";
+            
+            // Chuẩn bị truy vấn
+            $stmt = mysqli_prepare($con, $query); // Sử dụng $con thay vì $this->con
+        
+            if ($stmt) {
+                // Nếu có từ khóa tìm kiếm, gắn tham số tìm kiếm và LIMIT/OFFSET
+                if (!empty($keyword)) {
+                    $searchTerm = "%$keyword%";
+                    mysqli_stmt_bind_param($stmt, "ssii", $searchTerm, $searchTerm, $limit, $offset);
+                } else {
+                    // Nếu không có từ khóa tìm kiếm, chỉ gắn LIMIT và OFFSET
+                    mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
+                }
+        
+                // Thực thi truy vấn
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+        
+                // Lấy kết quả
+                $menu = [];
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $menu[] = $row;
+                }
+        
+                // Đóng statement
+                mysqli_stmt_close($stmt);
+        
+                return $menu;  // Trả về danh sách sản phẩm
+            }
+        
+            return [];  // Nếu không có dữ liệu, trả về mảng rỗng
+        }
+        
+        
+        public function getTotalMenu($keyword = '') {
+            // Xây dựng truy vấn đếm tổng số sản phẩm trong bảng product
+            $p = new Database();  // Tạo đối tượng kết nối
+            $con = $p->connect(); 
+            $query = "SELECT COUNT(*) as total FROM product WHERE Status = 1";
+            
+            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho ProductName
+            if (!empty($keyword)) {
+                $query .= " AND ProductName LIKE ?";
+            }
+        
+            // Chuẩn bị truy vấn
+            $stmt = mysqli_prepare($con, $query);
+        
+            if ($stmt) {
+                // Nếu có từ khóa tìm kiếm, gắn tham số tìm kiếm
+                if (!empty($keyword)) {
+                    $searchTerm = "%$keyword%";
+                    mysqli_stmt_bind_param($stmt, "s", $searchTerm);
+                }
+        
+                // Thực thi truy vấn
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $data = mysqli_fetch_assoc($result);
+        
+                mysqli_stmt_close($stmt);
+        
+                return $data['total'];  // Trả về tổng số sản phẩm
+            }
+        
+            return 0;  // Nếu không có sản phẩm, trả về 0
+        }
         
     }
 ?>

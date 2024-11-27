@@ -347,12 +347,21 @@
             <a href="index.php?page=menu" id='a1'>Quay Lại</a>
         </form>
     </div>
+    <?php 
+        if (isset($_GET['tim'])) {
+            $searchTerm = $_GET['tim'];
+        } else {
+            $searchTerm = '';  // Nếu không có, gán một giá trị mặc định
+        }
+    ?>
     <div class="row">
-        <div class="col-md-3">
-            <h1 style="margin-left: -80px">DANH MỤC</h1><br><br>
-            <a href="#" class="menu-item">Cà phê</a><br>
-            <a href="#" class="menu-item">Trà</a>
-         </div>
+    <div class="col-md-3">
+        <h1 style="margin-left: -80px">DANH MỤC</h1><br><br>
+        <a href="#" class="menu-item">Cà phê</a><br>
+                <a href="#" class="menu-item">Trà</a><br>
+                <a href="#" class="menu-item">Nước ép</a><br>
+                <a href="#" class="menu-item">Nước ngọt</a>
+    </div>
         <div class="col-md-4">
             <div class="product-detail">
                 <?php if (!empty($product['ProductImage'])): ?>
