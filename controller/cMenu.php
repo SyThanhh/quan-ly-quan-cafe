@@ -18,6 +18,22 @@
             }
         }
 
+        public function getProductByType($CategoryID) {
+            $p = new mProduct();
+            $tbl = $p->selProductByType($CategoryID);
+            
+            if ($tbl) {
+                if (mysqli_num_rows($tbl) > 0) {
+                    return $tbl;
+                } else {
+                    return false; 
+                }
+            } else {
+                echo 'Lỗi kết nối!';
+            }
+        }
+        
+
         public function getProductByName($ProductName){
             $p = new mProduct();
             $tbl = $p -> selProductByName($ProductName);
@@ -76,16 +92,19 @@
                 return $p -> mDeleteMenu($ProductID);
             }
 
-            public function listMenu($searchKeyword, $limit, $offset) {
-                $p = new mProduct();
-                return $p->getMenu($searchKeyword, $limit, $offset);  // Gọi phương thức từ model
+            public function listProduct($searchKeyword = '', $limit = 5, $offset = 0) {
+                global $conn; // Nếu bạn sử dụng kết nối toàn cục
+                $sql = "SELECT * FROM product p join category c on c.CategoryID = p.CategoryID WHERE p.ProductName LIKE '%$searchKeyword%' LIMIT $limit OFFSET $offset";
+                return mysqli_query($conn, $sql); // Trả về kết quả của câu truy vấn
             }
         
-            // Lấy tổng số trang cho phân trang
-            public function getTotalPages($searchKeyword, $limit) {
-                $p = new mProduct();
-                $totalMenu = $p->getTotalMenu($searchKeyword);  // Lấy tổng số sản phẩm theo từ khóa tìm kiếm
-                return ceil($totalMenu / $limit);  // Tính tổng số trang
+            // Phương thức lấy tổng số trang
+            public function getTotalPageProduct($searchKeyword = '', $limit = 5) {
+                global $conn;
+                $sql = "SELECT COUNT(*) FROM product p join category c on c.CategoryID = p.CategoryID WHERE p.ProductName LIKE '%$searchKeyword%'";
+                $result = mysqli_query($conn, $sql);
+                $row = mysqli_fetch_row($result);
+                return ceil($row[0] / $limit); // Trả về tổng số trang
             }
 
     }

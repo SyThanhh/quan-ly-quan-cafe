@@ -18,17 +18,20 @@
 
     ?>
     <style>
-        .table-custom {
+    .table-custom {
         border: 2px solid black; /* Đặt độ dày của đường viền bảng */
     }
 
-    .table-custom th,
+    .table-custom th{
+        border: 2px solid black;
+    }
     .table-custom td {
-        border: 2px solid black; /* Đặt độ dày của đường viền cho từng ô */
+        border: 2px solid black;
     }
 
     .table-custom th {
-        background-color: #f8f9fa; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+        background-color: #f8f9fa;
+        border: 2px solid black; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
     }
     input[type="text"],
         input[type="datetime-local"],
@@ -53,7 +56,6 @@
         }
 
         #search-form .search-button i {
-            font-size: 0.75 rem;
             color: #495057;
         }
 
@@ -61,7 +63,9 @@
             background-color: #e2e6ea;
         }
 
-
+        #name-search{
+            width: 350px;
+        }
             #search-form .btn-outline-secondary {
                 width: 100%;
                 border-radius: 6px;
@@ -277,129 +281,123 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ MENU</h4>
-                            </div>
-                            <div class="col-md-6">
-                                        <form method="POST" id="search-form" class="d-flex">
-                                            <input type="text" class="form-control" name="txtSearch" id="name-search" placeholder="Tìm sản phẩm theo tên">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button" type="submit" name="btnSearch">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-            
-                                            </div>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button" id="btn-clear">
-                                                    <i class="fas fa-eraser"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                     </div>
+                            <h4>QUẢN LÝ MENU</h4>
+                            <form method="POST" id="search-form" class="d-flex mb-3">
+                                <input type="text" class="form-control" name="txtSearch" id="name-search" 
+                                    placeholder="Tìm sản phẩm theo tên"
+                                    value="<?php echo isset($_POST['txtSearch']) ? htmlspecialchars($_POST['txtSearch']) : ''; ?>">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary search-button" type="submit" name="btnSearch">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary search-button" type="submit" name="btnClear">
+                                        <i class="fas fa-eraser"></i>
+                                    </button>
+                                </div>
+                            </form>
+
                             <?php
-                                include_once('./controller/cMenu.php');
-                                $p = new cProduct();
-                                $tbl = $p->getProduct();
-                                if(isset($_REQUEST['btnSearch'])){
-                                    $tbl = $p -> getProductByName($_REQUEST['txtSearch']);
-                                }
+                            include_once('./controller/cMenu.php');
+                            $p = new cProduct();
+                            // Xử lý tìm kiếm và nút xóa
+                            $searchKeyword = '';
+                            if (isset($_POST['btnSearch'])) {
+                                $searchKeyword = $_POST['txtSearch'];
+                            } elseif (isset($_POST['btnClear'])) {
+                                $searchKeyword = '';
+                            }
 
-                                if($tbl){
-                                    echo '<table class="table table-bordered table-custom">';
-                                    echo '<div style="text-align: right;">'; 
-                                    echo '<button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addMenuModal">
-                                            <i class="fas fa-plus-square"></i>
-                                                Thêm Món Trong Menu
-                                        </button>';
-                                    echo '</div>';
-                                    echo '<tr><th>Mã Sản Phẩm</th><th>Tên Sản Phẩm</th><th>Giá Bán</th><th>Hình Ảnh</th><th>Số Lượng Tồn Kho</th><th>Trạng Thái</th><th>Mô Tả</th><th>Loại Sản Phẩm</th><th colspan=2>Điều chỉnh</th></tr>';
-                                    while($r = mysqli_fetch_assoc($tbl)){
-                                        $productImagePath = 'assets/img/products/' . $r['ProductImage'];
-                                        echo "<tr>";
-                                        echo "<td>".$r['ProductID']."</td>";
-                                        echo "<td>".$r['ProductName']."</td>";
-                                        echo "<td>".$r['UnitPrice']."</td>";
-                                        echo "<td>";
-                                        echo '<img src="' . $productImagePath . '" width="100px">';
-                                        echo "</td>";
-                                        echo "<td>".$r['UnitsInStock']."</td>";
-                                        $status = ($r['Status'] == 1) ? "Còn sản phẩm" : "Hết sản phẩm";
-                                        echo "<td>{$status}</td>";
-                                        echo "<td>".$r['Description']."</td>";
-                                        echo "<td>".$r['CategoryName']."</td>";
-                                        echo "<td> <a href='index.php?page=page_update_menu&ProductID=".$r["ProductID"]."' class='btn btn-success'><i class='fas fa-edit'></i></a></td>";
-                                        echo "<td> <a href='index.php?page=page_delete_menu&ProductID=".$r["ProductID"]. "' class='btn btn-danger' onclick='return confirm(\"Bạn có thực sự muốn xóa sản phẩm này không?\")'><i class='fas fa-trash'></i></a></td>";
-                                        echo "</tr>";
-                                    }
-                                    echo '</table>';
-                                } else {
-                                    echo 'Không có sản phẩm cần tìm ';
-                                }
-                                ?>
-                                <div class="row">
-                                    <div class="col-10"></div>
-                                    <div class="col-2 text-right">
-                                    <?php
-                                        // session_start();
-                                        include_once('./common/head/head.php');   
-                                        include_once('./controller/cMenu.php'); // Đường dẫn vào file kết nối database
-                                        $cMenu = new cProduct();
+                            // Xử lý phân trang
+                            $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
+                            $limit = 5;
+                            $offset = ($page - 1) * $limit;
 
-                                        // Xử lý khi có yêu cầu POST
-                                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                                            if (isset($_POST['search'])) {
-                                                $_SESSION['searchKeyword'] = $_POST['search']; // Lưu từ khóa tìm kiếm vào session
-                                            } elseif (isset($_POST['clear'])) {
-                                                unset($_SESSION['searchKeyword']); // Xóa từ khóa tìm kiếm
-                                            }
-                                        }
+                            // Lấy dữ liệu sản phẩm và tổng số trang
+                            $tbl = $p->listProduct($searchKeyword, $limit, $offset);
+                            $totalPages = $p->getTotalPageProduct($searchKeyword, $limit);
 
-                                        
-                                        // Lấy từ khóa tìm kiếm từ session nếu có
-                                        $searchKeyword = isset($_POST['search']) ? $_POST['search'] : '';
+                            if ($tbl):
+                            ?>
+                                <div style="text-align: right;">
+                                    <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addMenuModal">
+                                        <i class="fas fa-plus-square"></i> Thêm Món Trong Menu
+                                    </button>
+                                </div>
+                                <table class="table table-bordered table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã Sản Phẩm</th>
+                                            <th>Tên Sản Phẩm</th>
+                                            <th>Giá Bán</th>
+                                            <th>Hình Ảnh</th>
+                                            <th>Số Lượng Tồn Kho</th>
+                                            <th>Trạng Thái</th>
+                                            <th>Mô Tả</th>
+                                            <th>Loại Sản Phẩm</th>
+                                            <th colspan="2">Điều chỉnh</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($r = mysqli_fetch_assoc($tbl)): ?>
+                                            <tr>
+                                                <td><?php echo $r['ProductID']; ?></td>
+                                                <td><?php echo htmlspecialchars($r['ProductName']); ?></td>
+                                                <td><?php echo number_format($r['UnitPrice'], 0, ',', '.'); ?> đ</td>
+                                                <td>
+                                                    <img src="assets/img/products/<?php echo $r['ProductImage']; ?>" width="100px">
+                                                </td>
+                                                <td><?php echo $r['UnitsInStock']; ?></td>
+                                                <td><?php echo $r['Status'] == 1 ? 'Còn sản phẩm' : 'Hết sản phẩm'; ?></td>
+                                                <td><?php echo htmlspecialchars($r['Description']); ?></td>
+                                                <td><?php echo htmlspecialchars($r['CategoryName']); ?></td>
+                                                <td>
+                                                    <a href="index.php?page=page_update_menu&ProductID=<?php echo $r['ProductID']; ?>" class="btn btn-success">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="index.php?page=page_delete_menu&ProductID=<?php echo $r['ProductID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có thực sự muốn xóa sản phẩm này không?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    </tbody>
+                                </table>
 
-                                        // Xử lý phân trang
-                                        $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
-                                        $limit = 5;
-                                        $offset = ($page - 1) * $limit;
-                                        
-                                        // Lấy dữ liệu từ model
-                                        $menu = $cMenu->listMenu($searchKeyword, $limit, $offset);
-                                        $totalPages  = $cMenu->getTotalPages($searchKeyword, $limit);
-                                        
-                                        
+                                <!-- Phân trang -->
+                                <div class="row justify-content-end">
+                                    <nav>
+                                        <ul class="pagination">
+                                            <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                                                <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
+                                                    &laquo;
+                                                </a>
+                                            </li>
+                                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                                <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                                                    <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $i; ?>&search=<?php echo urlencode($searchKeyword); ?>">
+                                                        <?php echo $i; ?>
+                                                    </a>
+                                                </li>
+                                            <?php endfor; ?>
+                                            <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                                                <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
+                                                    &raquo;
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            <?php elseif(!$tbl):?>
+                                <p class="text-center">Không tìm thấy sản phẩm nào phù hợp với từ khóa "<b><?php echo htmlspecialchars($searchKeyword); ?></b>".</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
 
-                                    ?>
-
-                                        <!-- Phân trang -->
-                                        <div class="row justify-content-end mr-1">
-                                            <nav aria-label="Page navigation example">
-                                                <ul class="pagination">
-                                                    <!-- Nút Previous -->
-                                                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
-                                                        <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo ($page > 1) ? $page - 1 : 1; ?><?php echo isset($searchKeyword) && $searchKeyword !== '' ? '&search=' . urlencode($searchKeyword) : ''; ?>" aria-label="Previous">
-                                                            <span aria-hidden="true">&laquo;</span>
-                                                        </a>
-                                                    </li>
-
-                                                    <!-- Các trang số -->
-                                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                                        <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
-                                                            <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $i; ?><?php echo isset($searchKeyword) && $searchKeyword !== '' ? '&search=' . urlencode($searchKeyword) : ''; ?>">
-                                                                <?php echo $i; ?>
-                                                            </a>
-                                                        </li>
-                                                    <?php endfor; ?>
-
-                                                    <!-- Nút Next -->
-                                                    <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
-                                                        <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo ($page < $totalPages) ? $page + 1 : $totalPages; ?><?php echo isset($searchKeyword) && $searchKeyword !== '' ? '&search=' . urlencode($searchKeyword) : ''; ?>" aria-label="Next">
-                                                            <span aria-hidden="true">&raquo;</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </nav>
-                                        </div>
 
                             <div class="modal fade" id="addMenuModal" tabindex="-1" role="dialog" aria-labelledby="addMenuModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">

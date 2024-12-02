@@ -10,10 +10,29 @@
                 return $tbl;
             }
             else{
-                echo 'Lỗi kết nối!âa';
+                echo 'Lỗi kết nối!';
             }
         }
 
+        public function selProductByType($CategoryID) {
+            $p = new Database();
+            $con = $p->connect();
+            
+            if ($con) {
+                $CategoryID = mysqli_real_escape_string($con, $CategoryID);
+        
+                $str = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, 
+                        c.CategoryName 
+                        FROM product p 
+                        JOIN category c ON p.CategoryID = c.CategoryID 
+                        WHERE p.CategoryID = '$CategoryID'";
+        
+                $tbl = mysqli_query($con, $str);
+                return $tbl;
+            } else {
+                echo 'Lỗi kết nối!';
+            }
+        }
         public function selProductByName($ProductName){
             $p = new Database();
             $con = $p -> connect();
@@ -157,15 +176,15 @@
             }
         }
 
-        public function getMenu($limit, $offset, $keyword = '') {
-            // Bắt đầu xây dựng truy vấn SQL cho bảng product
+        public function getProduct($limit, $offset, $keyword = '') {
+            // Bắt đầu xây dựng truy vấn SQL cho bảng Coupon
             $p = new Database();  // Tạo đối tượng kết nối
             $con = $p->connect();  // Kết nối đến cơ sở dữ liệu
             
             // Bắt đầu truy vấn SQL
             $query = "SELECT * FROM product WHERE Status = 1";
             
-            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho ProductName
+            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho CouponName
             if (!empty($keyword)) {
                 $query .= " AND ProductName LIKE ?";
             }
@@ -191,28 +210,26 @@
                 $result = mysqli_stmt_get_result($stmt);
         
                 // Lấy kết quả
-                $menu = [];
+                $Product= [];
                 while ($row = mysqli_fetch_assoc($result)) {
-                    $menu[] = $row;
+                    $Product[] = $row;
                 }
         
                 // Đóng statement
                 mysqli_stmt_close($stmt);
         
-                return $menu;  // Trả về danh sách sản phẩm
+                return $Product;  // Trả về danh sách sản phẩm
             }
         
             return [];  // Nếu không có dữ liệu, trả về mảng rỗng
         }
-        
-        
-        public function getTotalMenu($keyword = '') {
-            // Xây dựng truy vấn đếm tổng số sản phẩm trong bảng product
+        public function getTotalProduct($keyword = '') {
+            // Xây dựng truy vấn đếm tổng số sản phẩm trong bảng Coupon
             $p = new Database();  // Tạo đối tượng kết nối
             $con = $p->connect(); 
             $query = "SELECT COUNT(*) as total FROM product WHERE Status = 1";
             
-            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho ProductName
+            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho CouponName
             if (!empty($keyword)) {
                 $query .= " AND ProductName LIKE ?";
             }

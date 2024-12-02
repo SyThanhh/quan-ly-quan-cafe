@@ -34,294 +34,7 @@
 <html lang="vi">
 <head>
     <?php include_once('./common/head/head-website.php') ?>
-    <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .containerfull {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-        }
-
-        .boxleft {
-            width: 20%;
-            padding-right: 20px;
-        }
-
-        .boxright {
-            width: 78%;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px; 
-        }
-        .row {
-            float: left;
-            width: 100%;
-        }
-        .container {
-            width: 1200px;
-            margin: 0 auto;
-        }
-        .box25 {
-            float: left;
-            width: 25%;
-            width: calc(25% - 30px);
-            position: relative;
-        }
-        .box25 img {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px #999999;
-        }
-        .mr15 {
-            margin-right: 30px;
-        }
-        
-        button {
-            color: #993300;
-            font-size: 13pt;
-            font-weight: bold;
-            width: 100%;
-            border: 1px #993300 dotted;
-            border-radius: 5px;
-            padding: 10px 0px;
-            background-color: #FFFFFF;
-        }
-        h1 {
-            text-align: center;
-            font-size: 24pt;
-            margin: 0px;
-        }
-        .price {
-            text-align: center;
-            color: #993300;
-            font-size: 12pt;
-            float: left;
-            width: 100%;
-            padding: 8px 0px;
-        }
-        a {
-            color: #993300;
-            font-size: 13pt;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: #000000;
-        }
-        .boxleft {
-            float: left;
-            width: 20%;
-        }
-        .boxright {
-            float: left;
-            width: 78%;
-        }
-        .mb {
-            margin-bottom: 50px;
-        }
-        .menutrai a {
-            display: block;
-            width: 100%;
-            color: #993300;
-            font-size: 13pt;
-            font-weight: bold;
-            text-decoration: none;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px #CCC dotted;
-        }
-        .menutrai a:hover {
-            color: #000000;
-        }
-        .menu{
-            height: 40px;
-            line-height: 40px;
-        }
-        .menu a{
-            margin: 0 20px;
-        }
-        .search-form {
-            display: flex;                
-            justify-content: center;    
-            align-items: center;           
-            gap: 10px;                     
-            margin: 30px auto;
-            max-width: 600px;
-            margin-left:90px;
-        }
-
-        .search-form form {
-            display: flex;             
-            width: 100%;
-            justify-content: center;       
-            align-items: center;           
-        }
-
-        .search-form input[type="text"] {
-            font-size: 14px;
-            padding: 10px;
-            width: 300px;                
-            border: 2px solid #333;
-            border-radius: 15px;
-            background-color: #f4f4f9;
-            transition: background-color 0.3s ease;
-        }
-
-        .search-form input[type="text"]:focus {
-            background-color: #fff;
-        }
-
-        .search-form button {
-            font-size: 13px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            margin-left: 20px;
-            transition: background-color 0.3s ease;
-            width: 112px;
-        }
-
-        .search-form a {
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 15px;  /* bo tròn */
-            padding: 10px 20px;
-            width: 112px;
-            margin-left: 20px;
-            background-color: #28a745 ; 
-            /* #28a745 */
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: inline-block;
-            text-transform: uppercase;
-            text-align: center;
-        }
-
-        .search-form button:hover, .search-form a:hover {
-            background-color: #218838;
-        }
-
-        .search-form button:active, .search-form a:active {
-            background-color: #1e7e34;
-        }
-
-        .product-card {
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        text-align: center;
-    }
-
-    .product-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
-    .product-detail img{
-        margin-top: 50px;
-    }
-
-    .product-card h3 {
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    .product-card p {
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 10px;
-    }
-
-    .product-card p:nth-of-type(3) {
-        color: #E74C3C;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .product-card p:nth-of-type(4) {
-        color: #2ecc71;
-        font-weight: bold;
-    }
-
-    .menu-item {
-        margin-left: 50px;
-    }
-  
-    .star-rating {
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    .star {
-        color: gray; 
-        padding: 0 5px;
-    }
-    .row .container .text-center{
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        gap: 10px; 
-        margin-left: 20px;
-    }
-
-    .col-md-2 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .product-image-wrapper {
-        overflow: hidden;
-        border: 1px solid #ddd;
-        padding: 10px;
-        border-radius: 8px;
-        height: 200px;
-    }
-
-    .product-image {
-        width: 500px;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    h5 {
-        font-size: 1rem;
-        color: #333;
-    }
-
-    p {
-        color: black;
-        font-size: 0.9rem;
-    }
-
-    .col-md-2 h5, .col-md-2 p {
-        text-align: center;
-    }
-
-    </style>
+    <link rel="stylesheet" href="./assets/css/productdetail-styles.css">
 </head>
 <body>
     <?php include_once('./common/header/navbar.php'); ?>
@@ -331,37 +44,15 @@
         <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
             <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">CHI TIẾT SẢN PHẨM</h1>
             <div class="d-inline-flex mb-lg-5">
-                <p class="m-0 text-white"><a class="text-white" href="index.php">Menu</a></p>
+                <p class="m-0 text-white"><a class="text-white" href="index.php?page=menu">Menu</a></p>
                 <p class="m-0 text-white px-2">/</p>
                 <p class="m-0 text-white">Chi tiết sản phẩm</p>
             </div>
         </div>
     </div>
     <!-- Page Header End -->
-
-    <!-- Form tìm kiếm -->
-    <div class="search-form mb-5">
-        <form action="" method="get">
-            <input type="text" name="tim" placeholder="Nhập tên sản phẩm..." required>
-            <button type="submit">TÌM KIẾM</button>
-            <a href="index.php?page=menu" id='a1'>Quay Lại</a>
-        </form>
-    </div>
-    <?php 
-        if (isset($_GET['tim'])) {
-            $searchTerm = $_GET['tim'];
-        } else {
-            $searchTerm = '';  // Nếu không có, gán một giá trị mặc định
-        }
-    ?>
     <div class="row">
-    <div class="col-md-3">
-        <h1 style="margin-left: -80px">DANH MỤC</h1><br><br>
-        <a href="#" class="menu-item">Cà phê</a><br>
-                <a href="#" class="menu-item">Trà</a><br>
-                <a href="#" class="menu-item">Nước ép</a><br>
-                <a href="#" class="menu-item">Nước ngọt</a>
-    </div>
+        <div class="col-md-2"></div>
         <div class="col-md-4">
             <div class="product-detail">
                 <?php if (!empty($product['ProductImage'])): ?>
@@ -372,7 +63,7 @@
 
             </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
                 <h1><?php echo htmlspecialchars($product['ProductName']); ?></h1>
                 <p><strong>Giá:</strong> <?php echo number_format($product['UnitPrice'], 0, ',', '.'); ?> VND</p>
                 <p><strong>Mô tả:</strong> <?php echo htmlspecialchars($product['Description']); ?></p>
@@ -391,7 +82,7 @@
                     $isActive = true;
                     $count = 0;
                     while ($carouselProduct = mysqli_fetch_assoc($carouselResult)) {
-                        if ($count % 3 == 0) { 
+                        if ($count % 4 == 0) { 
                             if ($count > 0) echo '</div></div>';
                             echo '<div class="carousel-item '.($isActive ? 'active' : '').'">';
                             $isActive = false;

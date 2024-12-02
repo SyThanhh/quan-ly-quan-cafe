@@ -1,6 +1,15 @@
 <?php
     include_once('./model/mCoupon.php');
     class cCoupon{
+        private $conn;
+
+    // Hàm khởi tạo kết nối MySQL
+        public function __construct() {
+            $this->conn = mysqli_connect('localhost', 'admin', '123456', 'db_ql3scoffee'); // Thay thế thông tin kết nối
+            if (!$this->conn) {
+                die('Kết nối MySQL thất bại: ' . mysqli_connect_error());
+            }
+        }
         public function getCoupon() {
             $p = new mCoupon();
             $tbl = $p->selCoupon();
@@ -96,16 +105,32 @@
                 return $p -> mDeleteCp($CouponID);
             }
 
-            public function listCoupon($searchKeyword, $limit, $offset) {
-                $p = new mCoupon();
-                return $p->getCoupon($searchKeyword, $limit, $offset);  // Gọi phương thức từ model
+            public function listCoupon($searchKeyword = '', $limit = 5, $offset = 0) {
+                global $conn; // Đảm bảo kết nối này là hợp lệ
+                $sql = "SELECT * FROM coupon WHERE CouponCode LIKE '%$searchKeyword%' LIMIT $limit OFFSET $offset";
+                
+                // Kiểm tra lỗi trong câu truy vấn
+                $result = mysqli_query($conn, $sql);
+                if (!$result) {
+                    die('Lỗi câu truy vấn: ' . mysqli_error($conn));  // Kiểm tra nếu câu truy vấn không thành công
+                }
+            
+                return $result; // Trả về kết quả
             }
         
-            // Lấy tổng số trang cho phân trang
+            // Phương thức lấy tổng số trang
             public function getTotalPageCoupon($searchKeyword, $limit) {
-                $p = new mCoupon();
-                $totalCoupon = $p->getTotalCoupon($searchKeyword);  // Lấy tổng số sản phẩm theo từ khóa tìm kiếm
-                return ceil($totalCoupon / $limit);  // Tính tổng số trang
+                // Sử dụng kết nối đã khởi tạo trong class
+                $query = "SELECT COUNT(*) AS total FROM coupon WHERE CouponCode LIKE '%$searchKeyword%'";
+                $result = mysqli_query($this->conn, $query);  // Sử dụng $this->conn
+                
+                // Kiểm tra nếu truy vấn thất bại
+                if (!$result) {
+                    die('Truy vấn thất bại: ' . mysqli_error($this->conn));  // Hiển thị lỗi nếu truy vấn không thành công
+                }
+                
+                $row = mysqli_fetch_assoc($result);
+                return ceil($row['total'] / $limit);  // Tính toán số trang
             }
     }
 ?>
