@@ -417,7 +417,7 @@ if ($result && $result->num_rows > 0) {
         </tbody>
     </table>
 
-    <div class="row justify-content-end mr-1">
+    <!-- <div class="row justify-content-end mr-1">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item">
@@ -435,7 +435,7 @@ if ($result && $result->num_rows > 0) {
                 </li>
             </ul>
         </nav>
-    </div>
+    </div> -->
 </div>
 
 <style>
