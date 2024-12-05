@@ -41,42 +41,48 @@
         }
 
         public function selectCustomerByPhone($keyword) {
+            // Kiểm tra kết nối
             if (!$this->conn) {
                 return false; 
             }
         
+            // Loại bỏ khoảng trắng ở đầu và cuối
             $keyword = trim($keyword);
             $str = "SELECT * FROM customer WHERE Status = 1";
-            
+        
+            // Nếu từ khóa không rỗng, thêm điều kiện vào truy vấn
             if (!empty($keyword)) {
-                $str .= " AND CustomerPhone LIKE ?";
+                $str .= " AND CustomerPhone = ?";
+            } else {
+                // Nếu từ khóa rỗng, trả về null
+                return null; // Hoặc return false để biểu thị lỗi
             }
         
+            // Chuẩn bị truy vấn
             $stmt = mysqli_prepare($this->conn, $str);
-        
             if (!$stmt) {
                 return false; 
             }
         
+            // Gán giá trị cho tham số nếu từ khóa không rỗng
             if (!empty($keyword)) {
-                $searchTerm = "%$keyword%";
-                mysqli_stmt_bind_param($stmt, "s", $searchTerm);
+                mysqli_stmt_bind_param($stmt, "s", $keyword);
             }
         
+            // Thực thi truy vấn
             if (mysqli_stmt_execute($stmt)) {
                 // Lấy kết quả trả về
                 $result = mysqli_stmt_get_result($stmt);
-                // Lấy dữ liệu khách hàng từ kết quả
                 $customer = mysqli_fetch_assoc($result); 
                 
+                // Đóng câu lệnh
                 mysqli_stmt_close($stmt);
                 
-                // Nếu tìm thấy khách hàng, trả về dữ liệu khách hàng
-                if ($customer) {
-                    return $customer;
-                } 
+                return $customer ?: null; // Trả về null nếu không tìm thấy
             }
-            return null; // Trả về null nếu không tìm thấy khách hàng
+        
+            mysqli_stmt_close($stmt);
+            return null; // Trả về null nếu có lỗi xảy ra
         }
         
         
@@ -146,6 +152,54 @@
                 mysqli_stmt_close($stmt); 
         
                 return $result; // Trả về kết quả thực thi
+            }
+            return false; 
+        }
+
+        public function addSell($name, $email, $phone) {
+            if ($this->conn) {
+                // Xử lý dữ liệu đầu vào
+                $name = trim($name);
+                $email = trim($email);
+                $phone = trim($phone);
+        
+                // Kiểm tra xem các trường có hợp lệ không
+                if (empty($name) || empty($email) || empty($phone)) {
+                    return false; 
+                }
+        
+                // Thực hiện thêm mới khách hàng
+                $str = "INSERT INTO customer (CustomerName, Email, CustomerPhone) VALUES (?, ?, ?)";
+                $stmt = mysqli_prepare($this->conn, $str);
+        
+                if ($stmt === false) {
+                    return false; 
+                }
+        
+                mysqli_stmt_bind_param($stmt, "sss", $name, $email, $phone);
+                
+                $result = mysqli_stmt_execute($stmt);
+                if (!$result) {
+                    error_log("MySQL Error: " . mysqli_stmt_error($stmt));
+                    mysqli_stmt_close($stmt);
+                    return false; 
+                }
+        
+                // Lấy ID của bản ghi vừa thêm
+                $customerId = mysqli_insert_id($this->conn); // ID của bản ghi mới
+        
+                // Đóng câu lệnh
+                mysqli_stmt_close($stmt);
+        
+                // Tạo đối tượng khách hàng
+                $customer = (object)[
+                    'id' => $customerId,
+                    'name' => $name,
+                    'email' => $email,
+                    'phone' => $phone
+                ];
+        
+                return $customer; // Trả về đối tượng khách hàng
             }
             return false; 
         }
@@ -301,28 +355,47 @@
 
         public function getCustomerById($id) {
             if ($this->conn) {
+                // Câu lệnh SQL tìm kiếm theo CustomerID
                 $str = "SELECT * FROM customer WHERE CustomerID = ?";
                 
+                // Chuẩn bị câu lệnh SQL
                 $stmt = mysqli_prepare($this->conn, $str);
                 if ($stmt === false) {
-                    return false;
+                    // Trả về null nếu không thể chuẩn bị câu lệnh
+                    return null; 
                 }
                 
+                // Gắn tham số vào câu lệnh SQL
                 mysqli_stmt_bind_param($stmt, "i", $id);
                 
-                $result = mysqli_stmt_execute($stmt);
-                
-                // Lấy kết quả
-                $result = mysqli_stmt_get_result($stmt);
-                $customer = mysqli_fetch_assoc($result); 
-
-
-                mysqli_stmt_close($stmt); 
-
-                return $customer; 
+                // Thực thi câu lệnh
+                if (mysqli_stmt_execute($stmt)) {
+                    // Lấy kết quả trả về
+                    $result = mysqli_stmt_get_result($stmt);
+                    // Lấy dữ liệu khách hàng từ kết quả
+                    $customer = mysqli_fetch_assoc($result); 
+                    
+                    mysqli_stmt_close($stmt);
+                    
+                    // Nếu tìm thấy khách hàng, trả về dữ liệu khách hàng
+                    if ($customer) {
+                        return $customer;
+                    } else {
+                        // Trả về null nếu không tìm thấy khách hàng
+                        return null;
+                    }
+                } else {
+                    // Trả về null nếu không thực thi câu lệnh SQL thành công
+                    return null;
+                }
             }
-            return false; 
+            
+            // Trả về null nếu không có kết nối DB
+            return null;
         }
+        
+        
+        
 
         public function getCustomerByEmail($email) {
             if ($this->conn) {

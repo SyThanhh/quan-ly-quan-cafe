@@ -105,7 +105,7 @@
     <!-- Promo Cards Grid -->
     <div class="promo-grid">
         <?php
-        // Query to fetch all coupon data, including image field
+        // Truy vấn để lấy tất cả dữ liệu phiếu giảm giá, bao gồm trường hình ảnh
         $sql = "SELECT CouponID, CouponCode, StartDate, EndDate, Description, CouponDiscount, Status, UpdateAt, image FROM coupon";
         $result = mysqli_query($conn, $sql);
 
@@ -113,10 +113,12 @@
         
             while ($row = mysqli_fetch_assoc($result)) {
                 echo '<div class="promo-card">';
-                // Display image if exists
+                // Hiển thị hình ảnh nếu có
                 if (!empty($row["image"])) {
                     $imagePath = htmlspecialchars($row["image"]);
+                    // echo '<img src="view/template/' . $imagePath . '" alt="Promo Image">';
                     echo '<img src="assets/img/coupon/' . $imagePath . '" alt="Promo Image">';
+
                 }
                  else {
                     echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn
@@ -124,11 +126,11 @@
                 }
                 echo '<div class="promo-info">';
                 echo '<h3>' . htmlspecialchars($row["Description"]) . '</h3>';
-                echo '<p><strong>Coupon Code:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
-                echo '<p><strong>Discount:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
+                echo '<p><strong>Mã giảm giá:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
+                echo '<p><strong>Giảm giá:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
                 // echo '<p><strong>Start Date:</strong> ' . htmlspecialchars($row["StartDate"]) . '</p>';
                 // echo '<p><strong>End Date:</strong> ' . htmlspecialchars($row["EndDate"]) . '</p>';
-                echo '<p><strong>Status:</strong> ' . ($row["Status"] ? 'Active' : 'Inactive') . '</p>';
+                echo '<p><strong>Trạng thái:</strong> ' . ($row["Status"] ? 'Đang hoạt động' : 'Không hoạt động') . '</p>';
                 // echo '<p><strong>Last Updated:</strong> ' . htmlspecialchars($row["UpdateAt"]) . '</p>';
                 echo '</div>';
                 echo '</div>';

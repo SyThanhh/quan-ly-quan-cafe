@@ -285,7 +285,8 @@
                         </div>
                     </div>
                 </div>
-
+<<<<<<< HEAD
+=======
 
                 <!-- Thêm nhân viên -->
                 <?php
@@ -322,6 +323,7 @@
                     $stmt->close();
                 }
                 ?>
+
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>

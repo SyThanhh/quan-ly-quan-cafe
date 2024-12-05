@@ -248,11 +248,11 @@
                 }
                 echo '<div class="promo-info">';
                 echo '<h3>' . htmlspecialchars($row["Description"]) . '</h3>';
-                echo '<p><strong>Coupon Code:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
-                echo '<p><strong>Discount:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
+                echo '<p><strong>Mã giảm giá:</strong> ' . htmlspecialchars($row["CouponCode"]) . '</p>';
+                echo '<p><strong>Giảm giá:</strong> ' . htmlspecialchars($row["CouponDiscount"]) . '%</p>';
                 // echo '<p><strong>Start Date:</strong> ' . htmlspecialchars($row["StartDate"]) . '</p>';
                 // echo '<p><strong>End Date:</strong> ' . htmlspecialchars($row["EndDate"]) . '</p>';
-                echo '<p><strong>Status:</strong> ' . ($row["Status"] ? 'Active' : 'Inactive') . '</p>';
+                echo '<p><strong>Trạng thái:</strong> ' . ($row["Status"] ? 'Đang hoạt động' : 'Không hoạt động') . '</p>';
                 // echo '<p><strong>Last Updated:</strong> ' . htmlspecialchars($row["UpdateAt"]) . '</p>';
                 echo '</div>';
                 echo '</div>';

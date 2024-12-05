@@ -1,15 +1,13 @@
+<?php
+    // session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <?php
-        include_once('./common/head/head.php')  ; 
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
-
-        // Tạo một đối tượng Database để kết nối
-        $database = new Database();
-        $conn = $database->connect(); // Lấy kết nối 
+        include_once('./common/head/head.php') ; 
     ?>
  
     <link rel="stylesheet" href="./assets/css/sell.css">
@@ -19,12 +17,38 @@
             background-color: #0056b3; 
             border-color: #ffffff; /* Viền sáng lên */
         }
+
+        /* thêm thak cuoi này vô nè */
+        .product-item.out-of-stock {
+            opacity: 0.5; /* Làm mờ */
+            pointer-events: none; 
+        }
+        .product-item {
+            position: relative; /* Đặt phần tử cha có position: relative để làm gốc */
+        }
+        .out-of-stock-message {
+            color: red; 
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8); /* Nền trắng nhạt */
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+
     </style>
 </head>
 <?php
+require_once($_SERVER['DOCUMENT_ROOT'] . "/payment/config.php");
+   
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
     include_once('./controller/cCoupon.php'); 
+    include_once('./controller/OrderController.php'); 
+    $orderController = new OrderController();
 
     $invoiceData = isset($_SESSION['invoiceData']) ? $_SESSION['invoiceData'] : [];
     $database = new Database();
@@ -32,8 +56,9 @@
     $CustomerController = new CustomerController();
     $CouponController = new cCoupon();
     $searchKeyword = '';
-   
 
+    
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['search-sell'])) {
             $_SESSION['searchKeywordSell'] = $_POST['search-sell']; // Lưu từ khóa tìm kiếm
@@ -84,11 +109,12 @@
             $_SESSION["CustomerPoint"] = $customer['CustomerPoint'] ? $customer['CustomerPoint'] : "0";
             $_SESSION["CustomerEmail"] =  $customer['Email'] ?  $customer['Email'] : "";
         }
-    }   
+    }
 
    
     
 ?>
+
 <body id="page-top">
   
     <!-- Page Wrapper -->
@@ -288,20 +314,22 @@
                                 <img class="img-profile rounded-circle" src="./assets/img/testimonial-2.jpg">
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="profile.php">
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                <a class="dropdown-item" href="settings.php">
+                                <a class="dropdown-item" href="#">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
-                                <a class="dropdown-item" href="activity_log.php">
+                                <a class="dropdown-item" href="#">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <a class="dropdown-item" href="index.php?page=logout" >
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -315,36 +343,66 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-6">
-                        <div class="header text-center">
-                            <h4>THÔNG TIN KHÁCH HÀNG</h4>
-                        </div>
-                        
-                        <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="header text-center">
+                                <h4>THÔNG TIN KHÁCH HÀNG</h4>
+                            </div>
+                            <div id="message-notification" class="alert" style="display: none;">
+                                <strong></strong> <span class="message-content"></span>
+                            </div>
+
+                        <!-- <form id="formInfoOrder" action="?page=page_sell"> -->
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="phone">Số điện thoại</label>
-                                    <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại" value=0823820302>
-                                    <button type="button" class="btn btn-primary btn-add">Thêm mới</button>
-                                    <button type="button" class="btn btn-primary btn-search">search</button>
-                                    <button type="button" class="btn btn-primary btn-clear">Clear</button>
+                                    <form method="POST" id="search-form" class="d-flex flex-column">
+                                        <label for="phone">Số điện thoại</label>
+                                       
+                                        <?php
+                                            if (isset($_SESSION['searchKeywordSell']) && !empty($_SESSION['searchKeywordSell'])) {
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="' . $_SESSION["searchKeywordSell"] . '">';
+                                            } elseif (isset($_SESSION['CustomerPhone']) && !empty($_SESSION['CustomerPhone'])) {
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="' . $_SESSION["CustomerPhone"] . '">';
+                                            } else {
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="">';
+                                            }
+                                        ?>
+
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary search-button" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary search-button" id="btn-clear">
+                                                <i class="fas fa-eraser"></i>
+                                            </button>
+                                            <button type="button" id="btnAddCustomerPageSell" class="btn btn-primary btn-add">
+                                                <i class="fas fa-plus-square"></i>
+                                                Thêm mới
+                                            </button>
+                                        </div>
+                                    </form>
+                                  
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="customerName">Tên khách hàng</label>
-                                    <input type="text" class="form-control" id="customerName" placeholder="Nhập tên khách hàng" value="thanh">
+                                    <input type="text" class="form-control" id="customerNameSell" name="customerNameSell" placeholder="Nhập tên khách hàng" value="<?php echo isset($_SESSION["CustomerName"]) ? $_SESSION["CustomerName"] : ''; ?>">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="points">Điểm</label>
-                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="<?php echo isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0'; ?>">
+                                    <input type="text" class="form-control" id="points" placeholder="Điểm tích lũy" value="<?php echo isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0'; ?>" readonly>
+                                    <!-- <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button> -->
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="points">Email</label>
+                                    <input type="text" class="form-control" id="customerEmailSell" placeholder="" value="<?php echo isset($_SESSION["CustomerEmail"]) ? $_SESSION["CustomerEmail"] : ''; ?>" readonly>
                                     <!-- <button type="button" class="btn btn-secondary btn-custom">Quy đổi</button> -->
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="discountCode">Mã KM</label>
                                     <select class="form-control" id="discountCode">
-                                        <option value="">Chọn mã KM</option>
+                                        <option value="0">Chọn mã KM</option>
                                     <?php
                                         $point = isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0';
                                         $coupons = $CouponController->getCouponByPoint($point);
@@ -366,11 +424,6 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                
-                                <div class="form-group col-md-6">
-                                    <label for="reduction">Giảm</label>
-                                    <input type="text" class="form-control" id="reduction" placeholder="Giảm giá" readonly>
-                                </div>
                                 <div class="form-group col-md-6">
                                     <!-- Ô trống để tạo sự cân bằng -->
                                 </div>
@@ -400,23 +453,22 @@
                             <div class="d-flex justify-content-end mt-3">
                                 <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button>
                                 <button type="button" id="btnPaymentModal" class="btn btn-primary" data-toggle="modal" data-target="#paymentModal">THANH TOÁN</button>
-            
                             </div>
             
                         </div>
                 
-                        </form>
+                        <!-- </form> -->
                        
                         <div class="col-md-6">
                             <div class="header text-center">
                                 <h4>BỘ LỌC</h4>
                             </div>
                             
-                            <form>
+                            <form id="formProduct" method="post">
                                 <div class="form-group">
                                     <label for="product-search">Tên Sản Phẩm:</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="product-search" placeholder="Nhập tên sản phẩm...">
+                                        <input type="text" class="form-control" id="product-search" name="tim" placeholder="Nhập tên sản phẩm...">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary search-button m-0" type="button">
                                                 <i class="fas fa-search"></i>
@@ -426,52 +478,125 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="category-select">Danh Mục Sản Phẩm:</label>
-                                    <select class="form-control" id="category-select">
+                                    <select class="form-control" id="category-select" name="category">
                                         <option value="">Chọn danh mục</option>
-                                        <option value="thuc-pham">Thực phẩm</option>
-                                        <option value="do-uong">Đồ uống</option>
-                                        <option value="do-dung">Đồ dùng</option>
-                                        <option value="thiet-bi">Thiết bị</option>
+                                        <option value="1">Cafe pha máy</option>
+                                        <option value="2">Cafe pha phin</option>
+                                        <option value="3">Nước ép</option>
+                                        <option value="4">Trà</option>
+                                        <option value="5">Nước ngọt</option>
                                     </select>
                                 </div>
-                
-                
+
                                 <div class="header text-center">
                                     <h4>Danh sách sản phẩm</h4>
                                 </div>
                                 <div class="product-list" id="product-list">
-                                    <!-- <div class="product-item" data-name="Sản phẩm 1" data-stock="1" data-price="100000">
-                                        <img src="https://via.placeholder.com/100" alt="Sản phẩm 1">
-                                        <p>Sản phẩm 1</p>
-                                        <p class="stock">Tồn kho: 1</p>
-                                    </div> -->
-                                    <!-- <div class="product-list" id="product-list"> -->
-                                <?php
-                                    $query = "SELECT ProductName, UnitsInStock, UnitPrice, ProductImage FROM product";
-                                    $products = $database->select($query);
+                                    <?php
+                                        // Lấy từ khóa tìm kiếm và danh mục từ form
+                                        $searchKeyword = isset($_POST['tim']) ? $_POST['tim'] : '';
+                                        $categoryID = isset($_POST['category']) ? (int)$_POST['category'] : null;
 
-                                    if ($products) {
-                                        while ($product = $products->fetch_assoc()) {
-                                            echo '<div class="product-item" data-name="'.$product['ProductName'].'" data-stock="'.$product['UnitsInStock'].'" data-price="'.$product['UnitPrice'].'">';
-                                            echo '<img src="assets/img/products/'.$product["ProductImage"].'" alt="'.$product['ProductName'].'">';
-                                            echo '<p>'.$product['ProductName'].'</p>';
-                                            echo '<p class="stock">Tồn kho: '.$product['UnitsInStock'].'</p>';
-                                            echo '<p class="price">Giá: '.number_format($product['UnitPrice'], 3, ',', '.').'₫</p>';
-                                            echo '</div>';
+                                        // Truy vấn cơ sở dữ liệu
+                                        $query = "SELECT ProductID, ProductName, UnitsInStock, UnitPrice, ProductImage, CategoryID FROM product WHERE 1=1";
+
+                                        if (!empty($searchKeyword)) {
+                                            $query .= " AND ProductName LIKE '%$searchKeyword%'";
                                         }
-                                    } else {
-                                        echo "Không có sản phẩm nào.";
-                                    }
-                                ?> 
-                                   
+
+                                        if (!empty($categoryID)) {
+                                            $query .= " AND CategoryID = $categoryID";
+                                        }
+
+                                        $products = $database->select($query);
+
+                                        if ($products && $products->num_rows > 0) {
+                                            while ($product = $products->fetch_assoc()) {
+                                                echo '<div class="product-item" data-name="' . $product['ProductName'] . '" data-stock="' . $product['UnitsInStock'] . '" data-price="' . $product['UnitPrice'] . '" data-category="' . $product['CategoryID'] . '">';
+                                                echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
+                                                echo '<p>' . $product['ProductName'] . '</p>';
+                                                echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
+                                                echo '<p class="price">Giá: ' . number_format($product['UnitPrice'], 3, ',', '.') . '₫</p>';
+                                                echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
+                                                echo '</div>';
+                                            }
+                                        } else {
+                                            echo "<p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>";
+                                        }
+                                    ?>
                                 </div>
+                            </form>
+
+                            <script>
+                                // Lọc sản phẩm theo tên và danh mục
+                                document.getElementById("category-select").addEventListener("change", filterProducts);
+                                document.getElementById("product-search").addEventListener("input", filterProducts);
+
+                                function filterProducts() {
+                                    const searchTerm = document.getElementById("product-search").value.toLowerCase();
+                                    const selectedCategory = document.getElementById("category-select").value;
+                                    const products = document.querySelectorAll(".product-item");
+
+                                    products.forEach(product => {
+                                        const productName = product.getAttribute("data-name").toLowerCase();
+                                        const productCategory = product.getAttribute("data-category");
+
+                                        const matchesName = productName.includes(searchTerm);
+                                        const matchesCategory = !selectedCategory || productCategory === selectedCategory;
+
+                                        if (matchesName && matchesCategory) {
+                                            product.style.display = "block";
+                                        } else {
+                                            product.style.display = "none";
+                                        }
+                                    });
+                                }
+                            </script>
+
                         </div>
                     </div>
                 </div>
             
               
               <!-- Modal -->
-              
+              <div class="modal fade" id="addCustomerModalSell" tabindex="-1" role="dialog" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCustomerModalLabel">Thêm Khách Hàng</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            <!-- method="post" action="?page=processing_customer" -->
+                                <form id="customerFormSell">
+                                    <div class="form-group">
+                                        <label for="customerName">Họ Tên</label>
+                                        <input type="text" class="form-control" id="customerName" value="" name="customerFormName" placeholder="Nhập họ tên" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerEmail">Email</label>
+                                        <input type="email" class="form-control" id="customerEmail" value="" name="customerFormEmail" placeholder="Nhập email" required>
+                                        <span id="emailFeedback"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="customerPhone">Số Điện Thoại</label>
+                                        <input type="tel" class="form-control" id="customerPhone" value="" name="customerFormPhone" placeholder="Nhập số điện thoại" required>
+                                        <span id="phoneFeedback"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Hủy</button>
+                                        <button type="button" class="btn btn-primary" id="btnConFirmAddCustomerSell">Xác Nhận</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
             
                 <!-- Modal cho phương thức thanh toán -->
                  <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
@@ -615,6 +740,37 @@
 
     <!--Thanh toán-->
     <script>
+      
+    const $totalAmountDiscount = $("#total-amount-discount");
+    function updateGrandTotal() {
+        const $reductionDisplay = extractDiscount($('#reduction').val());
+        let grandTotal = 0;
+        let grantToTalDiscount = 0;
+        $invoiceListBody.find('tr').each(function() {
+            const total = convertToNumber($(this).find('.total-price').text());
+       
+            grandTotal += total;
+        });
+        grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
+        $totalAmountDisplay.text(grantToTalDiscount.toLocaleString());
+        let discount = (grandTotal* ($reductionDisplay/100));
+        console.log("grantToTalDiscount" ,grantToTalDiscount);
+        console.log("discount" ,discount);
+
+        $totalAmountDiscount.text(discount.toLocaleString());
+    }
+    function validateEmail(email) {
+        var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    
+         return regex.test(email);
+    }
+
+    function validatePhone(phone) {
+        var regex = /^(09|03|08|07|05)[0-9]{8}$/;
+        return regex.test(phone);
+}
+
+
     $(document).ready(function() {
         $("#btnAddCustomerPageSell").on('click', function() {
             $("#addCustomerModalSell").modal('show');
@@ -622,20 +778,41 @@
 
         // Kiểm tra email
         $('#customerEmail').on('input', function() {
-            const email = $(this).val();
-            const id = null;// Lấy ID của khách hàng hiện tại
-            
-            if (email) {
+            const email = $(this).val().trim(); // Lấy giá trị email và xóa khoảng trắng hai đầu
+            const id = ''; 
+
+            // Kiểm tra định dạng email
+            let checkEmail = validateEmail(email);
+            if (!checkEmail) {
+                $('#emailFeedback')
+                    .text("Email không hợp lệ. Vui lòng sử dụng định dạng ví dụ: thanh@gmail.com hoặc thanh_298@gmail.com")
+                    .css("color", "red");
+                    $('#btnConFirmAddCustomerSell').prop('disabled', true);
+                return;
+            } else {
+                $('#emailFeedback').text("").css("color", ""); 
+                $('#btnConFirmAddCustomerSell').prop('disabled', false);
+            }
+
+            // Nếu email hợp lệ, thực hiện kiểm tra xem email có tồn tại không
+            if (checkEmail) {
                 $.ajax({
-                    url: '?page=check_email_customer',
-                    type: 'GET',
-                    data: { email: email, id: id }, // Gửi cả email và id
+                    url: '?page=check_email_customer', 
+                    type: 'POST',
+                    data: { email: email, id: id },
                     success: function(response) {
                         if (response.exists) {
                             $('#emailFeedback').text("Email đã tồn tại.").css("color", "red");
+                            $('#btnConFirmAddCustomerSell').prop('disabled', true);
                         } else {
                             $('#emailFeedback').text("Email có thể sử dụng.").css("color", "green");
+                            $('#btnConFirmAddCustomerSell').prop('disabled', false);
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#emailFeedback').text("Có lỗi xảy ra. Vui lòng thử lại sau.").css("color", "red");
+                        console.error('Error:', error);
+                        $('#btnConFirmAddCustomerSell').prop('disabled', false);
                     }
                 });
             }
@@ -643,26 +820,47 @@
 
     // Kiểm tra số điện thoại
     $('#customerPhone').on('input', function() {
-        const phone = $(this).val();
-        const id = null;
-        
+        const phone = $(this).val().trim(); 
+        const id = ''; 
+
         if (phone && phone.length !== 10) {
-            $('#phoneFeedback').text("Số điện thoại phải có 10 chữ số.").css("color", "red");
-        } else if (phone) {
+            $('#phoneFeedback')
+                .text("Số điện thoại phải có 10 chữ số.")
+                .css("color", "red");
+                $('#btnConFirmAddCustomerSell').prop('disabled', true); 
+            return; // Dừng tại đây nếu số không có độ dài đúng
+        }
+        let checkPhone = validatePhone(phone);
+        if (!checkPhone) {
+            $('#phoneFeedback')
+                .text("Số điện thoại không hợp lệ. Số điện thoại phải bắt đầu bằng 09, 03, 08, 07, hoặc 05 và có 10 chữ số.")
+                .css("color", "red");
+                $('#btnConFirmAddCustomerSell').prop('disabled', true); 
+            return; // Dừng kiểm tra nếu định dạng không hợp lệ
+        } else {
+            $('#phoneFeedback').text("").css("color", ""); // Xóa thông báo nếu định dạng hợp lệ
+        }
+
+        if (phone) {
             $.ajax({
-                url: '?page=check_phone_customer', 
+                url: '?page=check_phone_customer', // Đường dẫn đến script xử lý
                 type: 'POST',
-                data: { phone: phone, id: id  },
+                data: { phone: phone, id: id }, // Gửi cả số điện thoại và ID nếu cần
                 success: function(response) {
                     if (response.exists) {
                         $('#phoneFeedback').text("Số điện thoại đã tồn tại.").css("color", "red");
+                        $('#btnConFirmAddCustomerSell').prop('disabled', true); 
                     } else {
                         $('#phoneFeedback').text("Số điện thoại có thể sử dụng.").css("color", "green");
+                        $('#btnConFirmAddCustomerSell').prop('disabled', false);
                     }
+                },
+                error: function(xhr, status, error) {
+                    $('#phoneFeedback').text("Có lỗi xảy ra. Vui lòng thử lại sau.").css("color", "red");
+                    $('#btnConFirmAddCustomerSell').prop('disabled', true); 
+                    console.error('Error:', error);
                 }
             });
-        } else {
-            $('#phoneFeedback').text('Số điện thoại không hợp lệ ').css("color", "red");
         }
     });
 
@@ -689,7 +887,9 @@
 
                         resetForm(); 
                         
-                    }  
+                    } else {
+                        showMessage(response.message, 'danger');
+                    } 
                     $('#addCustomerModalSell').modal('hide'); 
                 },
                 error: function(error) {
@@ -700,11 +900,6 @@
         
     });
 
-        // function validateEmail(email) {
-        //     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        //     return regex.test(email);
-        // }
-            
             $('#search-button').on('click', function(e) {
                 e.preventDefault();
                     const searchKeyword = $('#name-search').val();
@@ -736,7 +931,9 @@
             function clearSearch() {
                 $('#name-search').val(""); 
                 $('#customerNameSell').val("");
+                $('#customerEmailSell').val("");
                 $('#points').val("");
+                $('#discountCode').val("");
 
                 // Gửi yêu cầu POST để xóa session
                 $.post('?page=page_sell', { clearSell: true }, function(response) {
@@ -785,7 +982,6 @@
 
         $('#discountCode').on('change', function() {
             var couponID = $(this).val(); 
-
             if (couponID) {
                 $.ajax({
                     url: '?page=processing_coupon',  
@@ -801,7 +997,12 @@
                             
                             // Hiển thị thông tin lên giao diện
                             $('#reduction').val('Giảm giá: ' + couponDiscount + '%');
+                            updateGrandTotal();
+
                         } else {
+                            $('#reduction').val('Giảm giá: ' + 0 + '%');
+                             updateGrandTotal();
+
                             alert('Không tìm thấy mã khuyến mãi');
                         }
                     },
@@ -815,8 +1016,21 @@
                 $('#couponCode').text('');
             }
         });
+        function convertToNumber(priceString) {
+            if (typeof priceString !== 'string') {
+                priceString = String(priceString); 
+            }
+            
+            priceString = priceString.replace(/[^0-9]/g, '');
 
-        
+        return parseFloat(priceString);
+    }
+    function extractDiscount(value) {
+        const match = value.match(/(\d+(\.\d+)?)/); // Tìm giá trị số (cả số nguyên và số thập phân)
+        return match ? match[0] : '0'; // Nếu tìm thấy giá trị, trả về giá trị đó, nếu không trả về '0'
+    }
+
+       
     </script>
     
 
@@ -1061,7 +1275,9 @@
     include_once('./common/script/default.php')
     ?>
 
-
+    
+    <script src="./assets/js/sell.js"></script> <!-- Đảm bảo file JS đã được tải -->
+   
 </body>
 
 </html>
