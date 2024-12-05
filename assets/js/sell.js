@@ -11,31 +11,20 @@ $(document).ready(function() {
         $('#paymentModal').modal('show');
     });
 
-    // xóa session
-    $(document).on('click', '.btn-remove', function(e) {
-        deleteSession();
-    })
-    
-    
-    // chỉ lấy số
+
+
     function convertToNumber(priceString) {
         if (typeof priceString !== 'string') {
-            priceString = String(priceString); 
+            priceString = String(priceString); // Chuyển đổi thành chuỗi
         }
-        
-        priceString = priceString.replace(/[^0-9]/g, '');
-
-        return parseFloat(priceString);
+        return parseInt(priceString.replace(/\./g, '')); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
     }
 
-
-    // cập nhật total amount
     function updateGrandTotal() {
         let grandTotal = 0;
         let grantToTalDiscount = 0;
         $invoiceListBody.find('tr').each(function() {
             const total = convertToNumber($(this).find('.total-price').text());
-       
             grandTotal += total;
         });
         grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
@@ -45,6 +34,11 @@ $(document).ready(function() {
         $("#total-amount-discount").text(discount.toLocaleString());
     }
 
+<<<<<<< HEAD
+    function addProductToInvoice(product) {
+        const $existingRow = $invoiceListBody.find(`tr[data-name="${product.name}"]`);
+
+=======
     // xáo session
     function deleteSession() {
         return $.ajax({
@@ -68,6 +62,7 @@ $(document).ready(function() {
     function addProductToInvoice(product) {
         // Thêm thuộc tính data-id để lưu trữ productID
         const $existingRow = $invoiceListBody.find(`tr[data-id="${product.id}"]`);
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
         if ($existingRow.length) {
             const $quantityInput = $existingRow.find('.quantity-display');
             let quantity = $quantityInput.val();
@@ -76,10 +71,15 @@ $(document).ready(function() {
             if (quantity < stock) {
                 quantity++;
                 $quantityInput.val(quantity);
+<<<<<<< HEAD
+                const totalPrice = quantity * product.price;
+                $existingRow.find('.total-price').text(totalPrice.toLocaleString());
+=======
                 const productPrice = parseFloat(product.price.replace(/\./g, ''));
                 const totalPrice = quantity * productPrice;
                 $existingRow.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                 updateSession();
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
             } else {
                 showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
             }
@@ -95,12 +95,16 @@ $(document).ready(function() {
                             <button class="btn-change btn-minus">-</button>
                         </div>
                     </td>
-                    <td class="total-price">${product.price} <span> đ</span></td>
-                    <td><button class="btn-custome btn-remove" >Xóa</button></td> 
+                    <td class="total-price">${product.price}</td>
+                    <td><button class="btn-custome btn-remove">Xóa</button></td> 
                 </tr>
             `);
             $invoiceListBody.append($row);
+<<<<<<< HEAD
+
+=======
             updateSession();
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
             const $quantityInput = $row.find('.quantity-display');
             const stock = product.stock;
     
@@ -115,9 +119,13 @@ $(document).ready(function() {
                     $(this).val(stock);
                     quantity = stock;
                 }
+<<<<<<< HEAD
+                const totalPrice = quantity * product.price;
+=======
                 const productPrice = parseFloat(product.price.replace(/\./g, ''));
                 const totalPrice = quantity * productPrice;
     
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
                 $row.find('.total-price').text(totalPrice.toLocaleString());
                 updateGrandTotal();
                 updateSession();
@@ -128,14 +136,20 @@ $(document).ready(function() {
                 let quantity = $quantityInput.val();
                 if (quantity < stock) {
                     quantity++;
-                    console.log("++++");
                     $quantityInput.val(quantity);
-                    const productPrice = parseFloat(product.price.replace(/\./g, ''));
+                    const productPrice = parseInt(product.price.replace(/\./g, ''));
                     const totalPrice = quantity * productPrice;
+<<<<<<< HEAD
+                    console.log("quantity :" , quantity);
+                    console.log("product.price :" , product.price);   
+                    $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
+                    updateGrandTotal();
+=======
     
                     $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                     updateGrandTotal();
                     updateSession();
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
                 } else {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
@@ -146,12 +160,16 @@ $(document).ready(function() {
                 let quantity = $quantityInput.val();
                 if (quantity > 1) {
                     quantity--;
-                    console.log("---");
                     $quantityInput.val(quantity);
+<<<<<<< HEAD
+                    const totalPrice = quantity * product.price;
+                    $row.find('.total-price').text(totalPrice.toLocaleString());
+=======
                     const productPrice = parseInt(product.price.replace(/\./g, ''));
                     const totalPrice = quantity * productPrice;
     
                     $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
                     updateGrandTotal();
                     updateSession();
                 }
@@ -160,14 +178,21 @@ $(document).ready(function() {
             $row.find('.btn-remove').on('click', function() {
                 $row.remove();
                 updateGrandTotal();
+<<<<<<< HEAD
+            });
+        }
+=======
                 updateSession();
             });
         }
      
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
         updateGrandTotal();
     }
     
 
+<<<<<<< HEAD
+=======
     // click vào sản phẩm
     $('.product-item').each(function() {
         const productStock = parseInt($(this).data('stock'));
@@ -181,6 +206,7 @@ $(document).ready(function() {
     });
 
     // Xử lý sự kiện click khi sản phẩm được chọn
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be
     $('.product-item').on('click', function() {
         const productID = $(this).find('#productID').val();
         const productName = $(this).data('name');
@@ -202,7 +228,28 @@ $(document).ready(function() {
     $('input[name="paymentMethod"]').on('change', togglePaymentFields);
     togglePaymentFields();  // Khởi động với phương thức thanh toán mặc định
 
-  
+   
+    $('#processPayment').on("click", function() {
+        const isCash = $('#cash').is(':checked');
+        if(isCheck) {
+            if (isCash) {
+                const cashAmount = $('#cashAmount').val();
+                const amountReturn = $('#amountReturn').val();
+              
+                showAlert('success','Thanh toán tiền mặt với số tiền: ' + cashAmount + ' VNĐ. Tiền thối lại: ' + amountReturn + ' VNĐ.');
+            } else {
+                const accountInfo = $('#accountInfo').val();
+                showAlert('success','Thanh toán bằng chuyển khoản với thông tin tài khoản: ' + accountInfo);
+            }
+            
+            $('#paymentModal').modal('hide');
+            setTimeout(function() {
+                $('.modal-backdrop').remove();
+            }, 300); 
+        }
+        
+    });
+
     // Gắn sự kiện cho các nút trong modal
     $('#paymentModal').on('shown.bs.modal', function() {
         $(this).find("#total-amount").val($totalAmountDisplay.text());
@@ -292,6 +339,9 @@ $(document).ready(function() {
             hideAlert();
         }, 3000);
     }
+<<<<<<< HEAD
+});
+=======
 
     function replaceWhitespace(value) {
         return value.trim().replace(/\s+/g, ' '); // Loại bỏ khoảng trắng dư thừa và thay thế chúng bằng một khoảng trắng đơn
@@ -608,3 +658,4 @@ $(document).ready(function() {
 
 
 });
+>>>>>>> 9654049af25e304caad143224e631322ac49d8be

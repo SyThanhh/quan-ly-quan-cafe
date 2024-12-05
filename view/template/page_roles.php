@@ -12,6 +12,29 @@
         $conn = $database->connect(); // Lấy kết nối
     ?>
     <link rel="stylesheet" href="./assets/css/employee_shift.css">
+    <style>
+    /* Khi hover vào phần tử dropdown */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;  /* Hiển thị menu khi hover */
+}
+
+/* Mặc định ẩn menu dropdown */
+.dropdown-menu {
+    display: none; /* Ẩn menu khi không hover */
+}
+
+/* Các hiệu ứng chuyển động */
+.dropdown-menu {
+    transition: opacity 0.3s ease;  /* Thêm hiệu ứng mờ dần */
+    opacity: 0;
+}
+
+/* Khi dropdown hiển thị */
+.nav-item.dropdown:hover .dropdown-menu {
+    opacity: 1;  /* Hiển thị khi hover */
+}
+
+</style>
 </head>
 
 <body>
@@ -190,29 +213,34 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin-name</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <!-- Hiển thị tên người dùng từ session -->
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?php
+                                        if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                            echo htmlspecialchars($_SESSION['username']);
+                                        } else {
+                                            echo "Guest";
+                                        }
+                                    ?>
+                                </span>
+                                <img class="img-profile rounded-circle" src="./assets/img/testimonial-2.jpg">
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="profile.php">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="settings.php">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="activity_log.php">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="index.php?page=logout" >
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -231,7 +259,7 @@
                 $recordsPerPage = 5;
 
                 // Tính tổng số bản ghi
-                $totalRecordsQuery = "SELECT COUNT(*) as total FROM employee WHERE Roles > 1";
+                $totalRecordsQuery = "SELECT COUNT(*) as total FROM employee WHERE Roles > 1 AND Status = 1";
                 if ($searchKeyword !== '') {
                     $totalRecordsQuery .= " AND (FirstName LIKE '%$searchKeyword%' OR LastName LIKE '%$searchKeyword%')";
                 }
@@ -250,7 +278,7 @@
                 $offset = ($page - 1) * $recordsPerPage;
 
                 // Truy vấn danh sách nhân viên với phân trang và tìm kiếm
-                $query = "SELECT * FROM employee WHERE Roles > 1";
+                $query = "SELECT * FROM employee WHERE Roles > 1 AND Status = 1";
                 if ($searchKeyword !== '') {
                     $query .= " AND (FirstName LIKE '%$searchKeyword%' OR LastName LIKE '%$searchKeyword%')";
                 }
@@ -293,7 +321,7 @@
                                             <th>Tên</th>
                                             <th>Email</th>
                                             <th>Số điện thoại</th>
-                                            <th>Vị trí làm việc</th>
+                                            <th>Vai trò</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>

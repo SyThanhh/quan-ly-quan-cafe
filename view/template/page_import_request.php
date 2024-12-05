@@ -12,6 +12,29 @@
         $conn = $database->connect(); // Lấy kết nối
     ?>
     <link rel="stylesheet" href="./assets/css/employee_shift.css">
+    <style>
+    /* Khi hover vào phần tử dropdown */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;  /* Hiển thị menu khi hover */
+}
+
+/* Mặc định ẩn menu dropdown */
+.dropdown-menu {
+    display: none; /* Ẩn menu khi không hover */
+}
+
+/* Các hiệu ứng chuyển động */
+.dropdown-menu {
+    transition: opacity 0.3s ease;  /* Thêm hiệu ứng mờ dần */
+    opacity: 0;
+}
+
+/* Khi dropdown hiển thị */
+.nav-item.dropdown:hover .dropdown-menu {
+    opacity: 1;  /* Hiển thị khi hover */
+}
+
+</style>
 </head>
 
 <body>
@@ -190,150 +213,200 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin-name</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <!-- Hiển thị tên người dùng từ session -->
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?php
+                                        if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                            echo htmlspecialchars($_SESSION['username']);
+                                        } else {
+                                            echo "Guest";
+                                        }
+                                    ?>
+                                </span>
+                                <img class="img-profile rounded-circle" src="./assets/img/testimonial-2.jpg">
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="profile.php">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="settings.php">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="activity_log.php">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="index.php?page=logout" >
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
                             </div>
                         </li>
-
                     </ul>
                 </nav>
 
                 <!--  Nội dung trang  -->
                 <?php
-                    // Lấy mã nhân viên sắp tới (MAX + 1) từ database
-                    $result = $conn->query("SELECT MAX(EmployeeID) AS max_id FROM employee");
-                    $row = $result->fetch_assoc();
-                    $nextEmployeeID = $row['max_id'] + 1;
-                    // Lấy danh sách vị trí làm việc trừ giá trị 1
-                    $positions = $conn->query("SELECT Roles FROM employee WHERE Roles > 1");
-                ?>
-                <div class="container-fluid" align="center">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div>
-                                <h4>THÊM NHÂN VIÊN</h4>
-                                </br>   
-                            </div>
-                            <form action="" method="post" >
-                                <table>
-                                    <tr>
-                                        <th><label for="employeeID">Mã Nhân Viên:</label></th>
-                                        <td><input type="text" class="form-control" id="employeeID" name="employeeID" value="<?php echo $nextEmployeeID; ?>" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="firstName">Họ:</label></th>
-                                        <td><input type="text" class="form-control" id="fisrtName" name="firstName" required></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="lastName">Tên:</label></th>
-                                        <td><input type="text" class="form-control" id="lastName" name="lastName" required></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="phoneNumber">Số Điện Thoại:</label></th>
-                                        <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="position">Vị Trí Làm Việc:</label></th>
-                                        <td>
-                                            <select id="position" class="form-control" name="position" required>
+// Bắt đầu phiên làm việc
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-                                                <option value="2">Nhân viên đứng quầy</option>
-                                                <option value="3">Nhân viên kế toán</option>
-                                                <option value="4">Nhân viên pha chế</option>
+// Kiểm tra xem người dùng đã đăng nhập chưa
+if (!isset($_SESSION['id'])) {
+    // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập hoặc thông báo lỗi
+    header("Location: login.php");
+    exit();
+}
 
-                                            </select>
-                                        </td>
-                                    </tr>                                       
-                                    <tr>
-                                        <th><label for="birthDate">Ngày Sinh:</label></th>
-                                        <td><input type="date" class="form-control" id="birthDate" name="birthDate" required></td>
-                                    </tr>
-                                    <tr>
-                                        <th><label for="password">Mật khẩu:</label></th>
-                                        <td><input type="text" class="form-control" id="password" name="password" required></td>
-                                    </tr>
-                                </table>
+// Kết nối cơ sở dữ liệu
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_ql3scoffee";
 
-                                <!-- Button section -->
-                                <div class="button-group">
-                                    </br>
-                                    <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
-                                    <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add">Thêm Nhân Viên</button>
-                                </div>
-                            </form>        
-                        </div>
-                    </div>
-                </div>
-<<<<<<< HEAD
-=======
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-                <!-- Thêm nhân viên -->
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Biến lưu thông báo
+$message = '';
+
+// Kiểm tra nếu form được gửi
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Lấy dữ liệu từ form
+    $productID = $_POST['product'];  // ProductID
+    $quantity = $_POST['quantity'];
+    $supplierID = $_POST['supplier'];  // SupplierID
+    $note = $_POST['note'];  // Lấy ghi chú từ form
+
+    // Tạo RequestID tự động
+    $requestID = 'RQ' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);  // Ví dụ: RQ0001
+
+    // Lấy ID nhân viên từ session
+    $employeeID = $_SESSION['id'];
+
+    // Thêm yêu cầu vào bảng requestform
+    $sql = "INSERT INTO requestform (RequestID, RequestQuantity, Status, CreateDate, EmployeeID, ProductID, Note)
+            VALUES (?, ?, 0, NOW(), ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("siiss", $requestID, $quantity, $employeeID, $productID, $note);  // Dùng bind_param để truyền tham số vào câu lệnh SQL
+
+    if ($stmt->execute()) {
+        $message = "Gửi yêu cầu thành công!";
+    } else {
+        $message = "Có lỗi xảy ra khi gửi yêu cầu: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+// Lấy danh sách sản phẩm từ bảng 'product'
+$sql_product = "SELECT ProductID, ProductName FROM product";
+$result_product = $conn->query($sql_product);
+
+if ($result_product === false) {
+    die("Error fetching products: " . $conn->error);
+}
+
+// Lấy danh sách nhà cung cấp từ bảng 'supplier'
+$sql_supplier = "SELECT SupplierID, CompanyName FROM supplier";
+$result_supplier = $conn->query($sql_supplier);
+
+if ($result_supplier === false) {
+    die("Error fetching suppliers: " . $conn->error);
+}
+
+?>
+
+<div class="container mt-5">
+    <h3 class="text-center">Gửi yêu cầu nhập hàng</h3>
+
+    <?php if ($message): ?>
+        <div class="alert alert-info">
+            <?php echo $message; ?>
+        </div>
+    <?php endif; ?>
+
+    <form action="" method="POST">
+        <!-- Chọn tên sản phẩm -->
+        <div class="form-group">
+            <label for="product">Tên sản phẩm</label>
+            <select class="form-control" id="product" name="product" required>
+                <option value="">Chọn sản phẩm</option>
                 <?php
-                if (isset($_POST['addEmployee'])) {
-                    // Nhận dữ liệu từ form
-                    $employeeID = $_POST['employeeID'];
-                    $lastName = trim($_POST['lastName']);
-                    $firstName = trim($_POST['firstName']);
-                    $email = trim($_POST['email']);
-                    $phoneNumber = trim($_POST['phoneNumber']);
-                    $position = $_POST['position'];
-                    $birthDate = $_POST['birthDate'];
-                    $password = trim($_POST['password']);
-                
-                    // Kiểm tra nếu các trường đều đã được điền
-                    // Chuẩn bị câu truy vấn SQL để thêm nhân viên
-                    $status=1;
-                    $query = "INSERT INTO employee (EmployeeID, FirstName, LastName, Email, PhoneNumber, Roles, Status, DateOfBirth, password)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param("issssiss", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate, $password);
-            
-                    // Thực thi câu truy vấn
-                    if ($stmt->execute()) {
-                        // Hiển thị thông báo "Thêm thành công" và chuyển hướng
-                        echo "<script>
-                                window.location.href = 'index.php?page=page_employee';
-                                alert('Thêm thành công');
-                                </script>";
-                        exit;
-                    } else {
-                        echo "<p>Đã có lỗi xảy ra: " . $stmt->error . "</p>";
+                if ($result_product->num_rows > 0) {
+                    while ($row = $result_product->fetch_assoc()) {
+                        echo "<option value='" . $row['ProductID'] . "'>" . $row['ProductName'] . "</option>";
                     }
-                    $stmt->close();
+                } else {
+                    echo "<option value=''>Không có sản phẩm nào</option>";
                 }
                 ?>
+            </select>
+        </div>
 
-            </div>
-            <!-- Cuối trang -->
-            <?php include_once('./common/footer/footer.php'); ?>
-        </div>    
+        <!-- Số lượng -->
+        <div class="form-group">
+            <label for="quantity">Số lượng</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" required>
+        </div>
 
+        <!-- Chọn nhà cung cấp -->
+        <div class="form-group">
+            <label for="supplier">Nhà cung cấp</label>
+            <select class="form-control" id="supplier" name="supplier" required>
+                <option value="">Chọn nhà cung cấp</option>
+                <?php
+                if ($result_supplier->num_rows > 0) {
+                    while ($row = $result_supplier->fetch_assoc()) {
+                        echo "<option value='" . $row['SupplierID'] . "'>" . $row['CompanyName'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>Không có nhà cung cấp nào</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <!-- Ghi chú -->
+        <div class="form-group">
+            <label for="note">Ghi chú</label>
+            <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Gửi yêu cầu</button>
+    </form>
+</div>
+
+<?php
+// Đóng kết nối sau khi đã thực hiện xong các truy vấn
+$conn->close();
+?>
+
+
+    <script>
+        // Hàm mở modal xác nhận xóa
+        function confirmBrowse(RequestID) {
+            // Hiển thị modal
+            $('#confirmBrowseModal').modal('show');
+            
+
+        }
+        function confirmDelete(RequestID) {
+            // Hiển thị modal
+            $('#confirmDeleteModal').modal('show');
+            
+
+        }
+    </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>

@@ -266,6 +266,10 @@
                                     <th><label for="birthDate">Ngày Sinh:</label></th>
                                     <td><input type="date" class="form-control" id="birthDate" name="birthDate" value="<?php echo $dateOfBirth; ?>" required></td>
                                 </tr>
+                                <tr>
+                                    <th><label for="password">Mật khẩu:</label></th>
+                                    <td><input type="text" class="form-control" id="password" name="password" value="<?php echo $employee['password']; ?>" required></td>
+                                </tr>
                             </table>
                                 <!-- Button section -->
                                 <div class="button-group">

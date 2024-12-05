@@ -26,7 +26,6 @@
                 echo 'Lỗi kết nối!';
             }
         }
-
         public function selCouponByPoint($point) {
             $p = new Database();
             $con = $p->connect();
@@ -61,6 +60,7 @@
             }
         }
         
+
         public function sel01CouponByID($CouponID){
             $p = new Database();
             $con = $p -> connect();

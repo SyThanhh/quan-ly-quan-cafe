@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 10, 2024 lúc 02:24 PM
+-- Thời gian đã tạo: Th12 04, 2024 lúc 01:47 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.0.30
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -136,7 +136,7 @@ CREATE TABLE `customer` (
   `CustomerID` int(11) NOT NULL,
   `CustomerName` varchar(50) NOT NULL,
   `CustomerPhone` varchar(15) NOT NULL,
-  `CustomerPassword` varchar(30) NOT NULL DEFAULT '123456',
+  `CustomerPassword` varchar(255) DEFAULT NULL,
   `CustomerPoint` int(10) NOT NULL DEFAULT 0,
   `Email` varchar(50) NOT NULL,
   `CreateAt` datetime NOT NULL DEFAULT current_timestamp(),
@@ -155,10 +155,12 @@ INSERT INTO `customer` (`CustomerID`, `CustomerName`, `CustomerPhone`, `Customer
 (3, 'Lê Văn Thành', '0123456781', 'password3', 50, 'vanc@example.vnd', '2024-11-21 21:40:43', '2024-11-07 01:47:20', 1, 'user'),
 (4, 'Phạm Thị Duyên', '0123456782', 'password4', 20, 'thid@example.com', '2024-11-07 21:40:43', '2024-11-07 01:47:33', 1, 'user'),
 (5, 'Nguyễn Thị E', '0123456783', 'password5', 10, 'thie@example.edu', '2024-10-21 21:40:43', '2024-11-05 14:40:13', 1, 'user'),
-(18, 'Thanh Nguyen', '0823820302', '123456', 0, 'thanhnguyen@gmail.com', '2024-11-05 22:30:38', '2024-11-20 15:35:03', 1, 'user'),
-(19, 'new_admin', '', 'admin456', 0, 'admin@example.com', '2024-11-20 15:20:25', '2024-11-20 15:20:25', 1, 'admin'),
-(21, 'Thắng', '0914476792', 'thang', 0, 'badaotulong123@gmail.com', '2024-11-20 15:27:49', '2024-11-20 15:27:49', 0, 'user');
-
+(18, 'Thanh Nguyen', '0346172551', '1234567', 0, 'thanhnguyen@gmail.com', '2024-11-05 22:30:38', '2024-11-20 17:36:18', 1, 'user'),
+(21, 'Thắng', '0914476792', 'thang', 0, 'badaotulong123@gmail.com', '2024-11-20 15:27:49', '2024-11-20 15:27:49', 0, 'user'),
+(23, 'nguyendien', '034617255111', '123456', 0, 'Diennguyenba777@gamil.com', '2024-11-20 17:40:19', '2024-11-20 17:40:19', 0, 'user'),
+(24, 'nguyenbadien', '124153232413413', '123456', 0, 'diennguyenba777@gmail.com', '2024-11-20 17:42:25', '2024-11-20 17:42:25', 0, 'user'),
+(25, 'test', '0914476791', '123456', 0, 'test@gmail.com', '2024-12-04 13:23:03', '2024-12-04 13:23:03', 0, 'user'),
+(27, 'admin', '', 'password123', 0, '', '2024-12-04 13:41:14', '2024-12-04 13:41:14', 0, 'admin');
 
 -- --------------------------------------------------------
 
@@ -172,7 +174,8 @@ CREATE TABLE `employee` (
   `LastName` varchar(50) NOT NULL,
   `Email` varchar(50) NOT NULL,
   `PhoneNumber` varchar(15) NOT NULL,
-  `Roles` tinyint(4) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `Roles` varchar(50) NOT NULL,
   `Status` tinyint(4) DEFAULT 1,
   `DateOfBirth` datetime NOT NULL,
   `CreateAt` datetime DEFAULT current_timestamp(),
@@ -183,11 +186,12 @@ CREATE TABLE `employee` (
 -- Đang đổ dữ liệu cho bảng `employee`
 --
 
-INSERT INTO `employee` (`EmployeeID`, `FirstName`, `LastName`, `Email`, `PhoneNumber`, `Roles`, `Status`, `DateOfBirth`, `CreateAt`, `UpdatedAt`) VALUES
-(1, 'Nguyễn', 'Thanh', 'nguyenthanh@email.com', '0123456789', 1, 1, '1990-01-01 00:00:00', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(2, 'Trần', 'Trang', 'trungtran@email.com', '0123456780', 2, 1, '1991-02-01 00:00:00', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(3, 'Lê', 'Bá', 'bale@mail.com', '0123456781', 3, 1, '1992-03-01 00:00:00', '2024-10-21 21:40:43', '2024-10-21 21:40:43'),
-(4, 'Phạm', 'Dũng', 'dungpham@mail.com', '0123456782', 4, 1, '1993-04-01 00:00:00', '2024-10-21 21:40:43', '2024-10-21 21:40:43');
+INSERT INTO `employee` (`EmployeeID`, `FirstName`, `LastName`, `Email`, `PhoneNumber`, `password`, `Roles`, `Status`, `DateOfBirth`, `CreateAt`, `UpdatedAt`) VALUES
+(1, 'Nguyễn', 'Thanh', 'nguyenthanh@email.com', '0123456789', '123', '1', 1, '1990-01-01 00:00:00', '2024-10-21 21:40:43', '2024-12-04 13:01:13'),
+(2, 'Trần', 'Trang', 'trungtran@email.com', '0123456780', '123', '2', 1, '1991-02-01 00:00:00', '2024-10-21 21:40:43', '2024-12-04 13:01:13'),
+(3, 'Lê', 'Bá', 'bale@mail.com', '0123456781', '123', '3', 1, '1992-03-01 00:00:00', '2024-10-21 21:40:43', '2024-12-04 13:01:13'),
+(4, 'Phạm', 'Dũng', 'dungpham@mail.com', '0123456782', '123', 'admin', 1, '1993-04-01 00:00:00', '2024-10-21 21:40:43', '2024-12-04 13:01:13'),
+(5, 'John', 'Doe', 'john.doe@example.com', '1234567890', 'admin_password', 'admin', 1, '1990-01-01 00:00:00', '2024-12-04 16:13:44', '2024-12-04 16:13:44');
 
 -- --------------------------------------------------------
 
@@ -259,7 +263,6 @@ CREATE TABLE `product` (
   `Description` varchar(255) DEFAULT NULL,
   `CreateAt` datetime DEFAULT current_timestamp(),
   `UpdatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `RequestID` varchar(10) DEFAULT NULL,
   `CategoryID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -267,12 +270,12 @@ CREATE TABLE `product` (
 -- Đang đổ dữ liệu cho bảng `product`
 --
 
-INSERT INTO `product` (`ProductID`, `ProductName`, `UnitPrice`, `ProductImage`, `UnitsInStock`, `Status`, `Description`, `CreateAt`, `UpdatedAt`, `RequestID`, `CategoryID`) VALUES
-('PR0001', 'Cà phê truyền thống', 45.000, 'cafe-truyen-thong.jpg', 100, 1, 'Cà phê truyền thống được chọn lọc kĩ càng từ nhiều thương hiệu cafe uy tín, đảm bảo về chất lượng', '2024-10-21 21:40:43', '2024-11-10 10:03:51', 'RQ0001', 1),
-('PR0002', 'Trà Đào cam xả', 40.000, 'tra-dao.jpg', 150, 1, 'Trà Đào', '2024-10-21 21:40:43', '2024-11-10 10:05:06', 'RQ0002', 4),
-('PR0003', 'Cà phê nóng', 45.000, 'cf_nong.JPG', 200, 1, 'Cà phê nóng', '2024-10-21 21:40:43', '2024-11-10 10:01:48', 'RQ0003', 1),
-('PR0004', 'Nước ép táo', 25.000, 'nuoc-ep-tao.jpg', 250, 1, 'Nước ép giải khát', '2024-10-21 21:40:43', '2024-11-10 10:07:15', 'RQ0004', 3),
-('PR0005', '7 Up', 15.000, '7up.png', 300, 1, 'Nước ngọt giải khát', '2024-10-21 21:40:43', '2024-11-10 10:19:34', 'RQ0003', 5);
+INSERT INTO `product` (`ProductID`, `ProductName`, `UnitPrice`, `ProductImage`, `UnitsInStock`, `Status`, `Description`, `CreateAt`, `UpdatedAt`, `CategoryID`) VALUES
+('PR0001', 'Cà phê truyền thống', 45.000, 'cafe-truyen-thong.jpg', 100, 1, 'Cà phê truyền thống được chọn lọc kĩ càng từ nhiều thương hiệu cafe uy tín, đảm bảo về chất lượng', '2024-10-21 21:40:43', '2024-11-10 10:03:51', 1),
+('PR0002', 'Trà Đào cam xả', 40.000, 'tra-dao.jpg', 150, 1, 'Trà Đào', '2024-10-21 21:40:43', '2024-11-10 10:05:06', 4),
+('PR0003', 'Cà phê nóng', 45.000, 'cf_nong.JPG', 200, 1, 'Cà phê nóng', '2024-10-21 21:40:43', '2024-11-10 10:01:48', 1),
+('PR0004', 'Nước ép táo', 25.000, 'nuoc-ep-tao.jpg', 250, 1, 'Nước ép giải khát', '2024-10-21 21:40:43', '2024-11-10 10:07:15', 3),
+('PR0005', '7 Up', 15.000, '7up.png', 300, 1, 'Nước ngọt giải khát', '2024-10-21 21:40:43', '2024-11-10 10:19:34', 5);
 
 -- --------------------------------------------------------
 
@@ -308,18 +311,23 @@ CREATE TABLE `requestform` (
   `Status` tinyint(4) DEFAULT 0,
   `ApproveDate` datetime DEFAULT NULL,
   `CreateDate` datetime DEFAULT current_timestamp(),
-  `EmployeeID` int(11) DEFAULT NULL
+  `EmployeeID` int(11) DEFAULT NULL,
+  `ProductID` varchar(10) NOT NULL,
+  `Note` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `requestform`
 --
 
-INSERT INTO `requestform` (`RequestID`, `RequestQuantity`, `Status`, `ApproveDate`, `CreateDate`, `EmployeeID`) VALUES
-('RQ0001', 10, 0, NULL, '2024-10-21 21:40:43', 1),
-('RQ0002', 20, 1, NULL, '2024-10-21 21:40:43', 2),
-('RQ0003', 5, 0, NULL, '2024-10-21 21:40:43', 3),
-('RQ0004', 15, 1, NULL, '2024-10-21 21:40:43', 4);
+INSERT INTO `requestform` (`RequestID`, `RequestQuantity`, `Status`, `ApproveDate`, `CreateDate`, `EmployeeID`, `ProductID`, `Note`) VALUES
+('RQ0001', 10, 0, NULL, '2024-10-21 21:40:43', 1, 'PR0001', NULL),
+('RQ0002', 20, 1, NULL, '2024-10-21 21:40:43', 2, 'PR0002', NULL),
+('RQ0003', 5, 0, NULL, '2024-10-21 21:40:43', 3, 'PR0003', NULL),
+('RQ0004', 15, 1, NULL, '2024-10-21 21:40:43', 4, 'PR0004', NULL),
+('RQ1351', 999, 0, NULL, '2024-12-04 19:35:10', 2, 'PR0002', NULL),
+('RQ2962', 123, 0, NULL, '2024-12-04 19:46:11', 2, 'PR0005', '123'),
+('RQ7124', 12, 0, NULL, '2024-12-04 17:03:50', 1, 'PR0005', NULL);
 
 -- --------------------------------------------------------
 
@@ -460,7 +468,6 @@ ALTER TABLE `orderdetail`
 --
 ALTER TABLE `product`
   ADD PRIMARY KEY (`ProductID`),
-  ADD KEY `RequestID` (`RequestID`),
   ADD KEY `CategoryID` (`CategoryID`);
 
 --
@@ -475,7 +482,8 @@ ALTER TABLE `product_supplier`
 --
 ALTER TABLE `requestform`
   ADD PRIMARY KEY (`RequestID`),
-  ADD KEY `EmployeeID` (`EmployeeID`);
+  ADD KEY `EmployeeID` (`EmployeeID`),
+  ADD KEY `fk_requestform_product` (`ProductID`);
 
 --
 -- Chỉ mục cho bảng `supplier`
@@ -523,13 +531,13 @@ ALTER TABLE `coupon`
 -- AUTO_INCREMENT cho bảng `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `CustomerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `CustomerID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT cho bảng `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `EmployeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `EmployeeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `workshift`
@@ -573,7 +581,6 @@ ALTER TABLE `orderdetail`
 -- Các ràng buộc cho bảng `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`RequestID`) REFERENCES `requestform` (`RequestID`),
   ADD CONSTRAINT `product_ibfk_2` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);
 
 --
@@ -587,6 +594,7 @@ ALTER TABLE `product_supplier`
 -- Các ràng buộc cho bảng `requestform`
 --
 ALTER TABLE `requestform`
+  ADD CONSTRAINT `fk_requestform_product` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `requestform_ibfk_1` FOREIGN KEY (`EmployeeID`) REFERENCES `employee` (`EmployeeID`);
 
 --

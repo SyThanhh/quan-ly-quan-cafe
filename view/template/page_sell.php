@@ -17,6 +17,8 @@
             background-color: #0056b3; 
             border-color: #ffffff; /* Viền sáng lên */
         }
+
+        /* thêm thak cuoi này vô nè */
         .product-item.out-of-stock {
             opacity: 0.5; /* Làm mờ */
             pointer-events: none; 
@@ -40,7 +42,7 @@
     </style>
 </head>
 <?php
-    require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/payment/config.php");
    
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
@@ -299,11 +301,18 @@
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <!-- Hiển thị tên người dùng từ session -->
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?php
+                                        if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                            echo htmlspecialchars($_SESSION['username']);
+                                        } else {
+                                            echo "Guest";
+                                        }
+                                    ?>
+                                </span>
+                                <img class="img-profile rounded-circle" src="./assets/img/testimonial-2.jpg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -335,14 +344,14 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-6">
-                        <div class="header text-center">
-                            <h4>THÔNG TIN KHÁCH HÀNG</h4>
-                        </div>
-                        <div id="message-notification" class="alert" style="display: none;">
-                            <strong></strong> <span class="message-content"></span>
-                        </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="header text-center">
+                                <h4>THÔNG TIN KHÁCH HÀNG</h4>
+                            </div>
+                            <div id="message-notification" class="alert" style="display: none;">
+                                <strong></strong> <span class="message-content"></span>
+                            </div>
 
                         <!-- <form id="formInfoOrder" action="?page=page_sell"> -->
                             <div class="form-row">
@@ -416,8 +425,6 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                
-                              
                                 <div class="form-group col-md-6">
                                     <!-- Ô trống để tạo sự cân bằng -->
                                 </div>
@@ -447,7 +454,6 @@
                             <div class="d-flex justify-content-end mt-3">
                                 <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button>
                                 <button type="button" id="btnPaymentModal" class="btn btn-primary" data-toggle="modal" data-target="#paymentModal">THANH TOÁN</button>
-            
                             </div>
             
                         </div>
@@ -463,7 +469,7 @@
                                 <div class="form-group">
                                     <label for="product-search">Tên Sản Phẩm:</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="product-search" name = "tim" placeholder="Nhập tên sản phẩm...">
+                                        <input type="text" class="form-control" id="product-search" name="tim" placeholder="Nhập tên sản phẩm...">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary search-button m-0" type="button">
                                                 <i class="fas fa-search"></i>
@@ -473,62 +479,80 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="category-select">Danh Mục Sản Phẩm:</label>
-                                    <select class="form-control" id="category-select">
+                                    <select class="form-control" id="category-select" name="category">
                                         <option value="">Chọn danh mục</option>
-                                        <option value="thuc-pham">Thực phẩm</option>
-                                        <option value="do-uong">Đồ uống</option>
-                                        <option value="do-dung">Đồ dùng</option>
-                                        <option value="thiet-bi">Thiết bị</option>
+                                        <option value="1">Cafe pha máy</option>
+                                        <option value="2">Cafe pha phin</option>
+                                        <option value="3">Nước ép</option>
+                                        <option value="4">Trà</option>
+                                        <option value="5">Nước ngọt</option>
                                     </select>
                                 </div>
-                
-                
+
                                 <div class="header text-center">
                                     <h4>Danh sách sản phẩm</h4>
                                 </div>
                                 <div class="product-list" id="product-list">
-                                    <!-- <div class="product-item" data-name="Sản phẩm 1" data-stock="1" data-price="100000">
-                                        <img src="https://via.placeholder.com/100" alt="Sản phẩm 1">
-                                        <p>Sản phẩm 1</p>
-                                        <p class="stock">Tồn kho: 1</p>
-                                    </div> -->
-                                    <!-- <div class="product-list" id="product-list"> -->
-                                <?php
-                                    $query = "SELECT ProductID,ProductName, UnitsInStock, UnitPrice, ProductImage FROM product";
-                                    $products = $database->select($query);
+                                    <?php
+                                        // Lấy từ khóa tìm kiếm và danh mục từ form
+                                        $searchKeyword = isset($_POST['tim']) ? $_POST['tim'] : '';
+                                        $categoryID = isset($_POST['category']) ? (int)$_POST['category'] : null;
 
-                                    if ($products) {
-                                        while ($product = $products->fetch_assoc()) {
-                                            echo '<div class="product-item" data-name="'.$product['ProductName'].'" data-stock="'.$product['UnitsInStock'].'" data-price="'.$product['UnitPrice'].'">';
-                                            echo '<img src="assets/img/products/'.$product["ProductImage"].'" alt="'.$product['ProductName'].'">';
-                                            echo '<p>'.$product['ProductName'].'</p>';
-                                            echo '<p class="stock">Tồn kho: '.$product['UnitsInStock'].'</p>';
-                                            echo '<p class="price">Giá: '.number_format($product['UnitPrice'], 3, ',', '.').'₫</p>';
-                                            echo ' <input type="text" name="productID" id="productID" value="'.$product['ProductID'].'" hidden/>';
-                                            echo '</div>';
+                                        // Truy vấn cơ sở dữ liệu
+                                        $query = "SELECT ProductID, ProductName, UnitsInStock, UnitPrice, ProductImage, CategoryID FROM product WHERE 1=1";
+
+                                        if (!empty($searchKeyword)) {
+                                            $query .= " AND ProductName LIKE '%$searchKeyword%'";
                                         }
-                                    } else {
-                                        echo "Không có sản phẩm nào.";
-                                    }
-                                ?> 
-                                   
-                                </div>
 
-                                <script>
-                                    document.getElementById("product-search").addEventListener("input", function() {
-                                        const searchTerm = this.value.toLowerCase();
-                                        const products = document.querySelectorAll(".product-item");
+                                        if (!empty($categoryID)) {
+                                            $query .= " AND CategoryID = $categoryID";
+                                        }
 
-                                        products.forEach(product => {
-                                            const productName = product.getAttribute("data-name").toLowerCase();
-                                            if (productName.includes(searchTerm)) {
-                                                product.style.display = "block";
-                                            } else {
-                                                product.style.display = "none";
+                                        $products = $database->select($query);
+
+                                        if ($products && $products->num_rows > 0) {
+                                            while ($product = $products->fetch_assoc()) {
+                                                echo '<div class="product-item" data-name="' . $product['ProductName'] . '" data-stock="' . $product['UnitsInStock'] . '" data-price="' . $product['UnitPrice'] . '" data-category="' . $product['CategoryID'] . '">';
+                                                echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
+                                                echo '<p>' . $product['ProductName'] . '</p>';
+                                                echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
+                                                echo '<p class="price">Giá: ' . number_format($product['UnitPrice'], 3, ',', '.') . '₫</p>';
+                                                echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
+                                                echo '</div>';
                                             }
-                                        });
+                                        } else {
+                                            echo "<p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>";
+                                        }
+                                    ?>
+                                </div>
+                            </form>
+
+                            <script>
+                                // Lọc sản phẩm theo tên và danh mục
+                                document.getElementById("category-select").addEventListener("change", filterProducts);
+                                document.getElementById("product-search").addEventListener("input", filterProducts);
+
+                                function filterProducts() {
+                                    const searchTerm = document.getElementById("product-search").value.toLowerCase();
+                                    const selectedCategory = document.getElementById("category-select").value;
+                                    const products = document.querySelectorAll(".product-item");
+
+                                    products.forEach(product => {
+                                        const productName = product.getAttribute("data-name").toLowerCase();
+                                        const productCategory = product.getAttribute("data-category");
+
+                                        const matchesName = productName.includes(searchTerm);
+                                        const matchesCategory = !selectedCategory || productCategory === selectedCategory;
+
+                                        if (matchesName && matchesCategory) {
+                                            product.style.display = "block";
+                                        } else {
+                                            product.style.display = "none";
+                                        }
                                     });
-                                </script>
+                                }
+                            </script>
 
                         </div>
                     </div>
