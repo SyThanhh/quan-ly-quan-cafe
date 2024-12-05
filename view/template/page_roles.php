@@ -231,7 +231,7 @@
                 $recordsPerPage = 5;
 
                 // Tính tổng số bản ghi
-                $totalRecordsQuery = "SELECT COUNT(*) as total FROM employee WHERE Roles > 1";
+                $totalRecordsQuery = "SELECT COUNT(*) as total FROM employee WHERE Roles > 1 AND Status = 1";
                 if ($searchKeyword !== '') {
                     $totalRecordsQuery .= " AND (FirstName LIKE '%$searchKeyword%' OR LastName LIKE '%$searchKeyword%')";
                 }
@@ -250,7 +250,7 @@
                 $offset = ($page - 1) * $recordsPerPage;
 
                 // Truy vấn danh sách nhân viên với phân trang và tìm kiếm
-                $query = "SELECT * FROM employee WHERE Roles > 1";
+                $query = "SELECT * FROM employee WHERE Roles > 1 AND Status = 1";
                 if ($searchKeyword !== '') {
                     $query .= " AND (FirstName LIKE '%$searchKeyword%' OR LastName LIKE '%$searchKeyword%')";
                 }

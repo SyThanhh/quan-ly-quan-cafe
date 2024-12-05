@@ -274,6 +274,10 @@
                                         <th><label for="birthDate">Ngày Sinh:</label></th>
                                         <td><input type="date" class="form-control" id="birthDate" name="birthDate" required></td>
                                     </tr>
+                                    <tr>
+                                        <th><label for="password">Mật khẩu:</label></th>
+                                        <td><input type="text" class="form-control" id="password" name="password" required></td>
+                                    </tr>
                                 </table>
 
                                 <!-- Button section -->
@@ -299,15 +303,16 @@
                     $phoneNumber = trim($_POST['phoneNumber']);
                     $position = $_POST['position'];
                     $birthDate = $_POST['birthDate'];
+                    $password = trim($_POST['password']);
                 
                     // Kiểm tra nếu các trường đều đã được điền
                     // Chuẩn bị câu truy vấn SQL để thêm nhân viên
                     $status=1;
-                    $query = "INSERT INTO employee (EmployeeID, FirstName, LastName, Email, PhoneNumber, Roles, Status, DateOfBirth)
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    $query = "INSERT INTO employee (EmployeeID, FirstName, LastName, Email, PhoneNumber, Roles, Status, DateOfBirth, password)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                     $stmt = $conn->prepare($query);
-                    $stmt->bind_param("issssiss", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate);
+                    $stmt->bind_param("issssiss", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate, $password);
             
                     // Thực thi câu truy vấn
                     if ($stmt->execute()) {

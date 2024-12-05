@@ -10,6 +10,72 @@
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
         $conn = $database->connect(); // Lấy kết nối
+
+        // Hàm chuyển đổi mã vai trò thành tên vai trò
+        function getRoleName($roleCode) {
+            switch ($roleCode) {
+                case 2:
+                    return "Nhân viên đứng quầy";
+                case 3:
+                    return "Nhân viên kế toán";
+                case 4:
+                    return "Nhân viên pha chế";
+                default:
+                    return "Không xác định";
+            }
+        }
+
+        // Xử lý tìm kiếm
+        $searchDate = isset($_GET['search_date']) ? $_GET['search_date'] : '';
+        $whereClause = '';
+        if (!empty($searchDate)) {
+            $formattedSearchDate = date('Y-m-d', strtotime($searchDate));
+            $whereClause = "WHERE '$formattedSearchDate' BETWEEN DATE(StartDate) AND DATE(EndDate)";
+        }
+
+        // Số bản ghi trên mỗi trang
+        $recordsPerPage = 5;
+
+        // Tính tổng số bản ghi với điều kiện tìm kiếm
+        $totalRecordsQuery = "SELECT COUNT(*) as total FROM workshift $whereClause";
+        $totalRecordsResult = $database->select($totalRecordsQuery);
+        $totalRecords = $totalRecordsResult->fetch_assoc()['total'];
+
+        // Tính tổng số trang
+        $totalPages = ceil($totalRecords / $recordsPerPage);
+
+        // Lấy trang hiện tại từ URL, mặc định là trang 1
+        $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
+        $page = max(1, min($page, $totalPages));
+
+        // Tính offset để lấy dữ liệu
+        $offset = ($page - 1) * $recordsPerPage;
+
+        // Truy vấn danh sách lịch làm việc với phân trang và tìm kiếm
+        $query = "SELECT * FROM workshift $whereClause ORDER BY StartDate DESC LIMIT $offset, $recordsPerPage";
+        $shifts = $database->select($query);
+
+        // Xử lý xóa lịch
+        if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+            $shiftID = $_GET['id'];
+            
+            // Xóa các bản ghi liên quan trong bảng workshift_employee
+            $deleteEmployeesQuery = "DELETE FROM workshift_employee WHERE ShiftID = ?";
+            $stmtDeleteEmployees = $conn->prepare($deleteEmployeesQuery);
+            $stmtDeleteEmployees->bind_param("i", $shiftID);
+            $stmtDeleteEmployees->execute();
+
+            // Xóa lịch từ bảng workshift
+            $deleteShiftQuery = "DELETE FROM workshift WHERE ShiftID = ?";
+            $stmtDeleteShift = $conn->prepare($deleteShiftQuery);
+            $stmtDeleteShift->bind_param("i", $shiftID);
+            
+            if ($stmtDeleteShift->execute()) {
+                echo "<script>alert('Xóa lịch thành công!'); window.location.href = 'index.php?page=page_shift';</script>";
+            } else {
+                echo "<script>alert('Có lỗi xảy ra khi xóa lịch!'); window.location.href = 'index.php?page=page_shift';</script>";
+            }
+        }
     ?>
     <link rel="stylesheet" href="./assets/css/employee_shift.css">
 </head>
@@ -232,14 +298,17 @@
                             <div class="col-md-12 text-center">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="input-group">
-                                        <input type="date" class="form-control" id="name-search" placeholder="Tìm lịch theo ngày">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
+                                        <form action="" method="GET">
+                                            <div class="input-group">
+                                                <input type="date" class="form-control" id="search_date" name="search_date" value="<?php echo $searchDate; ?>" placeholder="Tìm lịch theo ngày">
+                                                <input type="hidden" name="page" value="page_shift">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary search-button m-0" type="submit">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                     <div class="col-md-6 text-right">
                                         <a class="btn btn-primary btn-add" style="color:white" href="index.php?page=page_add_shift"><i class="fas fa-plus"></i> &nbsp; Thêm lịch mới</a>
@@ -250,28 +319,6 @@
 
                             <?php
                             // Số bản ghi trên mỗi trang
-                            $recordsPerPage = 5;
-
-                            // Tính tổng số bản ghi
-                            $totalRecordsQuery = "SELECT COUNT(*) as total FROM workshift";
-                            $totalRecordsResult = $database->select($totalRecordsQuery);
-                            $totalRecords = $totalRecordsResult->fetch_assoc()['total'];
-
-                            // Tính tổng số trang
-                            $totalPages = ceil($totalRecords / $recordsPerPage);
-
-                            // Lấy trang hiện tại từ URL, mặc định là trang 1
-                            $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
-                            $page = ($page > $totalPages) ? $totalPages : $page;
-                            $page = ($page < 1) ? 1 : $page;
-
-                            // Tính offset để lấy dữ liệu
-                            $offset = ($page - 1) * $recordsPerPage;
-
-                            // Truy vấn danh sách lịch làm việc với phân trang
-                            $query = "SELECT * FROM workshift LIMIT $offset, $recordsPerPage";
-                            $shifts = $database->select($query);
-                            
                             
                             ?>
 
@@ -332,27 +379,29 @@
 
                                             // Truy vấn nhân viên của lịch làm
                                             $employeeQuery = "
-                                                SELECT e.FirstName, e.LastName, e.Roles
-                                                FROM workshift_employee AS we
-                                                INNER JOIN employee AS e ON we.EmployeeID = e.EmployeeID
-                                                WHERE we.ShiftID = {$row['ShiftID']}
+                                                SELECT w.ShiftID, w.ShiftType, w.StartDate, w.EndDate,
+                                                GROUP_CONCAT(CONCAT(e.LastName, ' ', e.FirstName, ':', e.Roles) SEPARATOR ',') AS EmployeeInfo
+                                                FROM workshift AS w
+                                                LEFT JOIN workshift_employee AS we ON w.ShiftID = we.ShiftID
+                                                LEFT JOIN employee AS e ON we.EmployeeID = e.EmployeeID
+                                                WHERE w.ShiftID = {$row['ShiftID']}
+                                                GROUP BY w.ShiftID
                                             ";
-                                            $employees = $database->select($employeeQuery);
+                                            $employeeResult = $database->select($employeeQuery);
+                                            $employeeInfo = $employeeResult->fetch_assoc()['EmployeeInfo'];
 
-                                            if ($employees && $employees->num_rows > 0) {
-                                                echo "<p><strong>Nhân Viên (đoạn này chưa được, để sửa sau nhé):</strong></p><ul>";
-                                                while ($employee = $employees->fetch_assoc()) {
-                                                    $role = match ($employee['Roles']) {
-                                                        2 => 'Đứng Quầy',
-                                                        3 => 'Kế Toán',
-                                                        4 => 'Pha Chế',
-                                                        default => 'Khác',
-                                                    };
-                                                    echo "<li>{$employee['LastName']} {$employee['FirstName']} ({$role})</li>";
+                                            echo "<p><strong>Nhân viên:</strong></p>";
+                                            if ($employeeInfo) {
+                                                $employees = explode(',', $employeeInfo);
+                                                echo "<ul>";
+                                                foreach ($employees as $employee) {
+                                                    list($name, $roleCode) = explode(':', $employee);
+                                                    $roleName = getRoleName($roleCode);
+                                                    echo "<li>$name - $roleName</li>";
                                                 }
                                                 echo "</ul>";
                                             } else {
-                                                echo "<p><strong>Nhân Viên:</strong> Không có</p>";
+                                                echo "<p>Không có nhân viên</p>";
                                             }
 
                                             echo "
@@ -378,15 +427,19 @@
                                     <ul class="pagination">
                                         <!-- Nút Previous -->
                                         <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
-                                            <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo ($page > 1) ? $page - 1 : 1; ?>" aria-label="Previous">
+                                            <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo $page - 1; ?>&search_date=<?php echo $searchDate; ?>" aria-label="Previous">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
                                         </li>
 
                                         <!-- Các trang số -->
-                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <?php 
+                                        $startPage = max(1, $page - 2);
+                                        $endPage = min($totalPages, $page + 2);
+                                        for ($i = $startPage; $i <= $endPage; $i++): 
+                                        ?>
                                             <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
-                                                <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo $i; ?>">
+                                                <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo $i; ?>&search_date=<?php echo $searchDate; ?>">
                                                     <?php echo $i; ?>
                                                 </a>
                                             </li>
@@ -394,7 +447,7 @@
 
                                         <!-- Nút Next -->
                                         <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
-                                            <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo ($page < $totalPages) ? $page + 1 : $totalPages; ?>" aria-label="Next">
+                                            <a class="page-link" href="index.php?page=page_shift&page_number=<?php echo $page + 1; ?>&search_date=<?php echo $searchDate; ?>" aria-label="Next">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
                                         </li>
@@ -435,15 +488,15 @@
             // Hiển thị modal
             $('#confirmDeleteModal').modal('show');
             
-            // // Gán ID của nhân viên vào nút xác nhận
-            // document.getElementById('confirmDeleteButton').onclick = function () {
-            //     // Thực hiện hành động xóa ở đây nếu cần thiết
-            //     console.log("Đã xác nhận xóa nhân viên với ID:", employeeID);
-            //     $('#confirmDeleteModal').modal('hide');
-            // };
+            // Gán ID của lịch vào nút xác nhận
+            document.getElementById('confirmDeleteButton').onclick = function () {
+                // Thực hiện hành động xóa
+                window.location.href = 'index.php?page=page_shift&action=delete&id=' + shiftID;
+            };
         }
     </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>
 </html>
+
