@@ -42,7 +42,7 @@
     </style>
 </head>
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/payment/config.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/hi/quan-ly-quan-cafe/payment/config.php");
    
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 

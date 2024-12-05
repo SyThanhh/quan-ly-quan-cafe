@@ -121,9 +121,9 @@ if (!$conn) {
 $customerID = $_SESSION['id']; 
 
 // Truy vấn SQL để lấy điểm cho người dùng đã đăng nhập
-$sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone,  c.CustomerPoint
+$sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email,  c.CustomerPoint, co.Description, co.CouponDiscount
         FROM customer c 
-        JOIN `order` o ON c.CustomerID = o.CustomerID 
+        JOIN `coupon` co ON c.CustomerID = co.CouponID 
         WHERE c.CustomerID = ?";  //Chỉ lấy các điểm của người dùng đã đăng nhập
 
 // Chuẩn bị và thực hiện truy vấn SQL
@@ -141,6 +141,9 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
                         <th>Mã khách hàng</th>
                         <th>Tên khách hàng</th>
                         <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Mô tả</th>
+                        <th>Phiếu giảm giá</th>
                         <th>Điểm khách hàng</th>
                     </tr>
                 </thead>
@@ -152,6 +155,9 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
                     <td>' . $row['CustomerID'] . '</td>
                     <td>' . $row['CustomerName'] . '</td>
                     <td>' . $row['CustomerPhone'] . '</td>
+                    <td>' . $row['Email'] . '</td>
+                    <td>' . $row['Description'] . '</td>
+                    <td>' . $row['CouponDiscount'] . '</td>
                     <td>' . $row['CustomerPoint'] . '</td>
                 </tr>';
         }

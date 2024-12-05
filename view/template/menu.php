@@ -292,7 +292,7 @@
    <section class="containerfull">
     <div class="boxleft">
         <h1>DANH MỤC</h1><br><br>
-        <select class="form-control" id="category-select" name="category" onchange="filterByCategory()">
+        <select class="form-control" id="category-select" name="category" onchange="filterByCategory()" style=" font-size: 16px;padding: 8px;width: 175px;border: 1px solid #333;border-radius: 14px;background-color: #f4f4f9;transition: background-color 0.3s ease;">
             <option value="">Chọn danh mục</option>
             <option value="1">Cafe pha máy</option>
             <option value="2">Cafe pha phin</option>
