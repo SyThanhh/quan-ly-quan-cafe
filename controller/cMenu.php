@@ -5,12 +5,12 @@
             $p = new mProduct();
             $tbl = $p->selProduct();
         
-            
+            // Kiểm tra xem kết nối có trả về một đối tượng kết quả hợp lệ
             if ($tbl && is_object($tbl)) {
                 if (mysqli_num_rows($tbl) > 0) {
                     return $tbl;
                 } else {
-                    return false;
+                    return false;  // Không có kết quả nào
                 }
             } else {
                 echo 'Lỗi kết nối!';

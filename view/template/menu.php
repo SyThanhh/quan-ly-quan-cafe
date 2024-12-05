@@ -268,7 +268,7 @@
     <!-- Page Header Start -->
     <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
         <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">MENU</h1>
+            <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Menu</h1>
             <div class="d-inline-flex mb-lg-5">
                 <p class="m-0 text-white"><a class="text-white" href="">Trang chủ</a></p>
                 <p class="m-0 text-white px-2">/</p>
@@ -297,11 +297,17 @@
                 <a href="#" class="menu-item">Trà</a>
             </div>    
 
+            <div class="boxright">
+                <h1>SẢN PHẨM</h1><br>
+
                 <div class="product-grid">
                 <?php
+
+                    // Check if a search term exists
                     $searchTerm = isset($_REQUEST['tim']) ? $_REQUEST['tim'] : '';
 
                     if (!empty($searchTerm)) {
+                        // Search query if a term is provided
                         $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status 
                                 FROM product 
                                 WHERE ProductName LIKE ?";
@@ -311,23 +317,22 @@
                         mysqli_stmt_execute($stmt);
                         $result = mysqli_stmt_get_result($stmt);
                     } else {
+                        // Default query to show all products if no search term
                         $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status FROM product";
                         $result = mysqli_query($conn, $sql);
                     }
 
+                    // Display products
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             echo "<div class='product-card'>";
-                            
+                            // Display product image or default image
                             if (!empty($row['ProductImage'])) {
                                 echo "<img src='assets/img/products/" . htmlspecialchars($row['ProductImage']) . "' alt='" . htmlspecialchars($row['ProductName']) . "'>";
                             } else {
                                 echo "<img src='assets/img/default-product.jpg' alt='Default Product Image'>";
                             }
-                            echo "<a href='index.php?page=page_productdetail&ProductID=" . $row['ProductID'] . "'>";
                             echo "<h3>" . htmlspecialchars($row['ProductName']) . "</h3>";
-                            echo "</a>";
-
                             echo "<p><strong>Price:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
                             echo "<p><strong>In Stock:</strong> " . $row['UnitsInStock'] . "</p>";
                             echo "<p><strong>Status:</strong> " . ($row['Status'] == 1 ? 'Available' : 'Out of Stock') . "</p>";
@@ -337,6 +342,7 @@
                         echo "<p>No products available.</p>";
                     }
 
+                    // Close the statement if it was used
                     if (!empty($searchTerm)) {
                         mysqli_stmt_close($stmt);
                     }
@@ -409,18 +415,3 @@
 </body>
 
 </html>
-<script>
-        function showProductDetails(productId) {
-            // Hide all product details
-            var details = document.querySelectorAll('.product-details');
-            details.forEach(function (detail) {
-                detail.style.display = 'none';
-            });
-
-            // Show the selected product details
-            var productDetail = document.getElementById('product-details-' + productId);
-            if (productDetail) {
-                productDetail.style.display = 'block';
-            }
-        }
-    </script>

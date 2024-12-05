@@ -250,108 +250,147 @@
                 </nav>
 
                 <!--  Nội dung trang  -->
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ PHIẾU YÊU CẦU</h4>
-                            </div>
-                           
-                            <div class="mt-8">
-                                <table class="table table-bordered">
-                                    <thead align="center">
-                                        <tr>
-                                            <th>Mã</th>
-                                            <!-- <th>Sản phẩm</th> -->
-                                            <th>Số lượng</th>
-                                            <th>Thời gian</th>
-                                            <th>Nhân viên nhập phiếu</th>
-                                            <th colspan='2'>Trạng thái</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $requestform = $database->select("
-                                                SELECT rf.*, e.*
-                                                FROM requestform rf
-                                                JOIN employee e ON rf.EmployeeID = e.EmployeeID
-                                            ");
+                <?php
+// Bắt đầu phiên làm việc
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-                                            // Hiển thị danh sách nhân viên
-                                            if ($requestform) {
-                                                while ($row = $requestform->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['RequestID']}</td>";
-                                                    // echo "<td>{$row['ImportProduct']}</td>";
-                                                    
-                                                    echo "<td>{$row['RequestQuantity']}</td>";
+// Kiểm tra xem người dùng đã đăng nhập chưa
+if (!isset($_SESSION['id'])) {
+    // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập hoặc thông báo lỗi
+    header("Location: login.php");
+    exit();
+}
 
-                                                    echo "<td>{$row['CreateDate']}</td>";
-                                                    echo "<td>{$row['FirstName']} {$row['LastName']}</td>";
+// Kết nối cơ sở dữ liệu
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "db_ql3scoffee";
 
-                                                    echo "<td>
-                                                        <a' class='btn btn-success' style='color:white' onclick='confirmBrowse()'>
-                                                            <i class='fas fa-check'></i>
-                                                        </a></td> <td>
-                                                        <button type='button' class='btn btn-danger' onclick='confirmDelete()'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Cuối trang -->
-            <?php include_once('./common/footer/footer.php'); ?>
-        </div> 
-            <!-- Modal xác nhận duyệt -->
-    <div class="modal fade" id="confirmBrowseModal" tabindex="-1" role="dialog" aria-labelledby="confirmBrowseLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmBrowseLabel">Xác nhận</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Duyệt phiếu thành công
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" >OK</button>
-                </div>
-            </div>
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Biến lưu thông báo
+$message = '';
+
+// Kiểm tra nếu form được gửi
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Lấy dữ liệu từ form
+    $productID = $_POST['product'];  // ProductID
+    $quantity = $_POST['quantity'];
+    $supplierID = $_POST['supplier'];  // SupplierID
+    $note = $_POST['note'];  // Lấy ghi chú từ form
+
+    // Tạo RequestID tự động
+    $requestID = 'RQ' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);  // Ví dụ: RQ0001
+
+    // Lấy ID nhân viên từ session
+    $employeeID = $_SESSION['id'];
+
+    // Thêm yêu cầu vào bảng requestform
+    $sql = "INSERT INTO requestform (RequestID, RequestQuantity, Status, CreateDate, EmployeeID, ProductID, Note)
+            VALUES (?, ?, 0, NOW(), ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("siiss", $requestID, $quantity, $employeeID, $productID, $note);  // Dùng bind_param để truyền tham số vào câu lệnh SQL
+
+    if ($stmt->execute()) {
+        $message = "Gửi yêu cầu thành công!";
+    } else {
+        $message = "Có lỗi xảy ra khi gửi yêu cầu: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+// Lấy danh sách sản phẩm từ bảng 'product'
+$sql_product = "SELECT ProductID, ProductName FROM product";
+$result_product = $conn->query($sql_product);
+
+if ($result_product === false) {
+    die("Error fetching products: " . $conn->error);
+}
+
+// Lấy danh sách nhà cung cấp từ bảng 'supplier'
+$sql_supplier = "SELECT SupplierID, CompanyName FROM supplier";
+$result_supplier = $conn->query($sql_supplier);
+
+if ($result_supplier === false) {
+    die("Error fetching suppliers: " . $conn->error);
+}
+
+?>
+
+<div class="container mt-5">
+    <h3 class="text-center">Gửi yêu cầu nhập hàng</h3>
+
+    <?php if ($message): ?>
+        <div class="alert alert-info">
+            <?php echo $message; ?>
         </div>
-    </div>     
-    <!-- Modal xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa phiếu này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
-                </div>
-            </div>
+    <?php endif; ?>
+
+    <form action="" method="POST">
+        <!-- Chọn tên sản phẩm -->
+        <div class="form-group">
+            <label for="product">Tên sản phẩm</label>
+            <select class="form-control" id="product" name="product" required>
+                <option value="">Chọn sản phẩm</option>
+                <?php
+                if ($result_product->num_rows > 0) {
+                    while ($row = $result_product->fetch_assoc()) {
+                        echo "<option value='" . $row['ProductID'] . "'>" . $row['ProductName'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>Không có sản phẩm nào</option>";
+                }
+                ?>
+            </select>
         </div>
-    </div>    
+
+        <!-- Số lượng -->
+        <div class="form-group">
+            <label for="quantity">Số lượng</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" required>
+        </div>
+
+        <!-- Chọn nhà cung cấp -->
+        <div class="form-group">
+            <label for="supplier">Nhà cung cấp</label>
+            <select class="form-control" id="supplier" name="supplier" required>
+                <option value="">Chọn nhà cung cấp</option>
+                <?php
+                if ($result_supplier->num_rows > 0) {
+                    while ($row = $result_supplier->fetch_assoc()) {
+                        echo "<option value='" . $row['SupplierID'] . "'>" . $row['CompanyName'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>Không có nhà cung cấp nào</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <!-- Ghi chú -->
+        <div class="form-group">
+            <label for="note">Ghi chú</label>
+            <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Gửi yêu cầu</button>
+    </form>
+</div>
+
+<?php
+// Đóng kết nối sau khi đã thực hiện xong các truy vấn
+$conn->close();
+?>
+
 
     <script>
         // Hàm mở modal xác nhận xóa

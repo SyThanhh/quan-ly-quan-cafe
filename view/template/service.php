@@ -116,9 +116,7 @@
                 // Display image if exists
                 if (!empty($row["image"])) {
                     $imagePath = htmlspecialchars($row["image"]);
-                    echo '<img src="view/template/' . $imagePath . '" alt="Promo Image">';
                     echo '<img src="assets/img/coupon/' . $imagePath . '" alt="Promo Image">';
-
                 }
                  else {
                     echo '<img src="template/' . htmlspecialchars($row["image"]) . '" alt="Promo Image">'; // Thêm "template/" vào đường dẫn

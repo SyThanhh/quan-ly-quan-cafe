@@ -79,7 +79,7 @@
                 if ($update_row) {
                     return true;
                 } else {
-                    return "Sửa thất bại : " . $this->conn->error;
+                    return "Sửa thất bại thất bại : " . $this->conn->error;
                 }
             } else {
                 return "Kết nối thất bại!";

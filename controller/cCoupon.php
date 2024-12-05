@@ -18,25 +18,6 @@
             }
         }
 
-        public function getCouponByPoint($point) {
-            $p = new mCoupon();
-            $tbl = $p->selCouponByPoint($point);
-        
-            // Kiểm tra xem kết nối có trả về một đối tượng kết quả hợp lệ
-            if ($tbl && is_object($tbl)) {
-                if (mysqli_num_rows($tbl) > 0) {
-                    return $tbl;
-                } else {
-                    return false;  // Không có kết quả nào
-                }
-            } else {
-                echo 'Lỗi kết nối!';
-                return false;
-            }
-        }
-
-        
-
         public function getCouponByCode($CouponCode){
             $p = new mCoupon();
             $tbl = $p -> selCouponByCode($CouponCode);
