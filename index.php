@@ -4,6 +4,7 @@
 ?>
 <?php
 
+
    $page = isset($_GET['page']) ? $_GET['page'] : null; // Mặc định là null
 
 
@@ -13,7 +14,12 @@
    
    // Nếu không có tham số 'page', không làm gì cả
    if ($page) {
-       // Xây dựng đường dẫn file cần bao gồm
+    //   if($page === "page_customer") {
+    //     include_once('controller/CustomerController.php');
+    //     $controller = new CustomerController();
+    //     $controller->list();
+    //   }
+     
        $page_file = $page_directory . $page . '.php';
    
        // Kiểm tra xem file có tồn tại không

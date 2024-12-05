@@ -245,12 +245,12 @@
                                         <td><input type="text" class="form-control" id="employeeID" name="employeeID" value="<?php echo $nextEmployeeID; ?>" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="lastName">Họ:</label></th>
-                                        <td><input type="text" class="form-control" id="lastName" name="lastName" required></td>
+                                        <th><label for="firstName">Họ:</label></th>
+                                        <td><input type="text" class="form-control" id="fisrtName" name="firstName" required></td>
                                     </tr>
                                     <tr>
-                                        <th><label for="firstName">Tên:</label></th>
-                                        <td><input type="text" class="form-control" id="firstName" name="firstName" required></td>
+                                        <th><label for="lastName">Tên:</label></th>
+                                        <td><input type="text" class="form-control" id="lastName" name="lastName" required></td>
                                     </tr>
                                     <tr>
                                         <th><label for="phoneNumber">Số Điện Thoại:</label></th>
@@ -260,26 +260,14 @@
                                         <th><label for="position">Vị Trí Làm Việc:</label></th>
                                         <td>
                                             <select id="position" class="form-control" name="position" required>
-                                                <?php
-                                                while ($position = $positions->fetch_assoc()) {
-                                                    $positionLabel = '';
-                                                    switch ($position['Roles']) {
-                                                        case 2:
-                                                            $positionLabel = 'Nhân viên đứng quầy';
-                                                            break;
-                                                        case 3:
-                                                            $positionLabel = 'Nhân viên kế toán';
-                                                            break;
-                                                        case 4:
-                                                            $positionLabel = 'Nhân viên pha chế';
-                                                            break;
-                                                    }
-                                                    echo "<option value='{$position['id']}'>{$positionLabel}</option>";
-                                                }
-                                                ?>
+
+                                                <option value="2">Nhân viên đứng quầy</option>
+                                                <option value="3">Nhân viên kế toán</option>
+                                                <option value="4">Nhân viên pha chế</option>
+
                                             </select>
                                         </td>
-                                    </tr>
+                                    </tr>                                       
                                     <tr>
                                         <th><label for="birthDate">Ngày Sinh:</label></th>
                                         <td><input type="date" class="form-control" id="birthDate" name="birthDate" required></td>
@@ -297,6 +285,43 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- Thêm nhân viên -->
+                <?php
+                if (isset($_POST['addEmployee'])) {
+                    // Nhận dữ liệu từ form
+                    $employeeID = $_POST['employeeID'];
+                    $lastName = trim($_POST['lastName']);
+                    $firstName = trim($_POST['firstName']);
+                    $email = trim($_POST['email']);
+                    $phoneNumber = trim($_POST['phoneNumber']);
+                    $position = $_POST['position'];
+                    $birthDate = $_POST['birthDate'];
+                
+                    // Kiểm tra nếu các trường đều đã được điền
+                    // Chuẩn bị câu truy vấn SQL để thêm nhân viên
+                    $status=1;
+                    $query = "INSERT INTO employee (EmployeeID, FirstName, LastName, Email, PhoneNumber, Roles, Status, DateOfBirth)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param("issssiss", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate);
+            
+                    // Thực thi câu truy vấn
+                    if ($stmt->execute()) {
+                        // Hiển thị thông báo "Thêm thành công" và chuyển hướng
+                        echo "<script>
+                                window.location.href = 'index.php?page=page_employee';
+                                alert('Thêm thành công');
+                                </script>";
+                        exit;
+                    } else {
+                        echo "<p>Đã có lỗi xảy ra: " . $stmt->error . "</p>";
+                    }
+                    $stmt->close();
+                }
+                ?>
             </div>
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>

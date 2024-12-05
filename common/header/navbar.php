@@ -39,7 +39,7 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                             <a href="index.php?page=profile" class="dropdown-item">Thông tin cá nhân</a>
                             <a href="membership.php" class="dropdown-item">Khách hàng thành viên</a>
-                            <a href="reviews.php" class="dropdown-item">Sản phẩm đã đánh giá</a>
+                            <a href="index.php?page=product_reviewed" class="dropdown-item">Sản phẩm đã đánh giá</a>
                             <a href="index.php?page=view_transaction" class="dropdown-item">Lịch sử giao dịch</a>
                             <a href="index.php?page=point" class="dropdown-item">Điểm tích lũy</a>
 

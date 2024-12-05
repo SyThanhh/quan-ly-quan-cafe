@@ -251,124 +251,118 @@
 
                 <!--  Nội dung trang  -->
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="header text-left">
-                                <h4>QUẢN LÝ PHIẾU YÊU CẦU</h4>
-                            </div>
-                           
-                            <div class="mt-8">
-                                <table class="table table-bordered">
-                                    <thead align="center">
-                                        <tr>
-                                            <th>Mã</th>
-                                            <!-- <th>Sản phẩm</th> -->
-                                            <th>Số lượng</th>
-                                            <th>Thời gian</th>
-                                            <th>Nhân viên nhập phiếu</th>
-                                            <th colspan='2'>Trạng thái</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            // Truy vấn danh sách nhân viên
-                                            $requestform = $database->select("
-                                                SELECT rf.*, e.*
-                                                FROM requestform rf
-                                                JOIN employee e ON rf.EmployeeID = e.EmployeeID
-                                            ");
-
-                                            // Hiển thị danh sách nhân viên
-                                            if ($requestform) {
-                                                while ($row = $requestform->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-                                                    echo "<tr>";
-                                                    echo "<td>{$row['RequestID']}</td>";
-                                                    // echo "<td>{$row['ImportProduct']}</td>";
-                                                    
-                                                    echo "<td>{$row['RequestQuantity']}</td>";
-
-                                                    echo "<td>{$row['CreateDate']}</td>";
-                                                    echo "<td>{$row['FirstName']} {$row['LastName']}</td>";
-
-                                                    echo "<td>
-                                                        <a' class='btn btn-success' style='color:white' onclick='confirmBrowse()'>
-                                                            <i class='fas fa-check'></i>
-                                                        </a></td> <td>
-                                                        <button type='button' class='btn btn-danger' onclick='confirmDelete()'>
-                                                            <i class='fas fa-trash'></i>
-                                                        </button>
-                                                    </td>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='8' class='text-center'>Không có dữ liệu</td></tr>";
-                                            }                                            
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="header text-left mb-4">
+                <h4 class="font-weight-bold">QUẢN LÝ PHIẾU YÊU CẦU</h4>
             </div>
-            <!-- Cuối trang -->
-            <?php include_once('./common/footer/footer.php'); ?>
-        </div> 
-            <!-- Modal xác nhận duyệt -->
-    <div class="modal fade" id="confirmBrowseModal" tabindex="-1" role="dialog" aria-labelledby="confirmBrowseLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmBrowseLabel">Xác nhận</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Duyệt phiếu thành công
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" >OK</button>
-                </div>
+            <div class="mb-3">
+                <a href="index.php?page=page_requestform&status=0" class="btn btn-primary btn-lg mr-2">Xem phiếu chưa duyệt</a>
+                <a href="index.php?page=page_requestform&status=1" class="btn btn-success btn-lg">Xem phiếu đã duyệt</a>
             </div>
+
+            <?php
+            // Kiểm tra và lấy giá trị của 'status' từ URL, mặc định là 0 (chưa duyệt)
+            $status = isset($_GET['status']) ? $_GET['status'] : 0;
+            ?>
+
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th>Mã</th>
+                        <th>Số lượng</th>
+                        <th>Thời gian</th>
+                        <?php if ($status == 0): ?>
+                            <th>Nhân viên duyệt phiếu</th>
+                            <th colspan="2">Trạng thái</th>
+                        <?php elseif ($status == 1): ?>
+                            <th>Nhân viên duyệt phiếu</th>
+                            <th>Thời gian duyệt</th>
+                            <th>Trạng thái</th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Truy vấn danh sách yêu cầu theo trạng thái (chưa duyệt hoặc đã duyệt)
+                    $requestform = $database->select("SELECT rf.*, e.* FROM requestform rf JOIN employee e ON rf.EmployeeID = e.EmployeeID WHERE rf.Status = $status");
+
+                    // Hiển thị danh sách yêu cầu
+                    if ($requestform) {
+                        while ($row = $requestform->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td class='text-center'>{$row['RequestID']}</td>";
+                            echo "<td class='text-center'>{$row['RequestQuantity']}</td>";
+                            echo "<td class='text-center'>{$row['CreateDate']}</td>";
+
+                            if ($status == 1) {
+                                // Nếu phiếu đã duyệt, hiển thị nhân viên duyệt và thời gian duyệt
+                                echo "<td class='text-center'>{$row['FirstName']} {$row['LastName']}</td>";
+                                echo "<td class='text-center'>{$row['ApproveDate']}</td>";
+                                echo "<td class='text-center'>Đã duyệt</td>";
+                            } else {
+                                // Nếu phiếu chưa duyệt, hiển thị nhân viên duyệt và các nút Duyệt, Xóa
+                                echo "<td class='text-center'>{$row['FirstName']} {$row['LastName']}</td>";
+                                echo "<td class='text-center'>
+                                <a href='index.php?page=page_requestform&RequestID={$row['RequestID']}&status=1' class='btn btn-success btn-sm'>
+                                    <i class='fas fa-check'></i> Duyệt
+                                </a>
+                                   </td>";
+                        
+                                echo "<td class='text-center'>
+                                        <a href='index.php?page=page_delete_request&RequestID={$row['RequestID']}' 
+                                           class='btn btn-danger btn-sm' 
+                                           onclick=\"return confirm('Bạn có thực sự muốn xóa yêu cầu này không?')\">
+                                           <i class='fas fa-trash'></i> Xóa
+                                        </a>
+                                    </td>";
+                            }
+
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='7' class='text-center'>Không có dữ liệu</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
-    </div>     
-    <!-- Modal xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa phiếu này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xác nhận</button>
-                </div>
-            </div>
-        </div>
-    </div>    
+    </div>
+</div>
 
-    <script>
-        // Hàm mở modal xác nhận xóa
-        function confirmBrowse(RequestID) {
-            // Hiển thị modal
-            $('#confirmBrowseModal').modal('show');
-            
+</div>
 
-        }
-        function confirmDelete(RequestID) {
-            // Hiển thị modal
-            $('#confirmDeleteModal').modal('show');
-            
+<?php
+// Kiểm tra xem RequestID có được truyền qua URL không
+if (isset($_GET['RequestID'])) {
+    // Lấy RequestID từ URL
+    $requestID = $_GET['RequestID'];
+    
+    // Lấy thời gian hiện tại để ghi vào cột ApproveDate
+    $approveDate = date('Y-m-d H:i:s');
 
-        }
-    </script>
+    // Truy vấn cơ sở dữ liệu để cập nhật Status thành 1 và ghi nhận thời gian duyệt
+    $sql = "UPDATE requestform SET Status = 1, ApproveDate = '$approveDate' WHERE RequestID = '$requestID'";
+
+    // Thực thi truy vấn mà không cần kiểm tra lỗi
+    $database->select($sql);
+
+    // Thông báo duyệt phiếu thành công
+    echo "<script>alert('Duyệt phiếu thành công!'); window.location.href = 'index.php?page=page_requestform&status=1';</script>";
+} else {
+    // Nếu không có RequestID, chuyển hướng về trang chính
+    
+    echo "<script> href = 'index.php?page=page_requestform';</script>";
+    
+}
+?>
+
+
+
+
+
     <!-- Bootstrap core JavaScript-->
+     
     <?php include_once('./common/script/default.php'); ?>
 </body>
 </html>

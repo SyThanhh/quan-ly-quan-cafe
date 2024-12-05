@@ -1,0 +1,393 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #f1f7ff; /* Nền sáng và dễ nhìn */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Cấu trúc tổng thể */
+.containerfull {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    animation: fadeIn 2s ease-out;
+}
+
+/* Box trái */
+.boxleft {
+    width: 20%;
+    padding-right: 20px;
+    background-color: #ffeb3b; /* Màu nền vàng sáng */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.boxleft:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Box phải */
+.boxright {
+    width: 78%;
+}
+
+/* Grid sản phẩm */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+    animation: fadeInUp 1.5s ease-out;
+}
+
+/* Box nhỏ cho sản phẩm */
+.box25 {
+    width: calc(25% - 30px);
+    position: relative;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.box25 img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #999999;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hiệu ứng phóng to và bóng cho hình ảnh */
+.box25 img:hover {
+    transform: scale(1.1); 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Nút bấm */
+button {
+    color: #ffffff;
+    font-size: 14pt;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 0;
+    background: linear-gradient(45deg, #ff5722, #ff9800, #ffeb3b); /* Màu sắc đa dạng */
+    background-size: 200% 200%;
+    transition: background 0.5s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-position: 100% 100%; /* Di chuyển màu sắc khi hover */
+    transform: scale(1.05); /* Phóng to khi hover */
+}
+
+h1 {
+    text-align: center;
+    font-size: 28pt;
+    margin: 0;
+    color: #ff5722;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    animation: popIn 1s ease-out;
+}
+
+/* Giá sản phẩm */
+.price {
+    text-align: center;
+    color: #ff5722; /* Màu cam đậm */
+    font-size: 16pt;
+    padding: 8px 0;
+}
+
+/* Liên kết */
+a {
+    color: #ff5722;
+    font-size: 14pt;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+a:hover {
+    color: #000000;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Thêm bóng chữ khi hover */
+}
+
+.product-review{
+    margin-left: 200px;
+}
+
+/* Menu trái */
+.menutrai a {
+    display: block;
+    color: #ff5722;
+    font-size: 14pt;
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #ccc;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.menutrai a:hover {
+    color: #e91e63;
+    transform: translateX(10px); /* Hiệu ứng dịch chuyển khi hover */
+}
+
+/* Menu chung */
+.menu {
+    height: 40px;
+    line-height: 40px;
+    display: flex;
+    justify-content: center;
+    animation: fadeIn 2s ease-out;
+}
+
+.menu a {
+    margin: 0 20px;
+    font-size: 16px;
+    color: #ff5722;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: #4caf50; /* Màu xanh lá tươi khi hover */
+}
+
+/* Form tìm kiếm */
+.search-form {
+    display: flex;                
+    justify-content: center;    
+    align-items: center;           
+    gap: 10px;                     
+    margin: 30px auto;
+    max-width: 600px;
+}
+
+.search-form input[type="text"] {
+    font-size: 14px;
+    padding: 12px;
+    width: 300px;
+    border: 2px solid #ff5722;
+    border-radius: 15px;
+    background-color: #fff;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.search-form input[type="text"]:focus {
+    background-color: #fffbcc;
+    border-color: #c70039;
+}
+
+.search-form button {
+    font-size: 14px;
+    padding: 12px 25px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-left: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+/* Cards sản phẩm */
+.product-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    animation: bounceIn 1s ease-out;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    background-color: #ffeb3b; /* Nền sáng khi hover */
+}
+
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hiệu ứng phóng to và làm sáng hình ảnh khi hover */
+.product-card img:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2); /* Làm sáng hình ảnh khi hover */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); /* Thêm bóng cho ảnh khi hover */
+}
+
+.product-card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.product-card h3:hover {
+    color: #ff9800; /* Màu vàng cam sáng khi hover */
+    transform: scale(1.05); /* Phóng to khi hover */
+}
+
+.product-card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.product-card p:hover {
+    color: #2196f3; /* Màu xanh dương tươi sáng khi hover */
+    transform: scale(1.05); /* Phóng to khi hover */
+}
+
+.product-card p:nth-of-type(3) {
+    color: #E74C3C;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Tạo hiệu ứng bóng và chuyển màu cho giá */
+.product-card p:nth-of-type(3):hover {
+    color: #c0392b;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.product-card p:nth-of-type(4) {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.product-card p:nth-of-type(4):hover {
+    color: #27ae60;
+}
+
+/* Đánh giá sao */
+.star-rating {
+    font-size: 30px;
+    cursor: pointer;
+    color: #f39c12;
+    transition: color 0.3s ease;
+}
+
+.star-rating:hover {
+    color: #f1c40f; /* Màu vàng rực rỡ khi hover */
+}
+
+.star {
+    color: gray;
+    padding: 0 5px;
+}
+
+.product-image-wrapper {
+    overflow: hidden;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    height: 200px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.product-image-wrapper:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); /* Tăng kích thước khi hover */
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Tiêu đề và mô tả sản phẩm */
+h5 {
+    font-size: 1.1rem;
+    color: #333;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+h5:hover {
+    color: #ff5722; /* Đổi màu khi hover */
+    transform: scale(1.05); /* Phóng to khi hover */
+}
+
+p {
+    color: black;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+p:hover {
+    color: #555; /* Đổi màu khi hover */
+}
+
+/* Thêm hiệu ứng fadeIn cho các phần tử */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(200px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}

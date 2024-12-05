@@ -14,7 +14,7 @@
 </head>
 
 <?php
-    
+
 ?>
 <style>
   .custom-btn {
@@ -70,20 +70,6 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
-
-                    <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -272,44 +258,47 @@
                 <div>
                 
                 </div>
-                <!-- End of Topbar -->
-<div class="container mt-4">
-    <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ DOANH THU</h1>
-        <form>
+                        <!-- End of Topbar -->
+        <div class="container mt-4">
+            <h1 class="h3 mb-0 text-gray-800">THỐNG KÊ DOANH THU</h1>
+            <form>
             <div class="form-row">
                 <!-- Cột bên trái -->
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="ngayBatDau">Ngày bắt đầu</label>
-                        <input type="date" class="form-control" value="2024-01-01">
- 
+                        <label for="start_date">Ngày bắt đầu:</label>
+                        <input 
+                            type="date" 
+                            id="start_date" 
+                            name="start_date" 
+                            class="form-control" 
+                            value="<?php echo isset($_POST['start_date']) ? $_POST['start_date'] : ''; ?>" 
+                    >
                     </div>
-                    
                 </div>
-                <div>
-                    
-                </div>
-                <!-- Cột giữa để canh lề, tạo khoảng cách giữa hai phần -->
+
+                <!-- Cột giữa để canh lề -->
                 <div class="col-md-3"></div>
+
                 <!-- Cột bên phải -->
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label for="ngayKetThuc">Ngày kết thúc</label>
-                        <input type="date" class="form-control"  value="2024-01-31">
+                        <label for="end_date">Ngày kết thúc:</label>
+                        <input 
+                            type="date" 
+                            id="end_date" 
+                            name="end_date" 
+                            class="form-control" 
+                            value="<?php echo isset($_POST['end_date']) ? $_POST['end_date'] : ''; ?>" 
+                        >
+
                     </div>
                 </div>
             </div>
+            <button type="button" id="stats-btn" class="btn custom-btn">Thống kê</button>
         </form>
-        <div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <button id="stats-btn" class="btn custom-btn">Thống kê</button>
-                    
-                </div>
-    
-            </div>
+        <br>
         </div>
-</div>
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -369,9 +358,14 @@
                     <!-- Content Row -->
                  <br>   
             <div class="container mt-3">
+            <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-outline-primary d-flex align-items-center">
+                    <i class="bi bi-download me-2"></i> <span>Xuất báo cáo</span>
+                </button>
+            </div> -->
             <table class="table table-bordered text-center">
             <thead class="custom-thead"> 
-                <tr> <th class="text-white">STT</th> 
+            <tr> <th class="text-white">STT</th> 
                 <th class="text-white">Ngày bán</th> 
                 <th class="text-white">Hình thức thanh toán</th> 
                 <th class="text-white">Doanh thu</th> 
@@ -380,36 +374,55 @@
         <tbody>
         <tbody>
         <tbody>
-    <?php
-    $supplier = $database->select("
-        SELECT p.*, ps.*, od.*, o.*
-        FROM product p
-        JOIN product_supplier ps ON p.ProductID = ps.ProductID
-        JOIN orderdetail od ON p.ProductID = od.ProductID
-        JOIN `order` o ON od.OrderID = o.OrderID
-    ");
+        <?php
+        // Kiểm tra nếu có thời gian bắt đầu và kết thúc
+        if (isset($_POST['start_date']) && isset($_POST['end_date']) && !empty($_POST['start_date']) && !empty($_POST['end_date'])) {
+            // Lấy giá trị thời gian từ form
+            $startDate = $_POST['start_date'];
+            $endDate = $_POST['end_date'];
 
-    $totalRevenue = 0; // Biến để tính tổng doanh thu
+            // Truy vấn dữ liệu từ cơ sở dữ liệu sử dụng SELECT thông thường
+            $query = "
+                SELECT 
+                    p.ProductName, 
+                    SUM(od.Quantity) AS TotalQuantity, 
+                    SUM(od.Quantity * od.UnitPrice) AS TotalRevenue,
+                    o.* -- Lấy toàn bộ các cột từ bảng `order`
+                FROM 
+                    product p
+                JOIN 
+                    orderdetail od ON p.ProductID = od.ProductID
+                JOIN 
+                    `order` o ON od.OrderID = o.OrderID
+                WHERE 
+                    DATE(o.CreateDate) BETWEEN '$startDate' AND '$endDate'
+                GROUP BY 
+                    p.ProductName, o.OrderID -- Cần thêm `o.OrderID` vào GROUP BY để phù hợp với dữ liệu từ `o.*`
+            ";
 
-    if ($supplier) {
-        while ($row = $supplier->fetch_assoc()) { // Sử dụng fetch_assoc() từ mysqli
-            echo "<tr>";
-            echo "<td>{$row['ProductID']}</td>";
-            echo "<td>{$row['CreateDate']}</td>";
-            echo "<td>{$row['PaymentMethod']}</td>";
-            echo "<td>{$row['TotalAmount']}</td>";
+
+            $result = $database->select($query);
+            $totalRevenue = 0; // Biến để tính tổng doanh thu
+
+            // Kiểm tra xem $result có phải là đối tượng hợp lệ không
+if ($result && $result->num_rows > 0) {
+    // Hiển thị dữ liệu khi có dữ liệu
+    $stt = 1; // Số thứ tự
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>{$stt}</td>";
+        echo "<td>{$row['CreateDate']}</td>";
+        echo "<td>{$row['PaymentMethod']}</td>";
+        echo "<td>{$row['TotalAmount']}</td>";
             
-            // Cộng tổng doanh thu
-            $totalRevenue += $row['TotalAmount'];
-            
-            
-            echo "</tr>";
-        }
-    } else {
-        echo "<tr><td colspan='9' class='text-center'>Không có dữ liệu</td></tr>";
+        // Cộng tổng doanh thu
+        $totalRevenue += $row['TotalAmount'];
+        
+        echo "</tr>";
+        $stt++;
     }
 
-    // Định dạng tổng doanh thu với hai số thập phân
+    // Hiển thị tổng doanh thu
     $formattedTotalRevenue = number_format($totalRevenue, 2);
 
     // Hiển thị hàng tổng cộng
@@ -417,14 +430,20 @@
     echo "<td colspan='3'></td>";
     echo "<td><strong>Tổng doanh thu:</strong> {$formattedTotalRevenue}</td>";
     echo "</tr>";
-    ?>
+} else {
+    // Xử lý trường hợp không có dữ liệu hoặc có lỗi trong câu truy vấn
+    echo "<tr><td colspan='4' class='text-center'>Không có dữ liệu trong khoảng thời gian này.</td></tr>";
+}
+
+        }
+        ?>
 </tbody>
 
 </tbody>
         </tbody>
     </table>
 
-    <div class="row justify-content-end mr-1">
+    <!-- <div class="row justify-content-end mr-1">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
                 <li class="page-item">
@@ -442,7 +461,7 @@
                 </li>
             </ul>
         </nav>
-    </div>
+    </div> -->
 </div>
 
 <style>
@@ -489,171 +508,175 @@
             </div>
         </div>
     </div>
-    
     <?php
-// Biểu đồ Bar: Doanh thu theo thời gian
-$barQuery = $database->select("
-  SELECT DATE(CreateDate) AS Date, SUM(TotalAmount) AS TotalRevenue
-  FROM `order`
-  GROUP BY DATE(CreateDate)
-");
-
+// Khởi tạo mảng rỗng cho biểu đồ
 $dates = [];
 $totalRevenueBar = [];
-
-foreach ($barQuery as $data) {
-    $dates[] = $data['Date'];
-    $totalRevenueBar[] = $data['TotalRevenue'];
-}
-
-// Biểu đồ Doughnut: Doanh thu theo sản phẩm
-$donutQuery = $database->select("
-  SELECT p.ProductName, SUM(od.Quantity * od.UnitPrice) AS TotalRevenue
-  FROM product p
-  JOIN orderdetail od ON p.ProductID = od.ProductID
-  JOIN `order` o ON od.OrderID = o.OrderID
-  GROUP BY p.ProductName
-");
-
 $productNames = [];
 $totalRevenueDonut = [];
 
-foreach ($donutQuery as $data) {
-    $productNames[] = $data['ProductName'];
-    $totalRevenueDonut[] = $data['TotalRevenue'];
+// Xử lý thống kê khi nhận yêu cầu
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $start_date = $_POST['start_date'];
+    $end_date = $_POST['end_date'];
+
+    // Validate dữ liệu ngày tháng
+    if (isset($start_date, $end_date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $start_date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $end_date)) {
+        try {
+            // Truy vấn dữ liệu cho biểu đồ Bar
+            $barQuery = $conn->prepare("
+                SELECT DATE(CreateDate) AS Date, SUM(TotalAmount) AS TotalRevenue
+                FROM `order`
+                WHERE DATE(CreateDate) BETWEEN ? AND ?
+                GROUP BY DATE(CreateDate)
+            ");
+            $barQuery->bind_param("ss", $start_date, $end_date); // Gắn tham số
+            $barQuery->execute();
+            $barResult = $barQuery->get_result();
+
+            while ($data = $barResult->fetch_assoc()) {
+                $dates[] = $data['Date'];
+                $totalRevenueBar[] = $data['TotalRevenue'];
+            }
+
+            // Truy vấn dữ liệu cho biểu đồ Doughnut
+            $donutQuery = $conn->prepare("
+                SELECT p.ProductName, SUM(od.Quantity * od.UnitPrice) AS TotalRevenue
+                FROM product p
+                JOIN orderdetail od ON p.ProductID = od.ProductID
+                JOIN `order` o ON od.OrderID = o.OrderID
+                WHERE DATE(o.CreateDate) BETWEEN ? AND ?
+                GROUP BY p.ProductName
+            ");
+            $donutQuery->bind_param("ss", $start_date, $end_date); // Gắn tham số
+            $donutQuery->execute();
+            $donutResult = $donutQuery->get_result();
+
+            while ($data = $donutResult->fetch_assoc()) {
+                $productNames[] = $data['ProductName'];
+                $totalRevenueDonut[] = $data['TotalRevenue'];
+            }
+        } catch (mysqli_sql_exception $e) {
+            echo "Lỗi truy vấn SQL: " . $e->getMessage();
+            exit;
+        }
+    } else {
+        echo "Dữ liệu ngày không hợp lệ.";
+        exit;
+    }
 }
+
 ?>
+
 
 
 <script>
 // Khi người dùng nhấn nút thống kê
 document.getElementById("stats-btn").addEventListener("click", function() {
-    // Hiển thị cả 2 canvas (biểu đồ)
+    // Gửi dữ liệu ngày bắt đầu và ngày kết thúc qua POST
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+
+    if (!startDate || !endDate) {
+        alert('Vui lòng nhập ngày bắt đầu và ngày kết thúc.');
+        return;
+    }
+
+    // Reload lại trang với POST để thực hiện thống kê
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = ''; // Gửi tới chính trang hiện tại
+
+    const inputStartDate = document.createElement('input');
+    inputStartDate.type = 'hidden';
+    inputStartDate.name = 'start_date';
+    inputStartDate.value = startDate;
+
+    const inputEndDate = document.createElement('input');
+    inputEndDate.type = 'hidden';
+    inputEndDate.name = 'end_date';
+    inputEndDate.value = endDate;
+
+    form.appendChild(inputStartDate);
+    form.appendChild(inputEndDate);
+
+    document.body.appendChild(form);
+    form.submit();
+});
+
+// Hiển thị biểu đồ nếu dữ liệu có sẵn
+<?php if (!empty($dates) && !empty($productNames)): ?>
     document.getElementById("myBarChart").style.display = "block";
     document.getElementById("myDoughnutChart").style.display = "block";
-    
-    // Khởi tạo dữ liệu và vẽ biểu đồ Bar
+
+    // Biểu đồ Bar
     const barLabels = <?php echo json_encode($dates); ?>;
     const barDataValues = <?php echo json_encode($totalRevenueBar); ?>;
 
-    const barColors = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(255, 159, 64, 0.2)',
-      'rgba(255, 205, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(201, 203, 207, 0.2)',
-    ];
-
-    const barBorderColors = [
-      'rgb(255, 99, 132)',
-      'rgb(255, 159, 64)',
-      'rgb(255, 205, 86)',
-      'rgb(75, 192, 192)',
-      'rgb(54, 162, 235)',
-      'rgb(153, 102, 255)',
-      'rgb(201, 203, 207)',
-    ];
-
-    const barData = {
-      labels: barLabels,
-      datasets: [{
-        label: 'Doanh thu theo thời gian',
-        data: barDataValues,
-        backgroundColor: barColors.slice(0, barDataValues.length),
-        borderColor: barBorderColors.slice(0, barDataValues.length),
-        borderWidth: 1
-      }]
-    };
-
-    const barConfig = {
-      type: 'bar', // Biểu đồ dạng cột (Bar)
-      data: barData,
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            beginAtZero: true,
-          },
-          y: {
-            beginAtZero: true
-          }
+    new Chart(document.getElementById('myBarChart'), {
+        type: 'bar',
+        data: {
+            labels: barLabels,
+            datasets: [{
+                label: 'Doanh thu theo thời gian',
+                data: barDataValues,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
         },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top'
-          }
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
-      },
-    };
+    });
 
-    var myBarChart = new Chart(
-      document.getElementById('myBarChart'),
-      barConfig
-    );
-
-    // Khởi tạo dữ liệu và vẽ biểu đồ Doughnut
+    // Biểu đồ Doughnut
     const donutLabels = <?php echo json_encode($productNames); ?>;
     const donutDataValues = <?php echo json_encode($totalRevenueDonut); ?>;
 
-    const donutColors = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(255, 159, 64, 0.2)',
-      'rgba(255, 205, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-      'rgba(201, 203, 207, 0.2)',
-    ];
-
-    const donutBorderColors = [
-      'rgb(255, 99, 132)',
-      'rgb(255, 159, 64)',
-      'rgb(255, 205, 86)',
-      'rgb(75, 192, 192)',
-      'rgb(54, 162, 235)',
-      'rgb(153, 102, 255)',
-      'rgb(201, 203, 207)',
-    ];
-
-    const donutData = {
-      labels: donutLabels,
-      datasets: [{
-        label: 'Doanh thu theo sản phẩm',
-        data: donutDataValues,
-        backgroundColor: donutColors.slice(0, donutDataValues.length),
-        borderColor: donutBorderColors.slice(0, donutDataValues.length),
-        borderWidth: 1
-      }]
-    };
-
-    const donutConfig = {
-      type: 'doughnut', // Biểu đồ hình tròn (Doughnut)
-      data: donutData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top'
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.label + ': ' + tooltipItem.raw.toLocaleString() + ' VND';
-              }
-            }
-          }
+    new Chart(document.getElementById('myDoughnutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: donutLabels,
+            datasets: [{
+                label: 'Doanh thu theo sản phẩm',
+                data: donutDataValues,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
         }
-      },
-    };
-
-    var myDoughnutChart = new Chart(
-      document.getElementById('myDoughnutChart'),
-      donutConfig
-    );
-});
+    });
+<?php endif; ?>
 </script>
 
 

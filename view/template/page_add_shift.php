@@ -224,24 +224,25 @@
 
                 <!-- Nội dung trang -->
                 <?php
-                    // Lấy mã ca làm sắp tới (MAX + 1) từ database
-                    $result = $conn->query("SELECT MAX(ShiftID) AS max_id FROM workshift");
-                    $row = $result->fetch_assoc();
-                    $nextShiftID = $row['max_id'] + 1;
+                // Lấy mã ca làm sắp tới (MAX + 1) từ database
+                $result = $conn->query("SELECT MAX(ShiftID) AS max_id FROM workshift");
+                $row = $result->fetch_assoc();
+                $nextShiftID = $row['max_id'] + 1;
 
-                    // Lấy danh sách nhân viên đứng quầy
-                    $cashierEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 2");
-                    // Lấy danh sách nhân viên kế toán
-                    $accountingEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 3");
-                    // Lấy danh sách nhân viên pha chế
-                    $baristaEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 4");
+                // Lấy danh sách nhân viên đứng quầy
+                $cashierEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 2");
+                // Lấy danh sách nhân viên kế toán
+                $accountingEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 3");
+                // Lấy danh sách nhân viên pha chế
+                $baristaEmployees = $conn->query("SELECT EmployeeID, CONCAT(LastName, ' ', FirstName) AS FullName FROM employee WHERE Roles = 4");
                 ?>
+
                 <div class="container-fluid" align="center">
                     <div class="row">
                         <div class="col-md-12">
                             <div>
                                 <h4>THÊM LỊCH MỚI</h4>
-                                </br>   
+                                </br>
                             </div>
                             <form action="" method="post">
                                 <table>
@@ -263,22 +264,14 @@
                                     </tr>
                                     <tr>
                                         <th><label>Thời Gian Áp Dụng:</label></th>
-                                    <tr>    
                                     </tr>
-                                        <td>
-                                            <label for="startDate">Ngày bắt đầu:</label>
-                                        </td>
-                                        <td>
-                                            <input type="date" class="form-control" id="startDate" name="startDate" required>
-                                        </td>                                
-                                    </tr> 
-                                    <tr>  
-                                        <td>
-                                            <label for="endDate">Ngày kết thúc:</label>
-                                        </td>
-                                        <td>
-                                            <input type="date" class="form-control" id="endDate" name="endDate" required>
-                                        </td>
+                                    <tr>
+                                        <td><label for="startDate">Ngày bắt đầu:</label></td>
+                                        <td><input type="date" class="form-control" id="startDate" name="startDate" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="endDate">Ngày kết thúc:</label></td>
+                                        <td><input type="date" class="form-control" id="endDate" name="endDate" required></td>
                                     </tr>
                                     <tr>
                                         <th><label for="cashier">Nhân Viên Đứng Quầy:</label></th>
@@ -317,13 +310,60 @@
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
                                     <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add">Thêm Lịch</button>
+                                    <button type="submit" class="btn btn-primary btn-add" name="addShift">Thêm Lịch</button>
                                 </div>
-                            </form>        
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Xử lý thêm lịch -->
+                <?php
+                if (isset($_POST['addShift'])) {
+                    $shiftID = $_POST['shiftID'];
+                    $shiftType = $_POST['shiftType'];
+                    $startDate = $_POST['startDate'];
+                    $endDate = $_POST['endDate'];
+                    $cashier = $_POST['cashier'];
+                    $accountant = $_POST['accountant'];
+                    $barista = $_POST['barista'];
+
+                    // Thêm ca làm mới vào bảng workshift
+                    $queryWorkshift = "INSERT INTO workshift (ShiftID, ShiftType, StartDate, EndDate) VALUES (?, ?, ?, ?)";
+                    $stmt = $conn->prepare($queryWorkshift);
+                    $stmt->bind_param("isss", $shiftID, $shiftType, $startDate, $endDate);
+
+                    if ($stmt->execute()) {
+                        // Thêm từng nhân viên vào bảng workshift_employee
+                        $queryWorkshiftEmployee = "INSERT INTO workshift_employee (ShiftID, EmployeeID) VALUES (?, ?)";
+                        $stmtEmployee = $conn->prepare($queryWorkshiftEmployee);
+
+                        // Thêm nhân viên đứng quầy
+                        $stmtEmployee->bind_param("ii", $shiftID, $cashier);
+                        $stmtEmployee->execute();
+
+                        // Thêm nhân viên kế toán
+                        $stmtEmployee->bind_param("ii", $shiftID, $accountant);
+                        $stmtEmployee->execute();
+
+                        // Thêm nhân viên pha chế
+                        $stmtEmployee->bind_param("ii", $shiftID, $barista);
+                        $stmtEmployee->execute();
+
+                        echo "<script>
+                                alert('Thêm lịch thành công');
+                                window.location.href = 'index.php?page=page_shift';
+                            </script>";
+                        exit;
+                    } else {
+                        echo "<p>Đã có lỗi xảy ra: " . $stmt->error . "</p>";
+                    }
+
+                    $stmt->close();
+                    $stmtEmployee->close();
+                }
+                ?>
+            
             <!-- Cuối trang -->
             <?php include_once('./common/footer/footer.php'); ?>
         </div>    

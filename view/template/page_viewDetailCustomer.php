@@ -387,6 +387,7 @@
                 JOIN orderdetail od ON o.OrderID = od.OrderID
                 JOIN product p ON p.ProductID = od.ProductID
                 WHERE o.CustomerID = $id
+                GROUP BY MONTH(o.CreateDate)
                 ORDER BY MONTH(o.CreateDate)";
 
         $result = $conn->query($query);
