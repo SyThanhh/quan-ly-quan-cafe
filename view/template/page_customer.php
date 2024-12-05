@@ -517,17 +517,18 @@
         $('#confirmDeleteModal').modal('show');
         $('#confirmDeleteID').text(id);
     });
-    $('#confirmDelete').on('click', function() {
+    $('#confirmDelete').on('click', function(e) {
         const id = row.data('id');
         
-    
         $.ajax({
             url: '?page=processing_customer',
             type: 'POST',
             data: { action: 'delete', id },
             success: function(response) {
                 if (response.success) {
-                    showMessage(response.message, 'success'); 
+                    row.remove();
+                    showMessage(response.message, 'success');
+                    $('#confirmDeleteModal').modal('hide');
                 } else {
                     showMessage(response.message, 'danger'); // Hiển thị thông báo lỗi
                 }

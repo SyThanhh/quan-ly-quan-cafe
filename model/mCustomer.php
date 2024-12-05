@@ -335,7 +335,7 @@
 
         public function delete($id) {
             if ($this->conn) {
-                $str = "DELETE FROM customer WHERE CustomerID = ?";
+                $str = "UPDATE customer SET Status = 0 WHERE CustomerID = ?";
                 
                 $stmt = mysqli_prepare($this->conn, $str);
                 if ($stmt === false) {

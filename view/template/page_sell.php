@@ -83,7 +83,6 @@
     if (isset($_SESSION['customerID'])) {
         $customerID = $_SESSION['customerID'];
         $customer = $CustomerController->getCustomerById($customerID);
-        
         if (isset($_POST['clearSell'])) {
 
             $searchKeyword = null;
@@ -102,14 +101,16 @@
             $customer['CustomerEmail'] = null;
             unset($_SESSION['CustomerEmail']); 
         } else {
-            $_SESSION["CustomerName"] = $customer['CustomerName'] ? $customer['CustomerName'] : "";
-            $_SESSION["CustomerPhone"] = $customer['CustomerPhone'] ? $customer['CustomerPhone'] : "";
-            $_SESSION["CustomerPoint"] = $customer['CustomerPoint'] ? $customer['CustomerPoint'] : "0";
-            $_SESSION["CustomerEmail"] =  $customer['Email'] ?  $customer['Email'] : "";
+            if(is_array($customer)) {
+                $_SESSION["CustomerName"] = $customer['CustomerName'] ? $customer['CustomerName'] : "";
+                $_SESSION["CustomerPhone"] = $customer['CustomerPhone'] ? $customer['CustomerPhone'] : "";
+                $_SESSION["CustomerPoint"] = $customer['CustomerPoint'] ? $customer['CustomerPoint'] : "0";
+                $_SESSION["CustomerEmail"] =  $customer['Email'] ?  $customer['Email'] : "";
+            }
         }
     }
 
-   
+  
     
 ?>
 
@@ -744,7 +745,7 @@
     function validatePhone(phone) {
         var regex = /^(09|03|08|07|05)[0-9]{8}$/;
         return regex.test(phone);
-}
+    }
 
 
     $(document).ready(function() {
@@ -876,128 +877,128 @@
         
     });
 
-            $('#search-button').on('click', function(e) {
-                e.preventDefault();
-                    const searchKeyword = $('#name-search').val();
-                    searchCustomers(searchKeyword);
-                });
+    $('#search-button').on('click', function(e) {
+        e.preventDefault();
+            const searchKeyword = $('#name-search').val();
+            searchCustomers(searchKeyword);
+        });
 
-                $('#name-search').on('input', function() {
-                    const searchKeyword = $(this).val()
-                    searchCustomers(searchKeyword);
-            });
-            function searchCustomers(keyword) {
-                $.ajax({
-                    url: '?page=page_sell', 
-                    type: 'POST',
-                    data: { search: keyword },
-                    success: function(response) {
-                        $('#search-results').html(response); 
-                    },
-                    error: function() {
-                        $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
-                    }
-                });
+        $('#name-search').on('input', function() {
+            const searchKeyword = $(this).val()
+            searchCustomers(searchKeyword);
+    });
+    function searchCustomers(keyword) {
+        $.ajax({
+            url: '?page=page_sell', 
+            type: 'POST',
+            data: { search: keyword },
+            success: function(response) {
+                $('#search-results').html(response); 
+            },
+            error: function() {
+                $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
             }
-            $("#btn-clear").on('click', function(e) {
-                clearSearch();
-                e.preventDefault();
-            })
+        });
+    }
+    $("#btn-clear").on('click', function(e) {
+        clearSearch();
+        e.preventDefault();
+    })
 
-            function clearSearch() {
-                $('#name-search').val(""); 
-                $('#customerNameSell').val("");
-                $('#customerEmailSell').val("");
-                $('#points').val("");
-                $('#discountCode').val("");
+    function clearSearch() {
+        $('#name-search').val(""); 
+        $('#customerNameSell').val("");
+        $('#customerEmailSell').val("");
+        $('#points').val("");
+        $('#discountCode').val("");
 
-                // Gửi yêu cầu POST để xóa session
-                $.post('?page=page_sell', { clearSell: true }, function(response) {
-                    // Hiển thị phản hồi từ server trong console
-                    console.log(response);
-                    $('#search-results').html(response);
-                }).fail(function() {
-                    $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
-                });
-            }
+        // Gửi yêu cầu POST để xóa session
+        $.post('?page=page_sell', { clearSell: true }, function(response) {
+            // Hiển thị phản hồi từ server trong console
+            console.log(response);
+            $('#search-results').html(response);
+        }).fail(function() {
+            $('#search-results').html('<p class="text-danger">Có lỗi xảy ra trong quá trình tìm kiếm.</p>');
+        });
+    }
 
 
           
 
-            function showMessage(message, type) {
-                const alertDiv = $('#message-notification');
-                
-                alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
-                
-                alertDiv.find('strong').text(type === 'success' ? 'Thành công!' : 'Lỗi!');
-                
-                alertDiv.find('.message-content').text(message);
-                
-                alertDiv.show();
-                
-                setTimeout(() => {
-                    alertDiv.hide();
-                }, 8000);
-            }
-        });
-
-        function resetForm() {
-            $('#customerName').val('');
-            $('#customerEmail').val('');
-            $('#customerPhone').val('');
-            $('#emailFeedback').text(''); 
-            $('#phoneFeedback').text(''); 
-        }
-
-        function update() {
-            $.get("index.php?page=page_sell", function(data) {
-                $("body").html(data);
+    function showMessage(message, type) {
+            const alertDiv = $('#message-notification');
             
-            });
+            alertDiv.removeClass('alert-success alert-danger').addClass('alert-' + type);
+            
+            alertDiv.find('strong').text(type === 'success' ? 'Thành công!' : 'Lỗi!');
+            
+            alertDiv.find('.message-content').text(message);
+            
+            alertDiv.show();
+                
+            setTimeout(() => {
+                alertDiv.hide();
+            }, 8000);
         }
+    });
 
-        $('#discountCode').on('change', function() {
-            var couponID = $(this).val(); 
-            if (couponID) {
-                $.ajax({
-                    url: '?page=processing_coupon',  
-                    type: 'GET',
-                    data: { couponID: couponID },  // Gửi CouponID qua GET
-                    success: function(response) {
-                        // Kiểm tra nếu server trả về dữ liệu hợp lệ
-                        console.log(response);
+    function resetForm() {
+        $('#customerName').val('');
+        $('#customerEmail').val('');
+        $('#customerPhone').val('');
+        $('#emailFeedback').text(''); 
+        $('#phoneFeedback').text(''); 
+    }
 
-                        if (response.success) {
-                            var couponDiscount = response.couponDiscount;  // Nhận CouponDiscount từ phản hồi
-                            var couponCode = response.couponCode;  // Nhận CouponCode từ phản hồi
-                            
-                            // Hiển thị thông tin lên giao diện
-                            $('#reduction').val('Giảm giá: ' + couponDiscount + '%');
+    function update() {
+        $.get("index.php?page=page_sell", function(data) {
+            $("body").html(data);
+        
+        });
+    }
+
+    $('#discountCode').on('change', function() {
+        var couponID = $(this).val(); 
+        if (couponID) {
+            $.ajax({
+                url: '?page=processing_coupon',  
+                type: 'GET',
+                data: { couponID: couponID },  // Gửi CouponID qua GET
+                success: function(response) {
+                    // Kiểm tra nếu server trả về dữ liệu hợp lệ
+                    console.log(response);
+
+                    if (response.success) {
+                        var couponDiscount = response.couponDiscount;  // Nhận CouponDiscount từ phản hồi
+                        var couponCode = response.couponCode;  // Nhận CouponCode từ phản hồi
+                        
+                        // Hiển thị thông tin lên giao diện
+                        $('#reduction').val('Giảm giá: ' + couponDiscount + '%');
+                        updateGrandTotal();
+
+                    } else {
+                        $('#reduction').val('Giảm giá: ' + 0 + '%');
                             updateGrandTotal();
 
-                        } else {
-                            $('#reduction').val('Giảm giá: ' + 0 + '%');
-                             updateGrandTotal();
-
-                            alert('Không tìm thấy mã khuyến mãi');
-                        }
-                    },
-                    error: function(error) {
-                        alert('Đã xảy ra lỗi: ' + error.statusText);
+                        alert('Không tìm thấy mã khuyến mãi');
                     }
-                });
-            } else {
-                // Nếu không có mã nào được chọn
-                $('#couponDiscount').text('');
-                $('#couponCode').text('');
-            }
-        });
-        function convertToNumber(priceString) {
-            if (typeof priceString !== 'string') {
-                priceString = String(priceString); 
-            }
-            
-            priceString = priceString.replace(/[^0-9]/g, '');
+                },
+                error: function(error) {
+                    alert('Đã xảy ra lỗi: ' + error.statusText);
+                }
+            });
+        } else {
+            // Nếu không có mã nào được chọn
+            $('#couponDiscount').text('');
+            $('#couponCode').text('');
+        }
+    });
+    function convertToNumber(priceString) {
+        if (typeof priceString !== 'string') {
+            priceString = String(priceString); 
+        }
+        
+        priceString = priceString.replace(/[^0-9]/g, '');
 
         return parseFloat(priceString);
     }
@@ -1030,8 +1031,6 @@
         // gửi data để lưu session
 
 
-    
-        
      $(document).ready(function() {
             $('#bank').change(function() {
                 if ($(this).is(':checked')) {
@@ -1242,6 +1241,7 @@
         amountReturn.val("");
         totalAmount.text("0.000");
         $invoiceListBody.empty(); // Xóa nội dung bảng
+        $totalAmountDiscount.text("");
     }
 
         

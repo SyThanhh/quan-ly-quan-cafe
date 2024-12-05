@@ -1,8 +1,9 @@
 <?php
 header('Content-Type: application/json');
 include("./controller/CustomerController.php");
-
+include("./controller/HandleEmail.php");
 $controller = new CustomerController();
+$handleEmail = new HandleEmail();
 
 $action = $_POST['action'] ?? '';
 // echo json_encode($_POST);
@@ -12,6 +13,8 @@ if ($action === 'add') {
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $result = $controller->SaveCustomer($id, $name, $email, $phone);
+
+    
     echo json_encode($result);
     exit();
 }
