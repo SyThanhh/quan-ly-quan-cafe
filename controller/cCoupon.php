@@ -5,7 +5,7 @@
 
     // Hàm khởi tạo kết nối MySQL
         public function __construct() {
-            $this->conn = mysqli_connect('localhost', 'admin', '123456', 'db_ql3scoffee'); // Thay thế thông tin kết nối
+            $this->conn = mysqli_connect('localhost', 'root', '', 'db_ql3scoffee'); // Thay thế thông tin kết nối
             if (!$this->conn) {
                 die('Kết nối MySQL thất bại: ' . mysqli_connect_error());
             }

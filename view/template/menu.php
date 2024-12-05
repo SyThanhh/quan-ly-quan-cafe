@@ -284,72 +284,128 @@
             <input type="text" name="tim" placeholder="Nhập tên sản phẩm..." required>
             <button type="submit">TÌM KIẾM</button>
 
-            <a href="?page=menu" id='a1'>Quay Lại</a>
+            <!-- <a href="?page=menu" id='a1'>Quay Lại</a> -->
         </form>
     </div>
 
    <!-- Menu Start -->
-    <div class="container-fluid pt-5">
-        <section class="containerfull">
-            <div class="boxleft">
-                <h1>DANH MỤC</h1><br><br>
-                <a href="#" class="menu-item">Cà phê</a><br>
-                <a href="#" class="menu-item">Trà</a><br>
-                <a href="#" class="menu-item">Nước ép</a><br>
-                <a href="#" class="menu-item">Nước ngọt</a>
-            </div>    
+   <section class="containerfull">
+    <div class="boxleft">
+        <h1>DANH MỤC</h1><br><br>
+        <select class="form-control" id="category-select" name="category" onchange="filterByCategory()">
+            <option value="">Chọn danh mục</option>
+            <option value="1">Cafe pha máy</option>
+            <option value="2">Cafe pha phin</option>
+            <option value="3">Nước ép</option>
+            <option value="4">Trà</option>
+            <option value="5">Nước ngọt</option>
+        </select>
+    </div>    
 
-                <div class="product-grid">
-                <?php
-                    $searchTerm = isset($_REQUEST['tim']) ? $_REQUEST['tim'] : '';
+    <div class="product-grid">
+        <?php
+        // Kết nối cơ sở dữ liệu
+        $servername = "localhost"; // Hoặc IP của máy chủ MySQL
+        $username = "root";        // Tên người dùng MySQL
+        $password = "";        // Mật khẩu MySQL
+        $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
 
-                    if (!empty($searchTerm)) {
-                        $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status 
-                                FROM product 
-                                WHERE ProductName LIKE ?";
-                        $stmt = mysqli_prepare($conn, $sql);
-                        $likeSearchTerm = "%" . $searchTerm . "%";
-                        mysqli_stmt_bind_param($stmt, "s", $likeSearchTerm);
-                        mysqli_stmt_execute($stmt);
-                        $result = mysqli_stmt_get_result($stmt);
-                    } else {
-                        $sql = "SELECT ProductID, ProductName, UnitPrice, ProductImage, Description, UnitsInStock, Status FROM product";
-                        $result = mysqli_query($conn, $sql);
-                    }
+        // Tạo kết nối
+        $conn = mysqli_connect($servername, $username, $password, $dbname);
 
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<div class='product-card'>";
-                            
-                            if (!empty($row['ProductImage'])) {
-                                echo "<img src='assets/img/products/" . htmlspecialchars($row['ProductImage']) . "' alt='" . htmlspecialchars($row['ProductName']) . "'>";
-                            } else {
-                                echo "<img src='assets/img/default-product.jpg' alt='Default Product Image'>";
-                            }
-                            echo "<a href='index.php?page=page_productdetail&ProductID=" . $row['ProductID'] . "'>";
-                            echo "<h3>" . htmlspecialchars($row['ProductName']) . "</h3>";
-                            echo "</a>";
+        // Kiểm tra kết nối
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error());
+        }
 
-                            echo "<p><strong>Price:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
-                            echo "<p><strong>In Stock:</strong> " . $row['UnitsInStock'] . "</p>";
-                            echo "<p><strong>Status:</strong> " . ($row['Status'] == 1 ? 'Available' : 'Out of Stock') . "</p>";
-                            echo "</div>";
-                        }
-                    } else {
-                        echo "<p>No products available.</p>";
-                    }
+        // Get selected category from GET request or use default
+        $categoryID = isset($_GET['category']) ? $_GET['category'] : '';
 
-                    if (!empty($searchTerm)) {
-                        mysqli_stmt_close($stmt);
-                    }
+        $searchTerm = isset($_REQUEST['tim']) ? $_REQUEST['tim'] : '';
 
-                    mysqli_close($conn);
-                ?>
-            </div>
+        if (!empty($searchTerm)) {
+            $sql = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.Description, p.UnitsInStock, p.Status, 
+                       c.CategoryID, c.CategoryName 
+                    FROM product p
+                    LEFT JOIN category c ON p.CategoryID = c.CategoryID
+                    WHERE p.ProductName LIKE ?";
+            $stmt = mysqli_prepare($conn, $sql);
+            $likeSearchTerm = "%" . $searchTerm . "%";
+            mysqli_stmt_bind_param($stmt, "s", $likeSearchTerm);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+        } else {
+            // Query products by category if selected
+            if (!empty($categoryID)) {
+                $sql = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.Description, p.UnitsInStock, p.Status, 
+                           c.CategoryID, c.CategoryName 
+                        FROM product p
+                        LEFT JOIN category c ON p.CategoryID = c.CategoryID
+                        WHERE c.CategoryID = ?";
+                $stmt = mysqli_prepare($conn, $sql);
+                mysqli_stmt_bind_param($stmt, "i", $categoryID);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+            } else {
+                $sql = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.Description, p.UnitsInStock, p.Status, 
+                           c.CategoryID, c.CategoryName 
+                        FROM product p
+                        LEFT JOIN category c ON p.CategoryID = c.CategoryID";
+                $result = mysqli_query($conn, $sql);
+            }
+        }
 
-            </div>
-        </section>
+        // Display products
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<div class='product-card'>";
+
+                if (!empty($row['ProductImage'])) {
+                    echo "<img src='assets/img/products/" . htmlspecialchars($row['ProductImage']) . "' alt='" . htmlspecialchars($row['ProductName']) . "'>";
+                } else {
+                    echo "<img src='assets/img/default-product.jpg' alt='Default Product Image'>";
+                }
+
+                echo "<a href='index.php?page=page_productdetail&ProductID=" . $row['ProductID'] . "'>";
+                echo "<h3>" . htmlspecialchars($row['ProductName']) . "</h3>";
+                echo "</a>";
+
+                echo "<p><strong>Giá:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
+                echo "<p><strong>Tồn kho:</strong> " . $row['UnitsInStock'] . "</p>";
+                echo "<p><strong>Trạng thái:</strong> " . ($row['Status'] == 1 ? 'Có sẵn' : 'Out of Stock') . "</p>";
+                // echo "<p><strong>Danh mục:</strong> " . htmlspecialchars($row['CategoryName']) . "</p>";
+                echo "</div>";
+            }
+        } else {
+            echo "<p>No products available.</p>";
+        }
+
+        // Close database connection
+        if (!empty($searchTerm)) {
+            mysqli_stmt_close($stmt);
+        }
+
+        mysqli_close($conn);
+        ?>
     </div>
+</section>
+
+<script>
+    // JavaScript function to reload page with selected category filter
+    function filterByCategory() {
+        var categoryID = document.getElementById('category-select').value;
+        var searchTerm = "<?php echo isset($searchTerm) ? $searchTerm : ''; ?>"; // Retain search term
+
+        // Create the URL with category filter
+        var url = new URL(window.location.href);
+        url.searchParams.set('category', categoryID);
+        url.searchParams.set('tim', searchTerm);
+
+        // Redirect to the new URL
+        window.location.href = url;
+    }
+</script>
+
 
     <!-- Menu End -->
 

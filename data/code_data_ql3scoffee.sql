@@ -165,7 +165,7 @@ CREATE TABLE `employee` (
   `LastName` varchar(50) NOT NULL,
   `Email` varchar(50) NOT NULL,
   `PhoneNumber` varchar(15) NOT NULL,
-  `Roles` tinyint(4) NOT NULL,
+  `role` tinyint(4) NOT NULL,
   `Status` tinyint(4) DEFAULT 1,
   `DateOfBirth` datetime NOT NULL,
   `CreateAt` datetime DEFAULT current_timestamp(),

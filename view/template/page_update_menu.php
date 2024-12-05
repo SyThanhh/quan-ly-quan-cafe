@@ -263,7 +263,6 @@
                                         $Description = $r["Description"];
                                         $CreateAt = $r["CreateAt"];
                                         $UpdatedAt = $r["UpdatedAt"];
-                                        $RequestID = $r["RequestID"];
                                         $CategoryName = $r["CategoryName"];
                                     }
                                 }

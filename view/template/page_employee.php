@@ -25,6 +25,29 @@
         }
     ?>
     <link rel="stylesheet" href="./assets/css/employee_shift.css">
+    <style>
+    /* Khi hover vào phần tử dropdown */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;  /* Hiển thị menu khi hover */
+}
+
+/* Mặc định ẩn menu dropdown */
+.dropdown-menu {
+    display: none; /* Ẩn menu khi không hover */
+}
+
+/* Các hiệu ứng chuyển động */
+.dropdown-menu {
+    transition: opacity 0.3s ease;  /* Thêm hiệu ứng mờ dần */
+    opacity: 0;
+}
+
+/* Khi dropdown hiển thị */
+.nav-item.dropdown:hover .dropdown-menu {
+    opacity: 1;  /* Hiển thị khi hover */
+}
+
+</style>
 </head>
 
 <body>

@@ -26,15 +26,6 @@ if ($action === 'edit') {
     exit();
 }
 
-if ($action === 'addSell') {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $result = $controller->SaveCustomerSell($id, $name, $email, $phone);
-    echo json_encode($result);
-    exit();
-}
 if ($action === 'delete') {
     $id = $_POST['id'];
     $result = $controller->DeleteCustomerByID($id);

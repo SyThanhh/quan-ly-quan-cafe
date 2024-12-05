@@ -49,11 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sssssi", $username, $password, $email, $phone, $role, $points);
 
     if ($stmt->execute()) {
-        echo "<div class='alert alert-success'>Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập trong 2 giây.</div>";
+        echo "<div class='alert alert-success'>Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập trong 5 giây.</div>";
         echo "<script>
                 setTimeout(function(){
                     window.location.href = 'index.php?page=login'; // Chuyển hướng về trang login
-                }, 2000); // 2000 milliseconds = 2 giây
+                }, 5000); // 5000 milliseconds = 5 giây
               </script>";
     } else {
         echo "<div class='alert alert-danger'>Có lỗi xảy ra khi đăng ký: " . $stmt->error . "</div>";
