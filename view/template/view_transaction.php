@@ -121,9 +121,11 @@ if (!$conn) {
 $customerID = $_SESSION['id']; 
 
 // Truy vấn SQL để lấy giao dịch cho người dùng đã đăng nhập
-$sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email, o.TotalAmount, o.CreateDate 
+$sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email, o.TotalAmount, o.CreateDate, o.Discount, o.CouponID, o.PaymentMethod, p.ProductName
         FROM customer c 
         JOIN `order` o ON c.CustomerID = o.CustomerID 
+        JOIN orderdetail od ON o.OrderID = od.OrderID
+        JOIN product p ON od.ProductID = p.ProductID
         WHERE c.CustomerID = ?";  //Chỉ lấy các giao dịch của người dùng đã đăng nhập
 
 // Chuẩn bị và thực hiện truy vấn SQL
@@ -142,6 +144,11 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
                         <th>Tên khách hàng</th>
                         <th>Số điện thoại</th>
                         <th>Email</th>
+                        <th>Tên sản phẩm</th>
+                        
+                        <th>Giảm giá</th>
+                        <th>Mã giảm giá</th>
+                        <th>Phương thức thanh toán</th>
                         <th>Tổng số tiền</th>
                         <th>Ngày tạo</th>
                     </tr>
@@ -155,6 +162,11 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
                     <td>' . $row['CustomerName'] . '</td>
                     <td>' . $row['CustomerPhone'] . '</td>
                     <td>' . $row['Email'] . '</td>
+                    <td>' . $row['ProductName'] . '</td>
+                    
+                    <td>' . $row['Discount'] . '</td>
+                    <td>' . $row['CouponID'] . '</td> 
+                    <td>' . $row['PaymentMethod'] . '</td>
                     <td>' . number_format($row['TotalAmount'], 2) . ' VND</td>
                     <td>' . $row['CreateDate'] . '</td>
                 </tr>';

@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['id'] = $id;
 
             // Chuyển hướng dựa trên vai trò
-            if ($Roles === 'admin') {
+            if (in_array($Roles, ['1', '2', '3', '4'])){
                 header("Location: index.php?page=index_admin");
             } else {
                 header("Location: index.php");
