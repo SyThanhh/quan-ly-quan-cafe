@@ -34,11 +34,9 @@ $(document).ready(function() {
         $("#total-amount-discount").text(discount.toLocaleString());
     }
 
-<<<<<<< HEAD
-    function addProductToInvoice(product) {
-        const $existingRow = $invoiceListBody.find(`tr[data-name="${product.name}"]`);
 
-=======
+  
+
     // xáo session
     function deleteSession() {
         return $.ajax({
@@ -60,26 +58,19 @@ $(document).ready(function() {
     
     // thêm row, cộng, trừ số lượng, update tổng
     function addProductToInvoice(product) {
-        // Thêm thuộc tính data-id để lưu trữ productID
         const $existingRow = $invoiceListBody.find(`tr[data-id="${product.id}"]`);
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
         if ($existingRow.length) {
             const $quantityInput = $existingRow.find('.quantity-display');
-            let quantity = $quantityInput.val();
+            let quantity = parseInt($quantityInput.val());
             const stock = parseInt(product.stock);
+            const productPrice = parseInt(product.price.replace(/\./g, ''));
             
             if (quantity < stock) {
                 quantity++;
-                $quantityInput.val(quantity);
-<<<<<<< HEAD
-                const totalPrice = quantity * product.price;
-                $existingRow.find('.total-price').text(totalPrice.toLocaleString());
-=======
-                const productPrice = parseFloat(product.price.replace(/\./g, ''));
                 const totalPrice = quantity * productPrice;
+                $quantityInput.val(quantity);
                 $existingRow.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                 updateSession();
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
             } else {
                 showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
             }
@@ -100,76 +91,53 @@ $(document).ready(function() {
                 </tr>
             `);
             $invoiceListBody.append($row);
-<<<<<<< HEAD
-
-=======
+    
             updateSession();
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
+            
             const $quantityInput = $row.find('.quantity-display');
-            const stock = product.stock;
+            const stock = parseInt(product.stock);
+            const productPrice = parseInt(product.price.replace(/\./g, ''));
     
             $quantityInput.on('input', function(e) {
                 e.preventDefault();
                 let quantity = parseInt($(this).val());
                 if (isNaN(quantity) || quantity < 1) {
-                    $(this).val(1);
                     quantity = 1;
+                    $(this).val(1);
                 } else if (quantity > stock) {
-                    showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
-                    $(this).val(stock);
                     quantity = stock;
+                    $(this).val(stock);
+                    showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
-<<<<<<< HEAD
-                const totalPrice = quantity * product.price;
-=======
-                const productPrice = parseFloat(product.price.replace(/\./g, ''));
                 const totalPrice = quantity * productPrice;
-    
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
-                $row.find('.total-price').text(totalPrice.toLocaleString());
+                $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                 updateGrandTotal();
                 updateSession();
             });
     
             $row.find('.btn-plus').on('click', function(e) {
                 e.preventDefault();
-                let quantity = $quantityInput.val();
+                let quantity = parseInt($quantityInput.val());
                 if (quantity < stock) {
                     quantity++;
-                    $quantityInput.val(quantity);
-                    const productPrice = parseInt(product.price.replace(/\./g, ''));
                     const totalPrice = quantity * productPrice;
-<<<<<<< HEAD
-                    console.log("quantity :" , quantity);
-                    console.log("product.price :" , product.price);   
-                    $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
-                    updateGrandTotal();
-=======
-    
+                    $quantityInput.val(quantity);
                     $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                     updateGrandTotal();
                     updateSession();
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
                 } else {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
             });
     
             $row.find('.btn-minus').on('click', function(e) {
-                 e.preventDefault();
-                let quantity = $quantityInput.val();
+                e.preventDefault();
+                let quantity = parseInt($quantityInput.val());
                 if (quantity > 1) {
                     quantity--;
-                    $quantityInput.val(quantity);
-<<<<<<< HEAD
-                    const totalPrice = quantity * product.price;
-                    $row.find('.total-price').text(totalPrice.toLocaleString());
-=======
-                    const productPrice = parseInt(product.price.replace(/\./g, ''));
                     const totalPrice = quantity * productPrice;
-    
+                    $quantityInput.val(quantity);
                     $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
                     updateGrandTotal();
                     updateSession();
                 }
@@ -178,21 +146,13 @@ $(document).ready(function() {
             $row.find('.btn-remove').on('click', function() {
                 $row.remove();
                 updateGrandTotal();
-<<<<<<< HEAD
             });
         }
-=======
-                updateSession();
-            });
-        }
-     
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
+    
         updateGrandTotal();
     }
-    
 
-<<<<<<< HEAD
-=======
+
     // click vào sản phẩm
     $('.product-item').each(function() {
         const productStock = parseInt($(this).data('stock'));
@@ -206,7 +166,7 @@ $(document).ready(function() {
     });
 
     // Xử lý sự kiện click khi sản phẩm được chọn
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
+
     $('.product-item').on('click', function() {
         const productID = $(this).find('#productID').val();
         const productName = $(this).data('name');
@@ -339,9 +299,9 @@ $(document).ready(function() {
             hideAlert();
         }, 3000);
     }
-<<<<<<< HEAD
+
 });
-=======
+
 
     function replaceWhitespace(value) {
         return value.trim().replace(/\s+/g, ' '); // Loại bỏ khoảng trắng dư thừa và thay thế chúng bằng một khoảng trắng đơn
@@ -657,5 +617,4 @@ $(document).ready(function() {
 
 
 
-});
->>>>>>> 9654049af25e304caad143224e631322ac49d8be
+

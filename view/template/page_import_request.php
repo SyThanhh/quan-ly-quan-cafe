@@ -5,11 +5,7 @@
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');    
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
-
-        // Tạo một đối tượng Database để kết nối
-        $database = new Database();
-        $conn = $database->connect(); // Lấy kết nối
+       
     ?>
     <link rel="stylesheet" href="./assets/css/employee_shift.css">
     <style>
@@ -36,7 +32,14 @@
 
 </style>
 </head>
+<?php
+    include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
 
+     // Tạo một ấđối tượng Database để kết nối
+    $database = new Database();
+    $conn = $database->connect(); // Ly kết nối
+
+?>
 <body>
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
