@@ -488,15 +488,12 @@
 
         
         public function getCustomers($limit, $offset, $keyword = '') {
-            // Bắt đầu xây dựng truy vấn SQL
             $query = "SELECT * FROM customer WHERE Status = 1";
         
-            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE
             if (!empty($keyword)) {
                 $query .= " AND (CustomerName LIKE ? OR CustomerPhone LIKE ?)";
             }
         
-            // Thêm phần LIMIT và OFFSET
             $query .= " LIMIT ? OFFSET ?";
         
             $stmt = mysqli_prepare($this->conn, $query);
@@ -506,15 +503,12 @@
                     $searchTerm = "%$keyword%";
                     mysqli_stmt_bind_param($stmt, "ssss", $searchTerm, $searchTerm, $limit, $offset);
                 } else {
-                    // Nếu không có từ khóa tìm kiếm, chỉ gắn LIMIT và OFFSET
                     mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
                 }
         
-                // Thực thi truy vấn
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
         
-                // Lấy kết quả
                 $customers = [];
                 while ($row = mysqli_fetch_assoc($result)) {
                     $customers[] = $row;
@@ -529,25 +523,20 @@
         
     
         public function getTotalCustomers($keyword = '') {
-            // Xây dựng truy vấn đếm tổng số khách hàng
             $query = "SELECT COUNT(*) as total FROM customer WHERE Status = 1";
         
-            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE
             if (!empty($keyword)) {
                 $query .= " AND (CustomerName LIKE ? OR CustomerPhone LIKE ?)";
             }
         
-            // Chuẩn bị truy vấn
             $stmt = mysqli_prepare($this->conn, $query);
         
             if ($stmt) {
-                // Nếu có từ khóa tìm kiếm, gắn tham số tìm kiếm
                 if (!empty($keyword)) {
                     $searchTerm = "%$keyword%";
                     mysqli_stmt_bind_param($stmt, "ss", $searchTerm, $searchTerm);
                 }
         
-                // Thực thi truy vấn
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
                 $data = mysqli_fetch_assoc($result);

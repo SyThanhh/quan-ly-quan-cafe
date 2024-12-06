@@ -1,4 +1,7 @@
 <?php
+ include_once("./connect/database.php");
+ $db = new Database();
+ $conn = $db->connect();
 // Bắt đầu phiên làm việc
 if (session_status() == PHP_SESSION_NONE) {
     session_start(); // Chỉ gọi session_start() nếu phiên chưa được khởi động
@@ -11,84 +14,79 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
 // Kiểm tra nếu có dữ liệu POST từ form đăng nhập
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Kết nối tới cơ sở dữ liệu
-    $servername = "localhost";
-    $username = "root";  // Tên đăng nhập MySQL
-    $password = "";      // Mật khẩu MySQL
-    $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
+    $username_input = trim(mysqli_real_escape_string($conn, $_POST['username']));
+    $password_input = trim(mysqli_real_escape_string($conn, $_POST['password']));
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Kiểm tra kết nối
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Lấy dữ liệu từ form
-    $username_input = $_POST['username'];  // Tên đăng nhập
-    $password_input = $_POST['password'];  // Mật khẩu người dùng nhập vào
-
-    // Kiểm tra đăng nhập khách hàng
-    $sql_customer = "SELECT CustomerID, CustomerName, CustomerPassword, role FROM customer WHERE CustomerName = ?";
-    $stmt_customer = $conn->prepare($sql_customer);
-    $stmt_customer->bind_param("s", $username_input);
-    $stmt_customer->execute();
-    $stmt_customer->store_result();
-
-    // Nếu tìm thấy khách hàng
-    if ($stmt_customer->num_rows > 0) {
-        $stmt_customer->bind_result($id, $db_customername, $db_password, $role);
-        $stmt_customer->fetch();
-
-        // Kiểm tra mật khẩu
-        if ($password_input === $db_password) { 
-            // Lưu thông tin vào session
-            $_SESSION['loggedin'] = true;
-            $_SESSION['username'] = $db_customername;
-            $_SESSION['role'] = $role;
-            $_SESSION['id'] = $id;
-
-            // Chuyển hướng về trang chính
-            header("Location: index.php");
-            exit();
+    function loginCustomer($conn, $table, $username_col, $password_col, $id_col, $username_input, $password_input) {
+        $sql = "SELECT $id_col, $username_col, $password_col FROM $table WHERE $username_col = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        if (!$stmt) {
+            die("SQL Error: " . mysqli_error($conn));
         }
-    }
+        mysqli_stmt_bind_param($stmt, "s", $username_input);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-    // Kiểm tra đăng nhập quản trị viên
-    $sql_employee = "SELECT EmployeeID, LastName, password, Roles FROM employee WHERE LastName = ?";
-    $stmt_employee = $conn->prepare($sql_employee);
-    $stmt_employee->bind_param("s", $username_input);
-    $stmt_employee->execute();
-    $stmt_employee->store_result();
-    
-    // Kiểm tra xem có dữ liệu trả về không
-    if ($stmt_employee->num_rows > 0) {
-        $stmt_employee->bind_result($id, $db_lastname, $db_employee_password, $Roles);
-        $stmt_employee->fetch();
-    
-        // Kiểm tra mật khẩu
-        if ($password_input === $db_employee_password) {
-            // Lưu thông tin vào session
-            $_SESSION['loggedin'] = true;
-            $_SESSION['username'] = $db_lastname;
-            $_SESSION['role'] = $role;
-            $_SESSION['id'] = $id;
-
-            // Chuyển hướng dựa trên vai trò
-            if (in_array($Roles, ['1', '2', '3', '4'])){
-                header("Location: index.php?page=index_admin");
-            } else {
-                header("Location: index.php");
+        if ($row = mysqli_fetch_assoc($result)) {
+            if ($password_input === $row[$password_col]) {
+                $_SESSION['loggedinCustomer'] = true;
+                $_SESSION['usernameCustomer'] = $row[$username_col];
+                $_SESSION['idCustomer'] = $row[$id_col];
+                return true;
             }
-            exit();
-        } else {
-            // Mật khẩu không chính xác
-            echo "Password does not match for employee.";
         }
-    } else {
-        echo "Employee not found.";
+        mysqli_stmt_close($stmt);
+        return false;
     }
+
+    function loginEmployee($conn, $table, $username_col, $password_col, $role_col, $id_col, $username_input, $password_input) {
+        $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $username_col = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        if (!$stmt) {
+            die("SQL Error: " . mysqli_error($conn));
+        }
+        mysqli_stmt_bind_param($stmt, "s", $username_input);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($result)) {
+            if ($password_input === $row[$password_col]) {
+                $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $row[$username_col];
+                $_SESSION['role'] = $row[$role_col];
+                $_SESSION['id'] = $row[$id_col];
+                return true;
+            }
+        }
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+
+    // Kiểm tra đăng nhập nhân viên trước
+    if (loginEmployee($conn, 'employee', 'LastName', 'password', 'Roles', 'EmployeeID', $username_input, $password_input)) {
+        $role = $_SESSION['role'];
+        if (in_array($role, ['1', '2', '3', '4'])) {
+            header("Location: index.php?page=index_admin");
+        } else {
+            header("Location: index.php");
+        }
+        exit();
+    }
+
+    // Nếu không phải nhân viên, kiểm tra khách hàng
+    if (loginCustomer($conn, 'customer', 'CustomerName', 'CustomerPassword', 'CustomerID', $username_input, $password_input)) {
+        header("Location: index.php");
+        exit();
+    }
+
+    // Nếu không thành công
+    echo "Tên đăng nhập hoặc mật khẩu không đúng.";
 }
+
+
+// Đóng kết nối
+mysqli_close($conn);
+
 ?>
 
 <!DOCTYPE html>

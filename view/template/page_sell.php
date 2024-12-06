@@ -309,6 +309,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                                             echo htmlspecialchars($_SESSION['username']);
                                         } else {
                                             echo "Guest";
+                                            var_dump( $_SESSION['id']);
                                         }
                                     ?>
                                 </span>
