@@ -268,15 +268,16 @@
 
             <table class="table table-striped table-bordered">
                 <thead class="thead-dark text-center">
-                    <tr>
+                <tr>
                         <th>Mã</th>
+                        <th>Tên sản phẩm</th>
                         <th>Số lượng</th>
+                        <th>Nhà cung cấp</th>
                         <th>Thời gian</th>
-                        <?php if ($status == 0): ?>
-                            <th>Nhân viên duyệt phiếu</th>
+                        <th>Nhân viên nhập phiếu</th>
+                        <?php if ($status == 0): ?>                           
                             <th colspan="2">Trạng thái</th>
-                        <?php elseif ($status == 1): ?>
-                            <th>Nhân viên duyệt phiếu</th>
+                        <?php elseif ($status == 1): ?>                         
                             <th>Thời gian duyệt</th>
                             <th>Trạng thái</th>
                         <?php endif; ?>
@@ -285,14 +286,29 @@
                 <tbody>
                     <?php
                     // Truy vấn danh sách yêu cầu theo trạng thái (chưa duyệt hoặc đã duyệt)
-                    $requestform = $database->select("SELECT rf.*, e.* FROM requestform rf JOIN employee e ON rf.EmployeeID = e.EmployeeID WHERE rf.Status = $status");
+                    $requestform = $database->select("
+                    SELECT 
+                        rf.*, 
+                        e.*, 
+                        pr.ProductName, 
+                        s.CompanyName AS SupplierName
+                    FROM requestform rf
+                    JOIN employee e ON rf.EmployeeID = e.EmployeeID
+                    JOIN product pr ON rf.ProductID = pr.ProductID
+                    LEFT JOIN product_supplier ps ON pr.ProductID = ps.ProductID
+                    LEFT JOIN supplier s ON ps.SupplierID = s.SupplierID
+                    WHERE rf.Status = $status
+
+                    ");
 
                     // Hiển thị danh sách yêu cầu
                     if ($requestform) {
                         while ($row = $requestform->fetch_assoc()) {
                             echo "<tr>";
                             echo "<td class='text-center'>{$row['RequestID']}</td>";
+                            echo "<td class='text-center'>{$row['ProductName']}</td>";
                             echo "<td class='text-center'>{$row['RequestQuantity']}</td>";
+                            echo "<td class='text-center'>{$row['SupplierName']}</td>";
                             echo "<td class='text-center'>{$row['CreateDate']}</td>";
 
                             if ($status == 1) {
@@ -332,30 +348,31 @@
 
 </div>
 
-<?php
-// Kiểm tra xem RequestID có được truyền qua URL không
-if (isset($_GET['RequestID'])) {
-    // Lấy RequestID từ URL
-    $requestID = $_GET['RequestID'];
-    
-    // Lấy thời gian hiện tại để ghi vào cột ApproveDate
-    $approveDate = date('Y-m-d H:i:s');
+    <?php
+    // Đặt múi giờ cho Việt Nam (Asia/Ho_Chi_Minh)
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-    // Truy vấn cơ sở dữ liệu để cập nhật Status thành 1 và ghi nhận thời gian duyệt
-    $sql = "UPDATE requestform SET Status = 1, ApproveDate = '$approveDate' WHERE RequestID = '$requestID'";
+    // Kiểm tra xem RequestID có được truyền qua URL không
+    if (isset($_GET['RequestID'])) {
+        // Lấy RequestID từ URL và đảm bảo an toàn
+        $requestID = $_GET['RequestID'];
+        
+        // Lấy thời gian hiện tại để ghi vào cột ApproveDate
+        $approveDate = date('Y-m-d H:i:s'); // Đảm bảo định dạng đúng và múi giờ chính xác
 
-    // Thực thi truy vấn mà không cần kiểm tra lỗi
-    $database->select($sql);
+        // Truy vấn cơ sở dữ liệu để cập nhật Status thành 1 và ghi nhận thời gian duyệt
+        $sql = "UPDATE requestform SET Status = 1, ApproveDate = '$approveDate' WHERE RequestID = '$requestID'";
 
-    // Thông báo duyệt phiếu thành công
-    echo "<script>alert('Duyệt phiếu thành công!'); window.location.href = 'index.php?page=page_requestform&status=1';</script>";
-} else {
-    // Nếu không có RequestID, chuyển hướng về trang chính
-    
-    echo "<script> href = 'index.php?page=page_requestform';</script>";
-    
-}
-?>
+        // Thực thi truy vấn
+        $database->select($sql);
+
+        // Thông báo duyệt phiếu thành công
+        echo "<script>alert('Duyệt phiếu thành công!'); window.location.href = 'index.php?page=page_requestform&status=1';</script>";
+    } else {
+        // Nếu không có RequestID, chuyển hướng về trang chính
+        echo "<script> href = 'index.php?page=page_requestform';</script>";
+    }
+    ?>
 
 
 
