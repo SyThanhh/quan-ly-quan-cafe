@@ -299,6 +299,7 @@ $(document).ready(function() {
             hideAlert();
         }, 3000);
     }
+    
 
 });
 
@@ -310,8 +311,8 @@ $(document).ready(function() {
    
     function updateSession() {
         let invoiceData = [];
-    
         
+        let employeeIdByRole = $('#employeeIdByRole').val();
         let phone = replaceWhitespace($('#name-search').val());
         let customerName = replaceWhitespace($('#customerNameSell').val());
         let discountCode = replaceWhitespace($('#discountCode').val());
@@ -338,6 +339,7 @@ $(document).ready(function() {
         });
 
         let customerData = {
+            employeeId : employeeIdByRole,
             phone: phone,
             customerName: customerName,
             couponID: discountCode,
@@ -490,12 +492,14 @@ $(document).ready(function() {
         let customerName = replaceWhitespace($('#customerNameSell').val());
         let discountCode = replaceWhitespace($('#discountCode').val());
         let reduction = replaceWhitespace($('#reduction').val());
-
+        let employeeIdByRole = $('#employeeIdByRole').val();
+       
         // Làm sạch dữ liệu
         reduction = extractDiscount(reduction);  // Chỉ lấy phần trăm giảm giá
 
         let orderData = {
             phone: phone,
+            employeeId : employeeIdByRole,
             customerName: customerName,
             couponID: discountCode,
             reduction: reduction,  // Sử dụng giá trị phần trăm giảm giá đã làm sạch

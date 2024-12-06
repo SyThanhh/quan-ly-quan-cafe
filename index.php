@@ -14,16 +14,11 @@
    
    // Nếu không có tham số 'page', không làm gì cả
    if ($page) {
-    //   if($page === "page_customer") {
-    //     include_once('controller/CustomerController.php');
-    //     $controller = new CustomerController();
-    //     $controller->list();
-    //   }
-     
        $page_file = $page_directory . $page . '.php';
    
        // Kiểm tra xem file có tồn tại không
        if (file_exists($page_file)) {
+         
             include($page_file); 
        } else {
            include($page_directory . '404.php'); 

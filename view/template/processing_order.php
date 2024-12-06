@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     
     if ($orderData && is_array($orderData)) {
+        $employeeID = $orderData['employeeId'] ?? '';
         $phone = $orderData['phone'] ?? '';
         $customerName = $orderData['customerName'] ?? '';
         $couponID = $orderData['couponID']??'';
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         }
         $checkOrderDetail = false;
-        $OrderID = $orderController->SaveOrder($reduction, $paymentMethod, $totalAmount,$couponID, $customerID, 2 );
+        $OrderID = $orderController->SaveOrder($reduction, $paymentMethod, $totalAmount,$couponID, $customerID, $employeeID);
         foreach ($products as $product) {
             $productID = $product['id'] ?? null;
             $quantity = $product['quantity'] ?? 1;
