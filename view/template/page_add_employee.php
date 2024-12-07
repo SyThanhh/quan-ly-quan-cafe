@@ -1,3 +1,10 @@
+<?php
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php?page=login");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -289,8 +296,6 @@
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
-=======
 
                 <!-- Thêm nhân viên -->
                 <?php
