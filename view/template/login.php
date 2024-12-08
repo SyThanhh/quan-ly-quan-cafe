@@ -6,11 +6,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start(); // Chỉ gọi session_start() nếu phiên chưa được khởi động
 }
-// Kiểm tra nếu người dùng đã đăng nhập thì chuyển hướng về trang chủ
-if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    header("Location: index.php");
-    exit();
-}
+
 
 // Kiểm tra nếu có dữ liệu POST từ form đăng nhập
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

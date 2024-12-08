@@ -13,12 +13,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Kết nối tới cơ sở dữ liệu
-    $servername = "localhost";
-    $dbUsername = "root";  // Tên đăng nhập MySQL
-    $dbPassword = "";  // Mật khẩu MySQL
-    $dbname = "db_ql3scoffee";  // Tên cơ sở dữ liệu
-
-    $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbname);
+    include_once("./connect/database.php");
+    $db = new Database();
+    $conn = $db->connect();
 
     // Kiểm tra kết nối
     if ($conn->connect_error) {
@@ -26,13 +23,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Kiểm tra nếu tên đăng nhập hoặc email đã tồn tại
-    $stmt = $conn->prepare("SELECT CustomerID FROM customer WHERE CustomerName = ? OR Email = ?");
-    $stmt->bind_param("ss", $username, $email);
+    $stmt = $conn->prepare("SELECT CustomerID FROM customer WHERE CustomerPhone = ? OR Email = ?");
+    $stmt->bind_param("ss", $phone, $email);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        echo "<div class='alert alert-warning'>Tên đăng nhập hoặc email đã tồn tại. Vui lòng chọn tên khác.</div>";
+        echo "<div class='alert alert-warning'>Số điện thoại hoặc email đã tồn tại. Vui lòng chọn tên khác.</div>";
         $stmt->close();
         $conn->close();
         exit();
