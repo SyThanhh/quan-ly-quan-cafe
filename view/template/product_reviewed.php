@@ -127,25 +127,37 @@
         if (!$conn) {
             die("Connection failed: " . mysqli_connect_error());
         }
+        
+        $customerID = $_SESSION['id']; 
 
         // Lấy dữ liệu từ bảng customer
-        $sql = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, c.Rating, c.Content FROM product p 
-        join comment_product cp on cp.ProductID = p.ProductID join comment c on c.CommentID = cp.CommentID";
+        $sql = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, c.Rating, c.Content 
+        FROM product p 
+        JOIN comment_product cp ON cp.ProductID = p.ProductID 
+        JOIN comment c ON c.CommentID = cp.CommentID
+        WHERE c.CustomerID = ?";
         $result = mysqli_query($conn, $sql);
 
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            //Liên kết ID khách hàng của người dùng đã đăng nhập với truy vấn SQL
+            mysqli_stmt_bind_param($stmt, "s", $customerID);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+        }
+        
         // Kiểm tra nếu có kết quả
         if (mysqli_num_rows($result) > 0) {
             // Hiển thị dữ liệu
             echo "<table border='1'>
                     <tr>
-                        <th>ProductID</th>
-                        <th>ProductName</th>
-                        <th>UnitPrice</th>
-                        <th>ProductImage</th>
-                        <th>UnitsInStock</th>
-                        <th>Status</th>
-                        <th>Rating</th>
-                        <th>Content</th>
+                        <th>Mã Sản Phẩm</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá Bán</th>
+                        <th>Ảnh Sản Phẩm</th>
+                        <th>Số Lượng Tồn Kho</th>
+                        <th>Trạng Thái</th>
+                        <th>Đánh Giá</th>
+                        <th>Bình Luận</th>
                     </tr>";
             while($r = mysqli_fetch_assoc($result)) {
                 $productImagePath = 'assets/img/products/' . $r['ProductImage'];
