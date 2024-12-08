@@ -6,32 +6,38 @@ include_once('./connect/database.php');
 $database = new Database();
 $conn = $database->connect();
 
-// Hàm kiểm tra vai trò của người dùng
-function getUserRole($conn, $username) {
-    $stmt = $conn->prepare("SELECT Roles FROM employee WHERE Lastname = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($row = $result->fetch_assoc()) {
-        return $row['Roles'];
-    }
-    return null;
-}
+// // Hàm kiểm tra vai trò của người dùng
+// function getUserRole($conn, $username) {
+//     $stmt = $conn->prepare("SELECT Roles FROM employee WHERE Lastname = ?");
+//     $stmt->bind_param("s", $username);
+//     $stmt->execute();
+//     $result = $stmt->get_result();
+//     if ($row = $result->fetch_assoc()) {
+//         return $row['Roles'];
+//     }
+//     return null;
+// }
 
 // Lấy vai trò của người dùng hiện tại
-$userRole = getUserRole($conn, $_SESSION['username']);
+$userRole = $_SESSION['role'];
 
 // Định nghĩa các trang được phép truy cập cho mỗi vai trò
 $allowedPages = [
     1 => ['all'],
-    2 => ['page_view_shift', 'page_coupon', 'page_menu', 'page_sell'],
+    2 => ['page_view_shift', 'page_view_coupon', 'page_view_menu', 'page_sell'],
     3 => ['page_view_shift', 'page_viewOrder', 'page_manage'],
     4 => ['page_view_shift', 'page_import_request']
 ];
 
-// Hàm kiểm tra xem một trang có được phép truy cập không
+$restrictedPagesForAdmin = ['page_view_shift', 'page_view_menu', 'page_view_coupon'];
+
 function isPageAllowed($page, $userRole, $allowedPages) {
-    if ($userRole == 1) return true; // Admin có quyền truy cập tất cả
+    global $restrictedPagesForAdmin; // Sử dụng biến toàn cục
+    if ($userRole == 1) {
+        // Admin không được truy cập các trang trong danh sách cấm
+        return !in_array($page, $restrictedPagesForAdmin);
+    }
+    // Kiểm tra quyền truy cập với các role khác
     return in_array($page, $allowedPages[$userRole]);
 }
 ?>
@@ -65,10 +71,10 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     </div>
 
     <?php if (isPageAllowed('page_view_shift', $userRole, $allowedPages)): ?>
-    <!-- Nav Item - Bán hàng -->
+    <!-- Nav Item - Xem lịch làm việc -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="index.php?page=page_view_shift">
-            <i class="fas fa-money-bill-wave"></i>
+            <i class="fas fa-id-badge"></i>
             <span>Xem lịch làm việc</span>
         </a>
     </li>
@@ -139,6 +145,16 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     </li>
     <?php endif; ?>
 
+    <?php if (isPageAllowed('page_view_menu', $userRole, $allowedPages)): ?>
+    <!-- Nav Item - Xem menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="index.php?page=page_view_menu">
+            <i class="fas fa-book"></i>
+            <span>Xem menu</span>
+        </a>
+    </li>
+    <?php endif; ?>
+
     <?php if (isPageAllowed('page_menu', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Quản lý menu -->
     <li class="nav-item">
@@ -153,6 +169,16 @@ function isPageAllowed($page, $userRole, $allowedPages) {
                 <a class="collapse-item" href="index.php?page=page_menu">Quản lý menu</a>
             </div>
         </div>
+    </li>
+    <?php endif; ?>
+
+    <?php if (isPageAllowed('page_view_coupon', $userRole, $allowedPages)): ?>
+    <!-- Nav Item - Xem khuyến mãi -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="index.php?page=page_view_coupon">
+            <i class="fas fa-ticket-alt"></i>
+            <span>Xem khuyến mãi</span>
+        </a>
     </li>
     <?php endif; ?>
 
@@ -174,6 +200,16 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     <?php endif; ?>
 
     <?php if (isPageAllowed('page_import_request', $userRole, $allowedPages)): ?>
+    <!-- Nav Item - Gửi yêu cầu nhập hàng -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="index.php?page=page_import_request">
+            <i class="fas fa-file-alt"></i> 
+            <span>Gửi yêu cầu nhập hàng</span>
+        </a>
+    </li>
+    <?php endif; ?>
+
+    <?php if (isPageAllowed('page_requestform', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Quản lý phiếu gửi yêu cầu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageRequest"
@@ -187,7 +223,6 @@ function isPageAllowed($page, $userRole, $allowedPages) {
                 <?php if ($userRole == 1): ?>
                 <a class="collapse-item" href="index.php?page=page_requestform">Quản lý phiếu</a>
                 <?php endif; ?>
-                <a class="collapse-item" href="index.php?page=page_import_request">Gửi yêu cầu nhập hàng</a>
             </div>
         </div>
     </li>
