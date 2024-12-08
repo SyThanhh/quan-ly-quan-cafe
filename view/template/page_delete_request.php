@@ -1,4 +1,10 @@
 <?php
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php?page=login");
+    exit();
+}
+?>
+<?php
     // Kiểm tra xem RequestID có tồn tại trong URL không
     if (isset($_GET['RequestID'])) {
         $RequestID = $_GET['RequestID'];

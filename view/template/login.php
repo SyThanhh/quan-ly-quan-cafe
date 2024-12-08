@@ -7,26 +7,20 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start(); // Chỉ gọi session_start() nếu phiên chưa được khởi động
 }
 // Kiểm tra nếu người dùng đã đăng nhập thì chuyển hướng về trang chủ
-// if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-//     header("Location: index.php");
-//     exit();
-// }
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    header("Location: index.php");
+    exit();
+}
 
 // Kiểm tra nếu có dữ liệu POST từ form đăng nhập
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone_input = trim(mysqli_real_escape_string($conn, $_POST['phone']));
     $password_input = trim(mysqli_real_escape_string($conn, $_POST['password']));
 
-<<<<<<< HEAD
     function loginCustomer($conn, $table, $username_col, $phone_col, $password_col, $id_col,$phone_input, $password_input) {
         $password_input = md5($password_input);
         $sql = "SELECT $id_col, $username_col, $password_col FROM $table WHERE $phone_col = ?";
         
-=======
-    function loginCustomer($conn, $table, $username_col, $password_col, $id_col, $username_input, $password_input) {
-        $password_input = md5($password_input);
-        $sql = "SELECT $id_col, $username_col, $password_col FROM $table WHERE $username_col = ?";
->>>>>>> e3aaa804622c591c856f402f9c290906e339e1ad
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
             die("SQL Error: " . mysqli_error($conn));
@@ -48,15 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return false;
     }
 
-<<<<<<< HEAD
     function loginEmployee($conn, $table, $username_col,$phone_col, $password_col ,$role_col, $id_col, $phone_input, $password_input) {
         $password_input = md5($password_input);
         $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $phone_col = ?";
-=======
-    function loginEmployee($conn, $table, $username_col, $password_col, $role_col, $id_col, $username_input, $password_input) {
-        $password_input = md5($password_input);
-        $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $username_col = ?";
->>>>>>> e3aaa804622c591c856f402f9c290906e339e1ad
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
             die("SQL Error: " . mysqli_error($conn));
