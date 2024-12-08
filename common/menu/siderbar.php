@@ -158,17 +158,11 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     <?php if (isPageAllowed('page_menu', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Quản lý menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageMenu"
+        <a class="nav-link collapsed" href="index.php?page=page_menu"
             aria-expanded="true" aria-controls="manageMenu">
             <i class="fas fa-book"></i>
             <span>Quản lý menu</span>
         </a>
-        <div id="manageMenu" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="index.php?page=page_menu">Quản lý menu</a>
-            </div>
-        </div>
     </li>
     <?php endif; ?>
 
@@ -185,17 +179,11 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     <?php if (isPageAllowed('page_coupon', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Quản lý khuyến mãi -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageCoupon"
+        <a class="nav-link collapsed" href="index.php?page=page_coupon"
             aria-expanded="true" aria-controls="manageCoupon">
             <i class="fas fa-ticket-alt"></i>
             <span>Quản lý khuyến mãi</span>
         </a>
-        <div id="manageCoupon" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="index.php?page=page_coupon">Quản lý khuyến mãi</a>
-            </div>
-        </div>
     </li>
     <?php endif; ?>
 

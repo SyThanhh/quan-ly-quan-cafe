@@ -15,7 +15,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+<<<<<<< HEAD
 $id_col = $_SESSION['idCustomer'];
+=======
+$user_id = $_SESSION['idCustomer'];
+>>>>>>> e3aaa804622c591c856f402f9c290906e339e1ad
 
 $phone = "";
 $email = "";
