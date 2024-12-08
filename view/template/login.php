@@ -14,16 +14,19 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
 // Kiểm tra nếu có dữ liệu POST từ form đăng nhập
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username_input = trim(mysqli_real_escape_string($conn, $_POST['username']));
+    $phone_input = trim(mysqli_real_escape_string($conn, $_POST['phone']));
     $password_input = trim(mysqli_real_escape_string($conn, $_POST['password']));
 
-    function loginCustomer($conn, $table, $username_col, $password_col, $id_col, $username_input, $password_input) {
-        $sql = "SELECT $id_col, $username_col, $password_col FROM $table WHERE $username_col = ?";
+    function loginCustomer($conn, $table, $username_col, $phone_col, $password_col, $id_col,$phone_input, $password_input) {
+        $password_input = md5($password_input);
+        $sql = "SELECT $id_col, $username_col, $password_col FROM $table WHERE $phone_col = ?";
+        
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
             die("SQL Error: " . mysqli_error($conn));
         }
-        mysqli_stmt_bind_param($stmt, "s", $username_input);
+      
+        mysqli_stmt_bind_param($stmt, "s", $phone_input);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
@@ -39,15 +42,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return false;
     }
 
-    function loginEmployee($conn, $table, $username_col, $password_col, $role_col, $id_col, $username_input, $password_input) {
-        $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $username_col = ?";
+    function loginEmployee($conn, $table, $username_col,$phone_col, $password_col ,$role_col, $id_col, $phone_input, $password_input) {
+        $password_input = md5($password_input);
+        $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $phone_col = ?";
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
             die("SQL Error: " . mysqli_error($conn));
         }
-        mysqli_stmt_bind_param($stmt, "s", $username_input);
+        var_dump($sql);
+        var_dump($phone_input);
+        mysqli_stmt_bind_param($stmt, "s", $phone_input);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
+        
 
         if ($row = mysqli_fetch_assoc($result)) {
             if ($password_input === $row[$password_col]) {
@@ -63,18 +70,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Kiểm tra đăng nhập nhân viên trước
-    if (loginEmployee($conn, 'employee', 'LastName', 'password', 'Roles', 'EmployeeID', $username_input, $password_input)) {
-        $role = $_SESSION['role'];
+    if (loginEmployee($conn, 'employee','LastName' ,  'PhoneNumber','password', 'Roles', 'EmployeeID',$phone_input ,$password_input)) {
+     $role = $_SESSION['role'];
         if (in_array($role, ['1', '2', '3', '4'])) {
             header("Location: index.php?page=index_admin");
         } else {
             header("Location: index.php");
         }
-        exit();
+         exit();
     }
 
     // Nếu không phải nhân viên, kiểm tra khách hàng
-    if (loginCustomer($conn, 'customer', 'CustomerName', 'CustomerPassword', 'CustomerID', $username_input, $password_input)) {
+    if (loginCustomer($conn, 'customer', 'CustomerName','CustomerPhone', 'CustomerPassword', 'CustomerID', $phone_input, $password_input)) {
         header("Location: index.php");
         exit();
     }
@@ -123,12 +130,12 @@ mysqli_close($conn);
                     <div class="card-body">
                         <form action="" method="POST">
                             <div class="form-group">
-                                <label for="username">Tên đăng nhập</label>
+                                <label for="phone">Số điện thoại</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                                     </div>
-                                    <input type="text" name="username" id="username" class="form-control" required autofocus>
+                                    <input type="text" name="phone" id="phone" class="form-control" required autofocus>
                                 </div>
                             </div>
                             <div class="form-group">

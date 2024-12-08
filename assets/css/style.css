@@ -1,0 +1,94 @@
+.containerfull,
+.row {
+    float: left;
+    width: 100%;
+}
+.container {
+    width: 1200px;
+    margin: 0 auto;
+}
+.box25 {
+    float: left;
+    width: 25%;
+    width: calc(25% - 30px);
+    position: relative;
+}
+.box25 img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #999999;
+}
+.mr15 {
+    margin-right: 30px;
+}
+p {
+    text-align: justify;
+    line-height: 150%;
+    color: #666666;
+}
+button {
+    color: #993300;
+    font-size: 13pt;
+    font-weight: bold;
+    width: 100%;
+    border: 1px #993300 dotted;
+    border-radius: 5px;
+    padding: 10px 0px;
+    background-color: #FFFFFF;
+}
+h1 {
+    text-align: center;
+    font-size: 24pt;
+    margin: 0px;
+}
+.price {
+    text-align: center;
+    color: #993300;
+    font-size: 12pt;
+    float: left;
+    width: 100%;
+    padding: 8px 0px;
+}
+a {
+    color: #993300;
+    font-size: 13pt;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #000000;
+}
+.boxleft {
+    float: left;
+    width: 20%;
+}
+.boxright {
+    float: left;
+    width: 78%;
+}
+.mb {
+    margin-bottom: 50px;
+}
+.menutrai a {
+    display: block;
+    width: 100%;
+    color: #993300;
+    font-size: 13pt;
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px #CCC dotted;
+}
+.menutrai a:hover {
+    color: #000000;
+}
+.menu{
+    height: 40px;
+    line-height: 40px;
+}
+.menu a{
+    margin: 0 20px;
+}
+
