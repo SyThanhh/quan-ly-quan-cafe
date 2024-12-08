@@ -294,7 +294,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
                                     <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add">Thêm Nhân Viên</button>
+                                    <button type="submit" class="btn btn-primary btn-add" name="addEmployee">Thêm Nhân Viên</button>
                                 </div>
                             </form>        
                         </div>
@@ -322,7 +322,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                     $stmt = $conn->prepare($query);
-                    $stmt->bind_param("issssiss", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate, $password);
+                    $stmt->bind_param("issssisss", $employeeID, $firstName, $lastName, $email, $phoneNumber, $position, $status, $birthDate, $password);
             
                     // Thực thi câu truy vấn
                     if ($stmt->execute()) {
