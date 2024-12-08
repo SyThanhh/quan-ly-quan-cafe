@@ -1,3 +1,10 @@
+<?php
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php?page=login");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -253,6 +260,10 @@
                                         <td><input type="text" class="form-control" id="lastName" name="lastName" required></td>
                                     </tr>
                                     <tr>
+                                        <th><label for="email">Email:</label></th>
+                                        <td><input type="email" class="form-control" id="email" name="email" required></td>
+                                    </tr>
+                                    <tr>
                                         <th><label for="phoneNumber">Số Điện Thoại:</label></th>
                                         <td><input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required></td>
                                     </tr>
@@ -289,8 +300,6 @@
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
-=======
 
                 <!-- Thêm nhân viên -->
                 <?php
