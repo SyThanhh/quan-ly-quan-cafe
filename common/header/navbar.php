@@ -31,10 +31,10 @@
                 <div id="icon-user">
 
                 </div>
-                <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+                <?php if (isset($_SESSION['loggedinCustomer']) && $_SESSION['loggedinCustomer'] === true): ?>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <?php echo $_SESSION['username']; ?>
+                            <?php echo $_SESSION['usernameCustomer']; ?>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                             <a href="index.php?page=profile" class="dropdown-item">Thông tin cá nhân</a>

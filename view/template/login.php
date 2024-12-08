@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password_input = trim(mysqli_real_escape_string($conn, $_POST['password']));
 
     function loginCustomer($conn, $table, $username_col, $password_col, $id_col, $username_input, $password_input) {
+        $password_input = md5($password_input);
         $sql = "SELECT $id_col, $username_col, $password_col FROM $table WHERE $username_col = ?";
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
@@ -40,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     function loginEmployee($conn, $table, $username_col, $password_col, $role_col, $id_col, $username_input, $password_input) {
+        $password_input = md5($password_input);
         $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $username_col = ?";
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {

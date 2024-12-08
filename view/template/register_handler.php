@@ -41,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Mật khẩu mặc định là '123456'
     $password = '123456';
+    $password = md5($password);
     
     // Thực hiện truy vấn SQL để thêm người dùng vào cơ sở dữ liệu
     $stmt = $conn->prepare("INSERT INTO customer (CustomerName, CustomerPassword, Email, CustomerPhone, role, CustomerPoint) VALUES (?, ?, ?, ?, ?, ?)");
