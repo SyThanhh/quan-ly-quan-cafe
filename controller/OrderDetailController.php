@@ -21,6 +21,17 @@
             }
         }
 
+        public function getOrderDetailById($OrderID) {
+            $result = $this->mOrderDetail->getOrderDetailById($OrderID);
+            if ($result) {
+                return $result; // Trả về chi tiết đơn hàng
+            } else {
+                return false; // Không có chi tiết đơn hàng
+            }
+        }
+        
+
+
    
       
 

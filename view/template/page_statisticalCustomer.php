@@ -360,7 +360,7 @@
                                             echo '<tr>';
                                             echo '<td>' . htmlspecialchars($row['CustomerName']) . '</td>'; // Tên khách hàng
                                             echo '<td>' . format_currency_vnd($row['TotalPurchase']) .'</td>'; // Tổng lượng mua
-                                            echo '<td><a href="?page=page_viewDetailCustomer&id=' . $row['CustomerID'] . '" class="btn btn-primary btn-sm">Xem</a></td>'; // Nút xem chi tiết
+                                            echo '<td><a href="?page=page_viewDetailCustomer&customerId=' . $row['CustomerID'] . '" class="btn btn-primary btn-sm">Xem</a></td>'; // Nút xem chi tiết
                                             echo '</tr>';
                                         }
                                     } else {

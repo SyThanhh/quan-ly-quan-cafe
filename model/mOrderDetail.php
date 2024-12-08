@@ -166,28 +166,32 @@
 
         public function getOrderDetailById($id) {
             if ($this->conn) {
-                $str = "SELECT * FROM orderdetail WHERE OrderID = ?";
+                $str = "SELECT * FROM orderdetail od 
+                        JOIN `order` o ON od.OrderID = o.OrderID 
+                        JOIN employee e ON e.employeeID = o.employeeID
+                        JOIN product p ON p.ProductID = od.ProductID 
+                        WHERE od.OrderID = ?";
                 
                 $stmt = mysqli_prepare($this->conn, $str);
                 if ($stmt === false) {
                     return false;
                 }
-                
+        
                 mysqli_stmt_bind_param($stmt, "s", $id);
-                
                 $result = mysqli_stmt_execute($stmt);
-
-                // Lấy kết quả
                 $result = mysqli_stmt_get_result($stmt);
-                $order = mysqli_fetch_assoc($result); 
-
-                
-                mysqli_stmt_close($stmt); 
-                
-                return $order; 
+        
+                // Kiểm tra nếu có kết quả trả về
+                if ($result && mysqli_num_rows($result) > 0) {
+                    return $result; // Trả về đối tượng kết quả MySQLi
+                }
+        
+                mysqli_stmt_close($stmt);
             }
-            return false; 
+            return false; // Trường hợp không có kết quả
         }
+        
+        
 
         
 

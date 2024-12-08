@@ -49,7 +49,10 @@
        
     </style>
 </head>
-
+<?php
+    include_once('./controller/OrderDetailController.php'); 
+    $orderDetailController = new OrderDetailController();
+?>
 <body>
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
@@ -297,20 +300,13 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                            if (isset($_GET["OrderID"])) {
-                                                $orderID = $_GET["OrderID"];
-                                            
-                                                // Truy vấn chi tiết hóa đơn
-                                                $query = "SELECT * FROM orderdetail od 
-                                                          JOIN `order` o ON od.OrderID = o.OrderID 
-                                                          JOIN employee e ON e.employeeID = o.employeeID
-                                                          JOIN product p ON p.ProductID = od.ProductID 
-                                                          WHERE od.OrderID = '$orderID'";
-                                            
-                                                // Thực hiện truy vấn
-                                                $orderDetails = mysqli_query($conn, $query);
-                                            
-                                                // Kiểm tra kết quả truy vấn
+                                           if (isset($_GET["OrderID"])) {
+                                            $orderID = $_GET["OrderID"];
+                                        
+                                            // Gọi phương thức lấy dữ liệu
+                                            $orderDetails = $orderDetailController->getOrderDetailById($orderID);
+                                        
+                                         
                                                 if ($orderDetails && mysqli_num_rows($orderDetails) > 0) {
                                                     while ($row = mysqli_fetch_assoc($orderDetails)) {
                                                         echo "<tr>";
@@ -326,10 +322,13 @@
                                                     }
                                                 } else {
                                                     echo "<tr><td colspan='9' class='text-center text-danger'>Không có dữ liệu</td></tr>";
-                                                }
-                                            } else {
-                                                echo "<tr><td colspan='9' class='text-center text-danger'>Không tồn tại OrderID</td></tr>";
+                                                }   
+                                                
                                             }
+                                            else {
+                                                    echo "<tr><td colspan='9' class='text-center text-danger'>Không tồn tại OrderID</td></tr>";
+                                            }
+                                        
                                         ?>
                                     </tbody>
                                  </table>
