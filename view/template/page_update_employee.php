@@ -197,35 +197,39 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin-name</span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <!-- Hiển thị tên người dùng từ session -->
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    <?php
+                                        if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                                            echo htmlspecialchars($_SESSION['username']);
+                                        } else {
+                                            echo "Guest";
+                                        }
+                                    ?>
+                                </span>
+                                <img class="img-profile rounded-circle" src="./assets/img/testimonial-2.jpg">
                             </a>
                             <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="profile.php">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="settings.php">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Settings
                                 </a>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="activity_log.php">
                                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Activity Log
                                 </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="index.php?page=logout" >
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
                             </div>
                         </li>
-
                     </ul>
                 </nav>
 
@@ -275,7 +279,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 </tr>
                                 <tr>
                                     <th><label for="password">Mật khẩu:</label></th>
-                                    <td><input type="text" class="form-control" id="password" name="password" value="<?php echo $employee['password']; ?>" required></td>
+                                    <td><input type="password" class="form-control" id="password" name="password" placeholder="Để trống nếu không đổi"></td>
                                 </tr>
                             </table>
                                 <!-- Button section -->
@@ -299,15 +303,28 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                         $email = trim($_POST['email']);
                         $phoneNumber = trim($_POST['phoneNumber']);
                         $birthDate = $_POST['birthDate'];
+                        $password = trim($_POST['password']);
                         
                         // Chuẩn bị câu truy vấn SQL để cập nhật thông tin nhân viên
                         $query = "UPDATE employee 
-                                SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, DateOfBirth = ?
-                                WHERE EmployeeID = ?";
+                                SET FirstName = ?, LastName = ?, Email = ?, PhoneNumber = ?, DateOfBirth = ?";
+                        $params = array($firstName, $lastName, $email, $phoneNumber, $birthDate);
+                        $types = "sssss";
+
+                        // Nếu mật khẩu được cung cấp, thêm nó vào câu truy vấn
+                        if (!empty($password)) {
+                            $query .= ", Password = ?";
+                            $params[] = md5($password);
+                            $types .= "s";
+                        }
+
+                        $query .= " WHERE EmployeeID = ?";
+                        $params[] = $employeeID;
+                        $types .= "i";
                         
                         // Chuẩn bị câu truy vấn và ràng buộc tham số
                         $stmt = $conn->prepare($query);
-                        $stmt->bind_param("sssssi", $firstName, $lastName, $email, $phoneNumber, $birthDate, $employeeID);
+                        $stmt->bind_param($types, ...$params);
 
                         // Thực thi câu truy vấn
                         if ($stmt->execute()) {
