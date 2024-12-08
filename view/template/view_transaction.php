@@ -104,9 +104,13 @@ include_once('./common/header/navbar.php');
     <?php
     
 // Kết nối cơ sở dữ liệu
-include_once("./connect/database.php");
- $db = new Database();
- $conn = $db->connect();
+$servername = "localhost"; // Máy chủ cơ sở dữ liệu
+$username = "root";        // Tên người dùng CSDL
+$password = "";        // Mật khẩu CSDL
+$dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
+
+// Tạo kết nối
+$conn = mysqli_connect($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối
 if (!$conn) {
@@ -114,7 +118,7 @@ if (!$conn) {
 }
 
 //  Lấy ID của người dùng đã đăng nhập từ phiên
-$id_col = $_SESSION['idCustomer'];
+$customerID = $_SESSION['idCustomer']; 
 
 // Truy vấn SQL để lấy giao dịch cho người dùng đã đăng nhập
 $sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email, o.TotalAmount, o.CreateDate, o.Discount, o.CouponID, o.PaymentMethod, p.ProductName
@@ -127,7 +131,7 @@ $sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email, o.TotalAm
 // Chuẩn bị và thực hiện truy vấn SQL
 if ($stmt = mysqli_prepare($conn, $sql)) {
     // Liên kết ID khách hàng của người dùng đã đăng nhập với truy vấn SQL
-    mysqli_stmt_bind_param($stmt, "i", $id_col);
+    mysqli_stmt_bind_param($stmt, "i", $customerID);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 

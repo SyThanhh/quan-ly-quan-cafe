@@ -46,25 +46,20 @@
                 return false; 
             }
         
-            // Loại bỏ khoảng trắng ở đầu và cuối
             $keyword = trim($keyword);
             $str = "SELECT * FROM customer WHERE Status = 1";
         
-            // Nếu từ khóa không rỗng, thêm điều kiện vào truy vấn
             if (!empty($keyword)) {
                 $str .= " AND CustomerPhone = ?";
             } else {
-                // Nếu từ khóa rỗng, trả về null
                 return null; // Hoặc return false để biểu thị lỗi
             }
         
-            // Chuẩn bị truy vấn
             $stmt = mysqli_prepare($this->conn, $str);
             if (!$stmt) {
                 return false; 
             }
         
-            // Gán giá trị cho tham số nếu từ khóa không rỗng
             if (!empty($keyword)) {
                 mysqli_stmt_bind_param($stmt, "s", $keyword);
             }
@@ -86,40 +81,6 @@
         }
         
         
-        
-        // public function selectByPhone($keyword) {
-        //     if ($this->conn) {
-        //         $keyword = trim($keyword);
-        //         $str = "SELECT * FROM customer WHERE Status = 1";
-        
-        //         if (!empty($keyword)) {
-        //             $str .= " AND (CustomerName LIKE ? OR CustomerPhone LIKE ?)";
-        //         }
-    
-        //         $stmt = mysqli_prepare($this->conn, $str);
-        
-        //         if ($stmt) {
-        //             if (!empty($keyword)) {
-        //                 $searchTerm = "%$keyword%";
-        //                 mysqli_stmt_bind_param($stmt, "ss", $searchTerm, $searchTerm); 
-        //             }
-        
-        //             if (mysqli_stmt_execute($stmt)) {
-        //                 $result = mysqli_stmt_get_result($stmt); 
-        //                 return $result; 
-        //             } else {
-        //                 return false; 
-        //             }
-        //         } else {
-        //             return false; 
-        //         }
-        //     } else {
-        //         return false; 
-        //     }
-        // }
-
-
-       
 
         public function add($name, $email, $phone) {
             if ($this->conn) {
@@ -127,6 +88,8 @@
                 $name = trim($name);
                 $email = trim($email);
                 $phone = trim($phone);
+                $password = "123456";
+                $password = md5($password);
         
                 // Kiểm tra xem các trường có hợp lệ không
                 if (empty($name) || empty($email) || empty($phone)) {
@@ -134,14 +97,14 @@
                 }
         
                 // Thực hiện thêm mới khách hàng
-                $str = "INSERT INTO customer (CustomerName, Email, CustomerPhone) VALUES (?, ?, ?)";
+                $str = "INSERT INTO customer (CustomerName, Email, CustomerPhone, CustomerPassword) VALUES (?, ?, ?, ?)";
                 $stmt = mysqli_prepare($this->conn, $str);
         
                 if ($stmt === false) {
                     return false; // Xử lý lỗi
                 }
         
-                mysqli_stmt_bind_param($stmt, "sss", $name, $email, $phone);
+                mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $phone, $password);
         
                 $result = mysqli_stmt_execute($stmt);
                 if (!$result) {
@@ -162,6 +125,8 @@
                 $name = trim($name);
                 $email = trim($email);
                 $phone = trim($phone);
+                $password = "123456";
+                $password = md5($password); 
         
                 // Kiểm tra xem các trường có hợp lệ không
                 if (empty($name) || empty($email) || empty($phone)) {
@@ -169,14 +134,14 @@
                 }
         
                 // Thực hiện thêm mới khách hàng
-                $str = "INSERT INTO customer (CustomerName, Email, CustomerPhone) VALUES (?, ?, ?)";
+                $str = "INSERT INTO customer (CustomerName, Email, CustomerPhone, CustomerPassword) VALUES (?, ?, ?, ?)";
                 $stmt = mysqli_prepare($this->conn, $str);
         
                 if ($stmt === false) {
-                    return false; 
+                    return false; // Xử lý lỗi
                 }
         
-                mysqli_stmt_bind_param($stmt, "sss", $name, $email, $phone);
+                mysqli_stmt_bind_param($stmt, "ssss", $name, $email, $phone, $password);
                 
                 $result = mysqli_stmt_execute($stmt);
                 if (!$result) {
