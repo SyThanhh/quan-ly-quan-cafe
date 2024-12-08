@@ -313,7 +313,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     $position = $_POST['position'];
                     $birthDate = $_POST['birthDate'];
                     $password = trim($_POST['password']);
-                
+                    $password = md5($password);
+                    
                     // Kiểm tra nếu các trường đều đã được điền
                     // Chuẩn bị câu truy vấn SQL để thêm nhân viên
                     $status=1;
