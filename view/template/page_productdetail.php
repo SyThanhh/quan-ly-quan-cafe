@@ -130,7 +130,7 @@
                     }
                 ?>
                 <?php
-                    if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
+                    if (isset($_SESSION['loggedinCustomer']) && $_SESSION['loggedinCustomer'] == true) {
                         if (isset($_SESSION['ProductID'])) {
                             header('Location: index.php?page=page_productdetail&ProductID=' . $_SESSION['ProductID']);
                             exit();
@@ -139,7 +139,7 @@
                         <form action="index.php?page=page_review" method="POST">
                             <input type="hidden" name="ProductID" value="<?php echo $product['ProductID']; ?>">
                             <input type="hidden" name="rating" id="rating" value="0">
-                            <b><?php echo htmlspecialchars($_SESSION['username']); ?></b>
+                            <b><?php echo htmlspecialchars($_SESSION['usernameCustomer']); ?></b>
                             <br><br>
                             
                             <label for="rating">Đánh giá:</label>
@@ -219,9 +219,9 @@
                         <?php 
                             for ($i = 1; $i <= 5; $i++) {
                                 if ($i <= $review['Rating']) {
-                                    echo '★';
-                                } else {
                                     echo '☆';
+                                } else {
+                                    echo '★';
                                 }
                             }
                             ?> (<?php echo $review['Rating']; ?>/5)
