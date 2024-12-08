@@ -24,9 +24,9 @@ $userRole = getUserRole($conn, $_SESSION['username']);
 // Định nghĩa các trang được phép truy cập cho mỗi vai trò
 $allowedPages = [
     1 => ['all'],
-    2 => ['page_shift', 'page_coupon', 'page_menu', 'page_sell'],
-    3 => ['page_shift', 'page_viewOrder', 'page_manage'],
-    4 => ['page_shift', 'page_import_request']
+    2 => ['page_view_shift', 'page_coupon', 'page_menu', 'page_sell'],
+    3 => ['page_view_shift', 'page_viewOrder', 'page_manage'],
+    4 => ['page_view_shift', 'page_import_request']
 ];
 
 // Hàm kiểm tra xem một trang có được phép truy cập không
@@ -63,6 +63,16 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     <div class="sidebar-heading">
         Interface
     </div>
+
+    <?php if (isPageAllowed('page_view_shift', $userRole, $allowedPages)): ?>
+    <!-- Nav Item - Bán hàng -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="index.php?page=page_view_shift">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>Xem lịch làm việc</span>
+        </a>
+    </li>
+    <?php endif; ?>
 
     <?php if (isPageAllowed('page_sell', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Bán hàng -->
