@@ -2,7 +2,7 @@
 // session_start();
 
 // Kiểm tra nếu người dùng đã đăng nhập
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['loggedinCustomer']) || $_SESSION['loggedinCustomer'] !== true) {
     header("Location: login.php");
     exit();
 }
@@ -18,7 +18,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$user_id = $_SESSION['id'];
+$user_id = $_SESSION['idCustomer'];
 
 $phone = "";
 $email = "";

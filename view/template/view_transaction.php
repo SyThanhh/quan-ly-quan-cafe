@@ -3,7 +3,7 @@
 // session_start();
 
 // Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+if (!isset($_SESSION['loggedinCustomer']) || $_SESSION['loggedinCustomer'] !== true) {
     // If not logged in, redirect to the login page
     header("Location: login.php");
     exit();
@@ -118,7 +118,7 @@ if (!$conn) {
 }
 
 //  Lấy ID của người dùng đã đăng nhập từ phiên
-$customerID = $_SESSION['id']; 
+$customerID = $_SESSION['idCustomer']; 
 
 // Truy vấn SQL để lấy giao dịch cho người dùng đã đăng nhập
 $sql = "SELECT c.CustomerID, c.CustomerName, c.CustomerPhone, c.Email, o.TotalAmount, o.CreateDate, o.Discount, o.CouponID, o.PaymentMethod, p.ProductName

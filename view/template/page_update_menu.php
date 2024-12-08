@@ -283,7 +283,7 @@
                                     <tr>
                                         <td>Hình Ảnh</td>
                                         <td><input type="file" name="HinhAnh" required>
-                                        <?php echo '<img src="assets/img/' . $ProductImage. '" width="100px">'?>
+                                        <?php echo '<img src="./assets/img/products/' . $ProductImage. '" width="100px">'?>
                                     </td> 
                                     </tr>
                                     <tr>
@@ -293,9 +293,9 @@
                                     <tr>
                                         <td>Trạng Thái</td>
                                         <td>
-                                            <select name="TrangThai" id="TrangThai" value="<?php if (isset($Status)) echo $Status; ?>">
-                                                <option value="0">Hết sản phẩm</option>
-                                                <option value="1">Còn sản phẩm</option>
+                                            <select name="TrangThai" id="TrangThai">
+                                                <option value="0" <?php if (isset($Status) && $Status == "0") echo "selected"; ?>>Hết sản phẩm</option>
+                                                <option value="1" <?php if (isset($Status) && $Status == "1") echo "selected"; ?>>Còn sản phẩm</option>
                                             </select>
                                         </td> 
                                     </tr>
