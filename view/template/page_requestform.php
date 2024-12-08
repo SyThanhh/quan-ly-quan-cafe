@@ -214,36 +214,51 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 </div>
 
-    <?php
-    // Đặt múi giờ cho Việt Nam (Asia/Ho_Chi_Minh)
-    date_default_timezone_set('Asia/Ho_Chi_Minh');
+<?php
+// Đặt múi giờ cho Việt Nam (Asia/Ho_Chi_Minh)
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-    // Kiểm tra xem RequestID có được truyền qua URL không
-    if (isset($_GET['RequestID'])) {
-        // Lấy RequestID từ URL và đảm bảo an toàn
-        $requestID = $_GET['RequestID'];
-        
-        // Lấy thời gian hiện tại để ghi vào cột ApproveDate
-        $approveDate = date('Y-m-d H:i:s'); // Đảm bảo định dạng đúng và múi giờ chính xác
+// Kiểm tra xem RequestID có được truyền qua URL không
+if (isset($_GET['RequestID'])) {
+    // Lấy RequestID từ URL
+    $requestID = $_GET['RequestID'];
+    
+    // Lấy thời gian hiện tại để ghi vào cột ApproveDate
+    $approveDate = date('Y-m-d H:i:s');
 
-        // Truy vấn cơ sở dữ liệu để cập nhật Status thành 1 và ghi nhận thời gian duyệt
-        $sql = "UPDATE requestform SET Status = 1, ApproveDate = '$approveDate' WHERE RequestID = '$requestID'";
+    // Lấy ProductID và RequestQuantity từ bảng requestform
+    $query = "SELECT ProductID, RequestQuantity FROM requestform WHERE RequestID = '$requestID'";
+    $result = $database->select($query);
 
-        // Thực thi truy vấn
-        $database->select($sql);
+    if ($result && $row = $result->fetch_assoc()) {
+        $productID = $row['ProductID'];
+        $requestQuantity = $row['RequestQuantity'];
 
-        // Thông báo duyệt phiếu thành công
-        echo "<script>alert('Duyệt phiếu thành công!'); window.location.href = 'index.php?page=page_requestform&status=1';</script>";
+        // Cập nhật Status và ApproveDate trong requestform
+        $sqlUpdateRequest = "UPDATE requestform 
+                             SET Status = 1, ApproveDate = '$approveDate' 
+                             WHERE RequestID = '$requestID'";
+        $database->select($sqlUpdateRequest);
+
+        // Cập nhật UnitsInStock trong bảng product
+        $sqlUpdateProduct = "UPDATE product 
+                             SET UnitsInStock = UnitsInStock + $requestQuantity 
+                             WHERE ProductID = '$productID'";
+        $database->select($sqlUpdateProduct);
+
+        // Thông báo thành công
+        echo "<script>alert('Duyệt phiếu và cộng số lượng sản phẩm thành công!'); 
+              window.location.href = 'index.php?page=page_requestform&status=1';</script>";
     } else {
-        // Nếu không có RequestID, chuyển hướng về trang chính
-        echo "<script> href = 'index.php?page=page_requestform';</script>";
+        // Nếu không tìm thấy dữ liệu
+        echo "<script>alert('Phiếu yêu cầu không tồn tại hoặc không hợp lệ!'); 
+              href = 'index.php?page=page_requestform';</script>";
     }
-    ?>
-
-
-
-
-
+} else {
+    // Nếu không có RequestID
+    echo "<script>href = 'index.php?page=page_requestform';</script>";
+}
+?>
     <!-- Bootstrap core JavaScript-->
      
     <?php include_once('./common/script/default.php'); ?>
