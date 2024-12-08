@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Nếu không thành công
-    echo "Tên đăng nhập hoặc mật khẩu không đúng.";
+    echo "<p class='text-center' style='color:red;'>Số điện thoại hoặc mật khẩu không chính xác.</p>";
 }
 
 
@@ -140,6 +140,7 @@ mysqli_close($conn);
                             </div>
                             <div class="form-group">
                                 <label for="password">Mật khẩu</label>
+                               
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
@@ -151,6 +152,9 @@ mysqli_close($conn);
                         </form>
                         <div class="text-center mt-3">
                             <p>Bạn chưa có tài khoản? <a href="index.php?page=register" class="btn btn-link">Tạo tài khoản</a></p>
+                        </div>
+                        <div>
+                         <span class="text-center" style="color: green;">Lưu ý : Khi khách hàng đăng nhập lần đầu mật khẩu là 123456</span>
                         </div>
                     </div>
                 </div>
