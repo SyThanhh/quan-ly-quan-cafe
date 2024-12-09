@@ -160,9 +160,6 @@
         }
         
         
-        
-       
-
 
         public function getOrderDetailById($id) {
             if ($this->conn) {
