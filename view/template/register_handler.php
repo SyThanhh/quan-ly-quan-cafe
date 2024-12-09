@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        echo "<div class='alert alert-warning'>Số điện thoại hoặc email đã tồn tại. Vui lòng chọn tên khác.</div>";
+        echo "<div class='alert alert-warning'>Số điện thoại hoặc email đã tồn tại. Vui lòng nhập thông tin khác.</div>";
         $stmt->close();
         $conn->close();
         exit();
@@ -46,11 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssssi", $username, $password, $email, $phone,$points);
 
     if ($stmt->execute()) {
-        echo "<div class='alert alert-success'>Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập trong 5 giây.</div>";
+        echo "<div class='alert alert-success'>Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập trong 2 giây.</div>";
         echo "<script>
                 setTimeout(function(){
                     window.location.href = 'index.php?page=login'; 
-                }, 3000); 
+                }, 2000); 
               </script>";
     } else {
         echo "<div class='alert alert-danger'>Có lỗi xảy ra khi đăng ký: " . $stmt->error . "</div>";

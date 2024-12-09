@@ -62,8 +62,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     </style>
 </head>
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/payment/config.php");
-   
+    
+    // require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
+    include_once("./payment/config.php");
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
     include_once('./controller/cCoupon.php'); 
