@@ -41,17 +41,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = md5($password);
     
     // Thực hiện truy vấn SQL để thêm người dùng vào cơ sở dữ liệu
-    $stmt = $conn->prepare("INSERT INTO customer (CustomerName, CustomerPassword, Email, CustomerPhone, role, CustomerPoint) VALUES (?, ?, ?, ?, ?, ?)");
-    $role = 'user';  // Mặc định là 'user'
+    $stmt = $conn->prepare("INSERT INTO customer (CustomerName, CustomerPassword, Email, CustomerPhone, CustomerPoint) VALUES (?, ?, ?, ?,  ?)");
     $points = 0;  // Mặc định là 0 điểm
-    $stmt->bind_param("sssssi", $username, $password, $email, $phone, $role, $points);
+    $stmt->bind_param("ssssi", $username, $password, $email, $phone,$points);
 
     if ($stmt->execute()) {
         echo "<div class='alert alert-success'>Đăng ký thành công! Bạn sẽ được chuyển hướng đến trang đăng nhập trong 5 giây.</div>";
         echo "<script>
                 setTimeout(function(){
-                    window.location.href = 'index.php?page=login'; // Chuyển hướng về trang login
-                }, 5000); // 5000 milliseconds = 5 giây
+                    window.location.href = 'index.php?page=login'; 
+                }, 3000); 
               </script>";
     } else {
         echo "<div class='alert alert-danger'>Có lỗi xảy ra khi đăng ký: " . $stmt->error . "</div>";
