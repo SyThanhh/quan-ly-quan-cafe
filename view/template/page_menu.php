@@ -392,7 +392,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 $_REQUEST['MoTa'],
                                                 $_REQUEST['ThoiGianTaoSanPham'],
                                                 $_REQUEST['ThoiDiemCapNhat'],
-                                                $_REQUEST['MaYeuCau'],
                                                 $_REQUEST['cboLoaiSP']
                                             );
                                             

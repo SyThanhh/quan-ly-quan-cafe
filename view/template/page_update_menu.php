@@ -348,7 +348,7 @@
                                 if (isset($_REQUEST["btnUpDate"])) {
                                     include_once('./controller/cMenu.php');
                                     $p = new cProduct();
-                                    $kq = $p->cUpDateMenu( $ProductID,$_REQUEST['TenSanPham'], $_REQUEST['GiaBan'], $_FILES["HinhAnh"], $_REQUEST['SoLuongTonKho'], $_REQUEST['TrangThai'], $_REQUEST['MoTa'], $_REQUEST['ThoiGianTaoSanPham'],  $_REQUEST['ThoiDiemCapNhat'], $_REQUEST['MaYeuCau'], $_REQUEST['cboLoaiSP']);
+                                    $kq = $p->cUpDateMenu( $ProductID,$_REQUEST['TenSanPham'], $_REQUEST['GiaBan'], $_FILES["HinhAnh"], $_REQUEST['SoLuongTonKho'], $_REQUEST['TrangThai'], $_REQUEST['MoTa'], $_REQUEST['ThoiGianTaoSanPham'],  $_REQUEST['ThoiDiemCapNhat'], $_REQUEST['cboLoaiSP']);
                                     if ($kq) {
                                         echo "<script>alert('Cập nhật thành công!')</script>";
                                         header('refresh:0.5; url="index.php?page=page_menu"');
