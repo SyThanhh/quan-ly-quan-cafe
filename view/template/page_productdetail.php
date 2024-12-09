@@ -25,7 +25,7 @@
         exit;
     }
 
-    $carouselSql = "SELECT ProductID, ProductName, UnitPrice, ProductImage FROM product WHERE Status = 1 LIMIT 5";  // Bạn có thể thay đổi LIMIT
+    $carouselSql = "SELECT ProductID, ProductName, UnitPrice, ProductImage FROM product WHERE Status = 1 LIMIT 25";  // Bạn có thể thay đổi LIMIT
     $carouselResult = mysqli_query($conn, $carouselSql);
 
     mysqli_stmt_close($stmt);
@@ -73,42 +73,42 @@
         </div>
     </div>
     <div class="row mb-5">
-        <div class="container mt-5">
-        <h2 class="text-center">Sản phẩm nổi bật</h2>
-        <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
-            <div class="carousel-inner">
-                <?php 
-                if ($carouselResult->num_rows > 0) {
-                    $isActive = true;
-                    $count = 0;
-                    while ($carouselProduct = mysqli_fetch_assoc($carouselResult)) {
-                        if ($count % 4 == 0) { 
-                            if ($count > 0) echo '</div></div>';
-                            echo '<div class="carousel-item '.($isActive ? 'active' : '').'">';
-                            $isActive = false;
-                            echo '<div class="row d-flex justify-content-start">';
-                        }
-                        ?>
-                        <div class="col-md-3 text-center">
-                            <a href="index.php?page=page_productdetail&ProductID=<?php echo $carouselProduct['ProductID']; ?>" class="text-decoration-none">
-                                <div class="product-image-wrapper">
-                                    <img src="assets/img/products/<?php echo htmlspecialchars($carouselProduct['ProductImage']); ?>" 
-                                        class="img-fluid product-image" 
-                                        alt="<?php echo htmlspecialchars($carouselProduct['ProductName']); ?>">
-                                </div>
-                                <h5 class="mt-2"><?php echo htmlspecialchars($carouselProduct['ProductName']); ?></h5>
-                                <p><?php echo number_format($carouselProduct['UnitPrice'], 0, ',', '.'); ?> VND</p>
-                            </a>
-                        </div>
-                        <?php 
-                        $count++;
+    <div class="container mt-5">
+    <h2 class="text-center">Sản phẩm nổi bật</h2>
+    <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+        <div class="carousel-inner">
+            <?php 
+            if ($carouselResult->num_rows > 0) {
+                $isActive = true;
+                $count = 0;
+                while ($carouselProduct = mysqli_fetch_assoc($carouselResult)) {
+                    if ($count % 4 == 0) { 
+                        if ($count > 0) echo '</div></div>'; // Kết thúc nhóm trước
+                        echo '<div class="carousel-item '.($isActive ? 'active' : '').'">'; // Nhóm mới
+                        echo '<div class="row d-flex justify-content-start">';
+                        $isActive = false; // Sau nhóm đầu tiên, không còn active nữa
                     }
-                    if ($count > 0) echo '</div></div>';
-                } else {
-                    echo "<p class='text-center'>Không có sản phẩm nào để hiển thị!</p>";
+                    ?>
+                    <div class="col-md-3 text-center">
+                        <a href="index.php?page=page_productdetail&ProductID=<?php echo $carouselProduct['ProductID']; ?>" class="text-decoration-none">
+                            <div class="product-image-wrapper">
+                                <img src="assets/img/products/<?php echo htmlspecialchars($carouselProduct['ProductImage']); ?>" 
+                                    class="img-fluid product-image" 
+                                    alt="<?php echo htmlspecialchars($carouselProduct['ProductName']); ?>">
+                            </div>
+                            <h5 class="mt-2"><?php echo htmlspecialchars($carouselProduct['ProductName']); ?></h5>
+                            <p><?php echo number_format($carouselProduct['UnitPrice'], 0, ',', '.'); ?> VND</p>
+                        </a>
+                    </div>
+                    <?php 
+                    $count++;
                 }
-                ?>
-            </div>
+                if ($count % 4 != 0) echo '</div></div>'; // Đảm bảo kết thúc nhóm cuối nếu không đủ 4 sản phẩm
+            } else {
+                echo "<p class='text-center'>Không có sản phẩm nào để hiển thị!</p>";
+            }
+            ?>
+        </div>
 
             <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -219,9 +219,9 @@
                         <?php 
                             for ($i = 1; $i <= 5; $i++) {
                                 if ($i <= $review['Rating']) {
-                                    echo '☆';
-                                } else {
                                     echo '★';
+                                } else {
+                                    echo '☆';
                                 }
                             }
                             ?> (<?php echo $review['Rating']; ?>/5)

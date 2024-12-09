@@ -316,10 +316,6 @@
                                         <td><input type="datetime-local"  name="ThoiGianTaoSanPham" value="<?php if (isset($CreateAt)) echo $CreateAt; ?>" required></td>
                                     </tr>
                                     <tr>
-                                        <td>Mã Yêu Cầu</td>
-                                        <td><input type="int"  name="MaYeuCau" value="<?php if (isset($RequestID)) echo $RequestID; ?>" required></td>
-                                    </tr>
-                                    <tr>
                                         <td>Loại Sản Phẩm</td>
                                         <td>
                                             <?php

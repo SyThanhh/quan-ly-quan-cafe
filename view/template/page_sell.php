@@ -62,7 +62,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     </style>
 </head>
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/payment/config.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
    
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
@@ -417,7 +417,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/payment/config.php");
                                                 echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
                                                 echo '<p>' . $product['ProductName'] . '</p>';
                                                 echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                                echo '<p class="price">Giá: ' . number_format($product['UnitPrice'], 3, ',', '.') . '₫</p>';
+                                                echo '<p class="price">Giá: ' . $product['UnitPrice']. '₫</p>';
                                                 echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
                                                 echo '</div>';
                                             }

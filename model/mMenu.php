@@ -21,7 +21,7 @@
             if ($con) {
                 $CategoryID = mysqli_real_escape_string($con, $CategoryID);
         
-                $str = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, 
+                $str = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, 
                         c.CategoryName 
                         FROM product p 
                         JOIN category c ON p.CategoryID = c.CategoryID 
@@ -37,7 +37,7 @@
             $p = new Database();
             $con = $p -> connect();
             if($con){
-                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, p.RequestID, c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where ProductName like N'%$ProductName%'";
+                $str = "select p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, p.Description, p.CreateAt, p.UpdatedAt, c.CategoryName from product p join category c on p.CategoryID = c.CategoryID where ProductName like N'%$ProductName%'";
                 $tbl = mysqli_query($con, $str); 
                 return $tbl;
             }
@@ -59,7 +59,7 @@
             }
         }
         
-        public function mUpDateMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryID) {
+        public function mUpDateMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $CategoryID) {
             $p = new Database();
             $con = $p->connect();
             if (!$con) {
@@ -104,7 +104,7 @@
                 }
             }
         
-            $str = "UPDATE product SET ProductName = N'$ProductName', UnitPrice = '$UnitPrice', ProductImage = '$ProductImage', UnitsInStock = '$UnitsInStock', Status = '$Status', Description = N'$Description', CreateAt = '$CreateAt', UpdatedAt = '$UpdatedAt', RequestID = '$RequestID', CategoryID = '$CategoryID' 
+            $str = "UPDATE product SET ProductName = N'$ProductName', UnitPrice = '$UnitPrice', ProductImage = '$ProductImage', UnitsInStock = '$UnitsInStock', Status = '$Status', Description = N'$Description', CreateAt = '$CreateAt', UpdatedAt = '$UpdatedAt', CategoryID = '$CategoryID' 
                     WHERE ProductID = '$ProductID'";
         
             if (mysqli_query($con, $str)) {
@@ -114,7 +114,7 @@
                 return false; 
             }
         }
-        public function mInSertMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $RequestID, $CategoryID) {
+        public function mInSertMenu($ProductID, $ProductName, $UnitPrice, $file, $UnitsInStock, $Status, $Description, $CreateAt, $UpdatedAt, $CategoryID) {
             $p = new Database();
             $con = $p->connect();
         
@@ -151,8 +151,8 @@
                 echo "Không có tệp nào được upload hoặc tệp không hợp lệ.<br>";
             }
         
-            $str = "INSERT INTO product (ProductID, ProductName, UnitPrice, ProductImage, UnitsInStock, Status, Description, CreateAt, UpdatedAt, RequestID, CategoryID) 
-                    VALUES (N'$ProductID', N'$ProductName', N'$UnitPrice', N'$ProductImage', N'$UnitsInStock', N'$Status', N'$Description', N'$CreateAt', N'$UpdatedAt', N'$RequestID', N'$CategoryID')";
+            $str = "INSERT INTO product (ProductID, ProductName, UnitPrice, ProductImage, UnitsInStock, Status, Description, CreateAt, UpdatedAt, CategoryID) 
+                    VALUES (N'$ProductID', N'$ProductName', N'$UnitPrice', N'$ProductImage', N'$UnitsInStock', N'$Status', N'$Description', N'$CreateAt', N'$UpdatedAt', N'$CategoryID')";
             
             if (mysqli_query($con, $str)) {
                 return true;
