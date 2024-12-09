@@ -17,7 +17,7 @@ $(document).ready(function() {
         if (typeof priceString !== 'string') {
             priceString = String(priceString); // Chuyển đổi thành chuỗi
         }
-        return parseInt(priceString); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
+        return parseInt(priceString.replace(/\./g, '')); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
         // return priceString
     }
 
@@ -64,15 +64,14 @@ $(document).ready(function() {
             const $quantityInput = $existingRow.find('.quantity-display');
             let quantity = parseInt($quantityInput.val());
             const stock = parseInt(product.stock);
-            const productPrice = parseFloat(product.price);
+            const productPrice = parseInt(product.price.replace(/\./g, ''));
             
             if (quantity < stock) {
                 quantity++;
                 const totalPrice = quantity * productPrice;
                 $quantityInput.val(quantity);
-                $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                $existingRow.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                 updateSession();
-                console.log("productPrice 1", productPrice);
             } else {
                 showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
             }
@@ -80,7 +79,7 @@ $(document).ready(function() {
             const $row = $(`
                 <tr data-id="${product.id}" data-name="${product.name}" data-stock="${product.stock}">
                     <td>${product.name}</td>
-                    <td>${product.price} <span>đ</span></td>
+                    <td>${product.price} <span>VNĐ</span></td>
                     <td>
                         <div class="quantity-container">
                             <button class="btn-change btn-plus">+</button>
@@ -88,7 +87,7 @@ $(document).ready(function() {
                             <button class="btn-change btn-minus">-</button>
                         </div>
                     </td>
-                    <td class="total-price">${product.price} <span>đ</span></td>
+                    <td class="total-price">${product.price}</td>
                     <td><button class="btn-custome btn-remove">Xóa</button></td> 
                 </tr>
             `);
@@ -98,8 +97,8 @@ $(document).ready(function() {
             
             const $quantityInput = $row.find('.quantity-display');
             const stock = parseInt(product.stock);
-            const productPrice = parseFloat(product.price);
-            
+            const productPrice = parseInt(product.price.replace(/\./g, ''));
+    
             $quantityInput.on('input', function(e) {
                 e.preventDefault();
                 let quantity = parseInt($(this).val());
@@ -112,8 +111,7 @@ $(document).ready(function() {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
                 const totalPrice = quantity * productPrice;
-                $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
-                console.log("productPrice 2", productPrice);
+                $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                 updateGrandTotal();
                 updateSession();
             });
@@ -123,11 +121,9 @@ $(document).ready(function() {
                 let quantity = parseInt($quantityInput.val());
                 if (quantity < stock) {
                     quantity++;
-                    const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
                     $quantityInput.val(quantity);
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
-                    console.log("productPrice 3", productPrice);
+                    $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                     updateGrandTotal();
                     updateSession();
                 } else {
@@ -140,10 +136,9 @@ $(document).ready(function() {
                 let quantity = parseInt($quantityInput.val());
                 if (quantity > 1) {
                     quantity--;
-                    const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
-                    console.log("productPrice 4", productPrice);
+                    $quantityInput.val(quantity);
+                    $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                     updateGrandTotal();
                     updateSession();
                 }
@@ -202,7 +197,7 @@ $(document).ready(function() {
                 const cashAmount = $('#cashAmount').val();
                 const amountReturn = $('#amountReturn').val();
               
-                showAlert('success','Thanh toán tiền mặt với số tiền: ' + cashAmount + ' đ. Tiền thối lại: ' + amountReturn + ' đ.');
+                showAlert('success','Thanh toán tiền mặt với số tiền: ' + cashAmount + ' VNĐ. Tiền thối lại: ' + amountReturn + ' VNĐ.');
             } else {
                 const accountInfo = $('#accountInfo').val();
                 showAlert('success','Thanh toán bằng chuyển khoản với thông tin tài khoản: ' + accountInfo);
@@ -330,8 +325,9 @@ $(document).ready(function() {
             const productName = replaceWhitespace($(this).data('name'));
             const productStock = $(this).data('stock');
             const quantity = $(this).find('.quantity-display').val();
-            const totalPrice = $(this).find('.total-price').text().replace(" đ", "");
-            const price = $(this).find('td').eq(1).text().replace(" đ", "");
+            const totalPrice = cleanPrice($(this).find('.total-price').text().replace(" đ", "").replace(/\./g, ''));
+            const price = cleanPrice($(this).find('td').eq(1).text().replace(" VNĐ", "").replace(/\./g, ''));
+    
             // Thêm thông tin vào mảng invoiceData
             invoiceData.push({
                 id: productId,     // Thêm ID sản phẩm
@@ -386,9 +382,9 @@ $(document).ready(function() {
                 if (quantity < stock) {
                     quantity = parseInt(product.quantity); // Sử dụng số lượng đã lưu trong session
                     $quantityInput.val(quantity);
-                    const productPrice = parseFloat(product.price);
+                    const productPrice = parseFloat(product.price.replace(/\./g, ''));
                     const totalPrice = quantity * productPrice;
-                    $existingRow.find('.total-price').text(totalPrice);
+                    $existingRow.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                     updateSession();
                 } else {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
@@ -398,7 +394,7 @@ $(document).ready(function() {
                 const $row = $(`
                     <tr data-id="${product.id}" data-name="${product.name}" data-stock="${product.stock}">
                         <td>${product.name}</td>
-                        <td>${product.price} <span>đ</span></td>
+                        <td>${product.price} <span>VNĐ</span></td>
                         <td>
                             <div class="quantity-container">
                                 <button class="btn-change btn-plus">+</button>
@@ -427,10 +423,10 @@ $(document).ready(function() {
                         $(this).val(stock);
                         quantity = stock;
                     }
-                    const productPrice = parseFloat(product.price);
+                    const productPrice = parseFloat(product.price.replace(/\./g, ''));
                     const totalPrice = quantity * productPrice;
     
-                    $row.find('.total-price').text(totalPrice);
+                    $row.find('.total-price').text(totalPrice.toLocaleString());
                     updated = true;
                     updateGrandTotal();
                     updateSession();
@@ -443,9 +439,9 @@ $(document).ready(function() {
                     if (quantity < stock) {
                         quantity++;
                         $quantityInput.val(quantity);
-                        const productPrice = parseFloat(product.price);
+                        const productPrice = parseFloat(product.price.replace(/\./g, ''));
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice);
+                        $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                         updateGrandTotal();
                         updateSession();
                     } else {
@@ -460,9 +456,9 @@ $(document).ready(function() {
                     if (quantity > 1) {
                         quantity--;
                         $quantityInput.val(quantity);
-                        const productPrice = parseFloat(product.price);
+                        const productPrice = parseFloat(product.price.replace(/\./g, ''));
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice);
+                        $row.find('.total-price').text(totalPrice.toLocaleString() + " đ");
                         updateGrandTotal();
                         updateSession();
                     }
@@ -520,7 +516,7 @@ $(document).ready(function() {
             const productStock = $(this).data('stock'); 
             const productPrice = cleanPrice(replaceWhitespace($(this).find('td').eq(1).text())); // Làm sạch giá sản phẩm
             const quantity = replaceWhitespace($(this).find('.quantity-display').val());
-            const totalPrice = replaceWhitespace($(this).find('.total-price').text()); // Làm sạch tổng giá trị sản phẩm
+            const totalPrice = cleanPrice(replaceWhitespace($(this).find('.total-price').text())); // Làm sạch tổng giá trị sản phẩm
 
             orderData.items.push({
                 id: productID,
@@ -561,7 +557,7 @@ $(document).ready(function() {
             contentType: 'application/json',
             success: function(response, status, xhr) {
                 if (xhr.status === 200) {
-                    showAlert('success', 'Đơn hàng đã được lưu thành công! <br> Tiền thối lại: ' + amountReturn.val());
+                    showAlert('success', 'Đơn hàng đã được lưu thành công! <br> Tiền thối lại: ' + amountReturn.val() + ' VNĐ.');
     
                     // Gọi deleteSession và chờ nó hoàn tất
                     deleteSession()
@@ -616,7 +612,7 @@ $(document).ready(function() {
         const totalAmount = $("#total-amount"); 
         cashAmount.val("");
         amountReturn.val("");
-        totalAmount.text("0.0");
+        totalAmount.text("0.000");
         $invoiceListBody.empty(); // Xóa nội dung bảng
         $totalAmountDiscount.text("");
     }

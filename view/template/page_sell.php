@@ -76,8 +76,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     $employeeController = new EmployeeController();
 
     $invoiceData = isset($_SESSION['invoiceData']) ? $_SESSION['invoiceData'] : [];
-    $database = new Database();
-    $conn = $database->connect(); // Lấy kết nối   
+    // $database = new Database();
+    // $conn = $database->connect(); // Lấy kết nối   
     $CustomerController = new CustomerController();
     $CouponController = new cCoupon();
     $searchKeyword = '';
@@ -311,6 +311,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     <?php
                                         $point = isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0';
                                         $coupons = $CouponController->getCouponByPoint($point);
+                                        // var_dump($coupons);
+                                        echo $point;
                                         if ($coupons) {
                                             while ($cpon = mysqli_fetch_assoc($coupons)) {
                                                 echo "<option value='".$cpon["CouponID"]."'>".$cpon["CouponCode"]."</option>";
@@ -352,8 +354,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 </tbody>
                             </table>
                             <div class="text-right d-flex justify-content-end">
-                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0</span> VNĐ</h5> 
-                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0.0</span>VNĐ</h5>
+                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0.0</span> đ</h5> 
+                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0.0</span> đ</h5>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <!-- <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button> -->
@@ -659,8 +661,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
         $totalAmountDisplay.text(grantToTalDiscount.toLocaleString());
         let discount = (grandTotal* ($reductionDisplay/100));
-        console.log("grantToTalDiscount" ,grantToTalDiscount);
-        console.log("discount" ,discount);
+        
 
         $totalAmountDiscount.text(discount.toLocaleString());
     }
@@ -893,8 +894,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 type: 'GET',
                 data: { couponID: couponID },  // Gửi CouponID qua GET
                 success: function(response) {
-                    // Kiểm tra nếu server trả về dữ liệu hợp lệ
-                    console.log(response);
 
                     if (response.success) {
                         var couponDiscount = response.couponDiscount;  // Nhận CouponDiscount từ phản hồi
@@ -1081,7 +1080,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             contentType: 'application/json',
             success: function(response, status, xhr) {
                 if (xhr.status === 200) {
-                    showAlert('success', 'Đơn hàng đã được lưu thành công! <br> Tiền thối lại: ' + amountReturn.val() + ' VNĐ.');
+                    showAlert('success', 'Đơn hàng đã được lưu thành công! <br> Tiền thối lại: ' + amountReturn.val() + ' đ.');
     
                     // Gọi deleteSession và chờ nó hoàn tất
                     deleteSession()
