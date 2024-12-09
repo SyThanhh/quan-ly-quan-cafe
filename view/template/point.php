@@ -163,7 +163,7 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
         }
         echo '</tbody></table>';
     } else {
-        echo "No transaction records found.";
+        echo "Không tìm thấy.";
     }
 
     // Đóng câu lệnh đã chuẩn bị

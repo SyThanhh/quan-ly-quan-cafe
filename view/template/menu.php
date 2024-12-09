@@ -377,7 +377,7 @@
                 echo "</div>";
             }
         } else {
-            echo "<p>No products available.</p>";
+            echo "<p>Không tìm thấy sản phẩm.</p>";
         }
 
         // Close database connection
