@@ -152,7 +152,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="index.php?page=page_profile">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Thông tin nhân viên
                             </a>
@@ -344,10 +344,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                         <td><input type="datetime-local"  name="ThoiGianTaoSanPham" id="ThoiGianTaoSanPham" required readonly></td>
                                     </tr>
                                     <tr>
-                                        <td>Mã Yêu Cầu</td>
-                                        <td><input type="int"  name="MaYeuCau" required></td>
-                                    </tr>
-                                    <tr>
                                         <td>Loại Sản Phẩm</td>
                                         <td>
                                             <?php
@@ -396,7 +392,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 $_REQUEST['MoTa'],
                                                 $_REQUEST['ThoiGianTaoSanPham'],
                                                 $_REQUEST['ThoiDiemCapNhat'],
-                                                $_REQUEST['MaYeuCau'],
                                                 $_REQUEST['cboLoaiSP']
                                             );
                                             

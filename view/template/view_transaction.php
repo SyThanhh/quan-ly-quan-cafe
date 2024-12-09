@@ -173,7 +173,7 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
         }
         echo '</tbody></table>';
     } else {
-        echo "No transaction records found.";
+        echo "Không tìm thấy hồ sơ giao dịch.";
     }
 
     // Đóng câu lệnh đã chuẩn bị

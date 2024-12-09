@@ -62,9 +62,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     </style>
 </head>
 <?php
-    
+
     // require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
     include_once("./payment/config.php");
+
+
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
     include_once('./controller/cCoupon.php'); 
@@ -226,7 +228,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="index.php?page=page_profile">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Thông tin nhân viên
                             </a>
@@ -419,7 +421,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
                                                 echo '<p>' . $product['ProductName'] . '</p>';
                                                 echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                                echo '<p class="price">Giá: ' . number_format($product['UnitPrice'], 3, ',', '.') . '₫</p>';
+                                                echo '<p class="price">Giá: ' . $product['UnitPrice']. '₫</p>';
                                                 echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
                                                 echo '</div>';
                                             }

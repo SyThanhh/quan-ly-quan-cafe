@@ -26,5 +26,5 @@
    } else {
         include("./view/template/home.php");
    }
-
+ 
 ?>
