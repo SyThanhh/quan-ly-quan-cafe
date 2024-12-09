@@ -344,10 +344,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                         <td><input type="datetime-local"  name="ThoiGianTaoSanPham" id="ThoiGianTaoSanPham" required readonly></td>
                                     </tr>
                                     <tr>
-                                        <td>Mã Yêu Cầu</td>
-                                        <td><input type="int"  name="MaYeuCau" required></td>
-                                    </tr>
-                                    <tr>
                                         <td>Loại Sản Phẩm</td>
                                         <td>
                                             <?php
