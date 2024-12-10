@@ -254,13 +254,28 @@ $c = new cCoupon();
 $keyword = '';
 $startDate = '';
 $endDate = '';
+$message = '';
 
+// Kiểm tra nếu bấm nút tìm kiếm
 if (isset($_POST['btnSearch'])) {
     $keyword = isset($_POST['txtSearch']) ? $_POST['txtSearch'] : '';
     $startDate = isset($_POST['startDate']) ? $_POST['startDate'] : '';
     $endDate = isset($_POST['endDate']) ? $_POST['endDate'] : '';
-} elseif (isset($_POST['btnClear'])) {
-    // Nếu nhấn nút "Xóa", các giá trị tìm kiếm sẽ bị xóa
+  
+    // Kiểm tra điều kiện lỗi khi chỉ nhập ngày bắt đầu hoặc ngày kết thúc
+    if (empty($startDate) && empty($endDate)) {
+        $message = 'Vui lòng nhập ngày bắt đầu và ngày kết thúc.';
+    } elseif (!empty($startDate) && empty($endDate)) {
+        $message = 'Vui lòng nhập ngày kết thúc.';
+    } elseif (empty($startDate) && !empty($endDate)) {
+        $message = 'Vui lòng nhập ngày bắt đầu.';
+    } elseif (!empty($startDate) && !empty($endDate) && strtotime($startDate) > strtotime($endDate)) {
+        $message = 'Ngày bắt đầu phải sớm hơn hoặc bằng ngày kết thúc.';
+    }
+}
+
+// Nếu nhấn nút "Xóa", các giá trị tìm kiếm sẽ bị xóa
+if (isset($_POST['btnClear'])) {
     $keyword = '';
     $startDate = '';
     $endDate = '';
@@ -277,96 +292,87 @@ $coupons = $c->listCoupon($keyword, $startDate, $endDate, $limit, $offset);
 // Lấy tổng số phiếu giảm giá
 $totalCoupons = $c->getTotalPageCoupon($keyword, $startDate, $endDate);
 $totalPages = ceil($totalCoupons / $limit);
-
 ?>
+
+<?php if (!empty($message)): ?>
+    <p class="text-center" style="color: red;"><?php echo htmlspecialchars($message); ?></p>
+<?php else: ?>
     <?php if ($coupons && mysqli_num_rows($coupons) > 0): ?>
-    <div style="text-align: right;">
-        <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addCouponModal">
-            <i class="fas fa-plus-square"></i> Thêm Mã Giảm Giá
-        </button>
-    </div>
-    <table class="table table-bordered table-custom">
-        <thead>
-            <tr>
-                <th>Mã Giảm Giá</th>
-                <th>Ngày Bắt Đầu</th>
-                <th>Ngày Kết Thúc</th>
-                <th>Mô Tả</th>
-                <th>Giảm Giá</th>
-                <th>Trạng Thái</th>
-                <th>Thời Điểm Cập Nhật Cuối Cùng</th>
-                <th colspan="2">Điều Chỉnh</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($r = mysqli_fetch_assoc($coupons)): ?>
+        <div style="text-align: right;">
+            <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addCouponModal">
+                <i class="fas fa-plus-square"></i> Thêm Mã Giảm Giá
+            </button>
+        </div>
+        <table class="table table-bordered table-custom">
+            <thead>
                 <tr>
-                    <td><?php echo htmlspecialchars($r['CouponCode']); ?></td>
-                    <td><?php echo htmlspecialchars($r['StartDate']); ?></td>
-                    <td><?php echo htmlspecialchars($r['EndDate']); ?></td>
-                    <td><?php echo htmlspecialchars($r['Description']); ?></td>
-                    <td><?php echo number_format($r['CouponDiscount'], 0, ',', '.'); ?> %</td>
-                    <td><?php echo ($r['Status'] == 1) ? 'Còn hạn sử dụng' : 'Hết hạn sử dụng'; ?></td>
-                    <td><?php echo htmlspecialchars($r['UpdateAt']); ?></td>
-                    <td>
-                        <a href="index.php?page=page_update_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-success">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="index.php?page=page_delete_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có thực sự muốn xóa mã giảm giá này không?')">
-                            <i class="fas fa-trash"></i>
-                        </a>
-                    </td>
+                    <th>Mã Giảm Giá</th>
+                    <th>Ngày Bắt Đầu</th>
+                    <th>Ngày Kết Thúc</th>
+                    <th>Mô Tả</th>
+                    <th>Giảm Giá</th>
+                    <th>Trạng Thái</th>
+                    <th>Thời Điểm Cập Nhật Cuối Cùng</th>
+                    <th colspan="2">Điều Chỉnh</th>
                 </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php while ($r = mysqli_fetch_assoc($coupons)): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($r['CouponCode']); ?></td>
+                        <td><?php echo htmlspecialchars($r['StartDate']); ?></td>
+                        <td><?php echo htmlspecialchars($r['EndDate']); ?></td>
+                        <td><?php echo htmlspecialchars($r['Description']); ?></td>
+                        <td><?php echo number_format($r['CouponDiscount'], 0, ',', '.'); ?> %</td>
+                        <td><?php echo ($r['Status'] == 1) ? 'Còn hạn sử dụng' : 'Hết hạn sử dụng'; ?></td>
+                        <td><?php echo htmlspecialchars($r['UpdateAt']); ?></td>
+                        <td>
+                            <a href="index.php?page=page_update_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-success">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="index.php?page=page_delete_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có thực sự muốn xóa mã giảm giá này không?')">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
 
-    <!-- Phân trang -->
-    <div class="row justify-content-end">
-        <nav>
-            <ul class="pagination">
-                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
-                    <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($keyword); ?>">
-                        &laquo;
-                    </a>
-                </li>
-
-                <!-- Hiển thị các trang -->
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $i; ?>&search=<?php echo urlencode($keyword); ?>">
-                            <?php echo $i; ?>
+        <!-- Phân trang -->
+        <div class="row justify-content-end">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($keyword); ?>">
+                            &laquo;
                         </a>
                     </li>
-                <?php endfor; ?>
 
-                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
-                    <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($keyword); ?>">
-                        &raquo;
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+                    <!-- Hiển thị các trang -->
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                            <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $i; ?>&search=<?php echo urlencode($keyword); ?>">
+                                <?php echo $i; ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
 
-<?php else: ?>
-    <p class="text-center">
-        Không có mã giảm giá nào
-        <?php if (!empty($keyword)): ?>
-            với từ khóa "<b><?php echo htmlspecialchars($keyword); ?></b>"
-        <?php endif; ?>
-        <?php if (!empty($startDate) || !empty($endDate)): ?>
-            <?php if (!empty($startDate)): ?>
-                từ <b><?php echo htmlspecialchars($startDate); ?></b>
-            <?php endif; ?>
-            <?php if (!empty($endDate)): ?>
-                đến <b><?php echo htmlspecialchars($endDate); ?></b>
-            <?php endif; ?>
-        <?php endif; ?>.
-    </p>
+                    <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($keyword); ?>">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    <?php else: ?>
+        <p class="text-center">Không có mã giảm giá nào.</p>
+    <?php endif; ?>
 <?php endif; ?>
+
 
 
         <div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel" aria-hidden="true">
