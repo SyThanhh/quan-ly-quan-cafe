@@ -265,11 +265,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                        
                                         <?php
                                             if (isset($_SESSION['searchKeywordSell']) && !empty($_SESSION['searchKeywordSell'])) {
-                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="' . $_SESSION["searchKeywordSell"] . '">';
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm khách hàng theo tên / số điện thoại" value="' . $_SESSION["searchKeywordSell"] . '">';
                                             } elseif (isset($_SESSION['CustomerPhone']) && !empty($_SESSION['CustomerPhone'])) {
-                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="' . $_SESSION["CustomerPhone"] . '">';
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm khách hàngnhân viên theo tên / số điện thoại" value="' . $_SESSION["CustomerPhone"] . '">';
                                             } else {
-                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm nhân viên theo tên / số điện thoại" value="">';
+                                                echo '<input type="text" class="form-control" name="search-sell" id="name-search" placeholder="Tìm khách hàng theo tên / số điện thoại" value="">';
                                             }
                                         ?>
 
@@ -282,7 +282,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                             </button>
                                             <button type="button" id="btnAddCustomerPageSell" class="btn btn-primary btn-add">
                                                 <i class="fas fa-plus-square"></i>
-                                                Thêm mới
+                                                Tạo tài khoản khách hàng
                                             </button>
                                         </div>
                                     </form>
