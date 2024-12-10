@@ -1,5 +1,10 @@
 
-<?php ?>
+<?php
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php?page=login");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -86,6 +91,52 @@
             opacity: 1;  /* Hiển thị khi hover */
         }
 
+        /* Đảm bảo các input và button có chiều rộng bằng nhau */
+.input-group
+{
+    width: 90%;
+}
+
+.input-group-append 
+{
+    width: 10%;
+}
+.input-group label {
+    margin-right: 10px; /* Khoảng cách giữa label và input */
+}
+
+
+.search-button {
+    margin-left: 10px;
+    height: 100%;
+}
+
+
+/* Tùy chỉnh giao diện cho input */
+.input-group input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Đảm bảo các phần tử không bị co lại quá mức */
+@media (max-width: 768px) {
+    .input-group,
+    .input-group-append {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .input-group input,
+    {
+        width: 100%; /* Cho phép các input và button chiếm toàn bộ chiều rộng */
+        margin-bottom: 10px; /* Khoảng cách giữa các phần tử */
+    }
+    .search-button {
+        width: 50px;
+    }
+}
+
+
     </style>
     <script>
         // Hàm để tự động cập nhật thời gian vào ô input
@@ -133,31 +184,15 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
+                    <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                    <li class="nav-item dropdown no-arrow d-sm-none">
+                        <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                       
 
-                        
+                    <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
@@ -199,115 +234,140 @@
             <div class="header text-left">
                 <h4>QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
             </div>
-            <form method="POST" id="search-form" class="d-flex mb-3">
-                <input type="text" class="form-control" name="txtSearch" id="name-search" 
-                    placeholder="Tìm mã giảm giá theo tên"
-                    value="<?php echo isset($_POST['txtSearch']) ? htmlspecialchars($_POST['txtSearch']) : ''; ?>">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary search-button" type="submit" name="btnSearch">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary search-button" type="submit" name="btnClear">
-                        <i class="fas fa-eraser"></i>
-                    </button>
-                </div>
-            </form>
-    <?php
-    include_once('./controller/cCoupon.php');
-    $c = new cCoupon();
+            <form method="POST" id="search-form" class="d-flex mb-3 align-items-center">
+    <div class="input-group mr-2">
+        <label for="start-date" class="mr-2">Từ ngày:</label>
+        <input type="date" class="form-control" name="startDate" id="start-date" 
+            value="<?php echo isset($_POST['startDate']) ? htmlspecialchars($_POST['startDate']) : ''; ?>">
+    </div>
+    <div class="input-group mr-2">
+        <label for="end-date" class="mr-2">Đến ngày:</label>
+        <input type="date" class="form-control" name="endDate" id="end-date" 
+            value="<?php echo isset($_POST['endDate']) ? htmlspecialchars($_POST['endDate']) : ''; ?>">
+    </div>
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary search-button" type="submit" name="btnSearch">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary search-button" type="submit" name="btnClear">
+            <i class="fas fa-eraser"></i>
+        </button>
+    </div>
+</form>
 
-    // Xử lý tìm kiếm và nút xóa
-    $searchKeyword = '';
-    if (isset($_POST['btnSearch'])) {
-        $searchKeyword = $_POST['txtSearch'];
-    } elseif (isset($_POST['btnClear'])) {
-        $searchKeyword = '';
-    }
+<?php
+include_once('./controller/cCoupon.php');
+$c = new cCoupon();
 
-    // Xử lý phân trang
-    $page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
-    $limit = 5;
-    $offset = ($page - 1) * $limit;
+// Xử lý tìm kiếm và nút xóa
+$keyword = '';
+$startDate = '';
+$endDate = '';
 
-    // Lấy dữ liệu mã giảm giá và tổng số trang
-    $tbl = $c->listCoupon($searchKeyword, $limit, $offset);
-    $totalPages = $c->getTotalPageCoupon($searchKeyword, $limit);
+if (isset($_POST['btnSearch'])) {
+    $keyword = isset($_POST['txtSearch']) ? $_POST['txtSearch'] : '';
+    $startDate = isset($_POST['startDate']) ? $_POST['startDate'] : '';
+    $endDate = isset($_POST['endDate']) ? $_POST['endDate'] : '';
+} elseif (isset($_POST['btnClear'])) {
+    // Nếu nhấn nút "Xóa", các giá trị tìm kiếm sẽ bị xóa
+    $keyword = '';
+    $startDate = '';
+    $endDate = '';
+}
 
-    if ($tbl):
-    ?>
-        <!-- <div style="text-align: right;">
-            <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addCouponModal">
-                <i class="fas fa-plus-square"></i> Thêm Mã Giảm Giá
-            </button>
-        </div> -->
-        <table class="table table-bordered table-custom">
-            <thead>
+// Xử lý phân trang
+$page = isset($_GET['page_number']) ? (int)$_GET['page_number'] : 1;
+$limit = 5;  // Số lượng phiếu giảm giá trên mỗi trang
+$offset = ($page - 1) * $limit;  // Vị trí bắt đầu từ
+
+// Lấy danh sách phiếu giảm giá
+$coupons = $c->listCoupon($keyword, $startDate, $endDate, $limit, $offset);
+
+// Lấy tổng số phiếu giảm giá
+$totalCoupons = $c->getTotalPageCoupon($keyword, $startDate, $endDate);
+$totalPages = ceil($totalCoupons / $limit);
+
+?>
+    <?php if ($coupons && mysqli_num_rows($coupons) > 0): ?>
+    <div style="text-align: right;">
+        <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addCouponModal">
+            <i class="fas fa-plus-square"></i> Thêm Mã Giảm Giá
+        </button>
+    </div>
+    <table class="table table-bordered table-custom">
+        <thead>
+            <tr>
+                <th>Mã Giảm Giá</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Mô Tả</th>
+                <th>Giảm Giá</th>
+                <th>Trạng Thái</th>
+                <th>Thời Điểm Cập Nhật Cuối Cùng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($r = mysqli_fetch_assoc($coupons)): ?>
                 <tr>
-                    <th>Mã Giảm Giá</th>
-                    <th>Ngày Bắt Đầu</th>
-                    <th>Ngày Kết Thúc</th>
-                    <th>Mô Tả</th>
-                    <th>Giảm Giá</th>
-                    <th>Trạng Thái</th>
-                    <th>Thời Điểm Cập Nhật Cuối Cùng</th>
-                    <!-- <th colspan="2">Điều chỉnh</th> -->
+                    <td><?php echo htmlspecialchars($r['CouponCode']); ?></td>
+                    <td><?php echo htmlspecialchars($r['StartDate']); ?></td>
+                    <td><?php echo htmlspecialchars($r['EndDate']); ?></td>
+                    <td><?php echo htmlspecialchars($r['Description']); ?></td>
+                    <td><?php echo number_format($r['CouponDiscount'], 0, ',', '.'); ?> %</td>
+                    <td><?php echo ($r['Status'] == 1) ? 'Còn hạn sử dụng' : 'Hết hạn sử dụng'; ?></td>
+                    <td><?php echo htmlspecialchars($r['UpdateAt']); ?></td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php while ($r = mysqli_fetch_assoc($tbl)): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($r['CouponCode']); ?></td>
-                        <td><?php echo htmlspecialchars($r['StartDate']); ?></td>
-                        <td><?php echo htmlspecialchars($r['EndDate']); ?></td>
-                        <td><?php echo htmlspecialchars($r['Description']); ?></td>
-                        <td><?php echo number_format($r['CouponDiscount'], 0, ',', '.'); ?> %</td>
-                        <td><?php echo ($r['Status'] == 1) ? 'Còn hạn sử dụng' : 'Hết hạn sử dụng'; ?></td>
-                        <td><?php echo htmlspecialchars($r['UpdateAt']); ?></td>
-                        <!-- <td>
-                            <a href="index.php?page=page_update_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-success">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="index.php?page=page_delete_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có thực sự muốn xóa mã giảm giá này không?')">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td> -->
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
 
-        <!-- Phân trang -->
-        <div class="row justify-content-end">
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
-                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
-                            &laquo;
+    <!-- Phân trang -->
+    <div class="row justify-content-end">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                    <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($keyword); ?>">
+                        &laquo;
+                    </a>
+                </li>
+
+                <!-- Hiển thị các trang -->
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+                        <a class="page-link" href="index.php?page=page_view_coupon&page_number=<?php echo $i; ?>&search=<?php echo urlencode($keyword); ?>">
+                            <?php echo $i; ?>
                         </a>
                     </li>
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                            <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $i; ?>&search=<?php echo urlencode($searchKeyword); ?>">
-                                <?php echo $i; ?>
-                            </a>
-                        </li>
-                    <?php endfor; ?>
-                    <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
-                        <a class="page-link" href="index.php?page=page_coupon&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
-                            &raquo;
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    <?php elseif (!$tbl): ?>
-        <p class="text-center">Không tìm thấy mã giảm giá nào phù hợp với từ khóa "<b><?php echo htmlspecialchars($searchKeyword); ?></b>".</p>
-    <?php endif; ?>
-</div>
+                <?php endfor; ?>
+
+                <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                    <a class="page-link" href="index.php?page=page_view_coupon&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($keyword); ?>">
+                        &raquo;
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+<?php else: ?>
+    <p class="text-center">
+        Không có mã giảm giá nào
+        <?php if (!empty($keyword)): ?>
+            với từ khóa "<b><?php echo htmlspecialchars($keyword); ?></b>"
+        <?php endif; ?>
+        <?php if (!empty($startDate) || !empty($endDate)): ?>
+            <?php if (!empty($startDate)): ?>
+                từ <b><?php echo htmlspecialchars($startDate); ?></b>
+            <?php endif; ?>
+            <?php if (!empty($endDate)): ?>
+                đến <b><?php echo htmlspecialchars($endDate); ?></b>
+            <?php endif; ?>
+        <?php endif; ?>.
+    </p>
+<?php endif; ?>
+
 
         <div class="modal fade" id="addCouponModal" tabindex="-1" role="dialog" aria-labelledby="addCouponModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -524,32 +584,5 @@
                                     }
                                 }
                             ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-            const editButtons = document.querySelectorAll('.edit-btn');
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const CouponID = this.getAttribute('data-id');
-                    document.getElementById('modalCouponID').value = CouponID;
-
-                    // Gửi AJAX để lấy dữ liệu chương trình khuyến mãi
-                    fetch(`page_coupon.php?CouponID=${CouponID}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Điền dữ liệu vào các trường trong modal
-                            document.querySelector('#updateCouponModal input[name="MaGiamGia"]').value = data.CouponCode;
-                            document.querySelector('#updateCouponModal input[name="NgayBatDau"]').value = data.StartDate;
-                            document.querySelector('#updateCouponModal input[name="NgayKetThuc"]').value = data.EndDate;
-                            document.querySelector('#updateCouponModal input[name="MoTa"]').value = data.Description;
-                            document.querySelector('#updateCouponModal select[name="GiamGia"]').value = data.CouponDiscount;
-                            document.querySelector('#updateCouponModal select[name="TrangThai"]').value = data.Status;
-                            document.querySelector('#updateCouponModal input[name="ThoiDiemCapNhat"]').value = data.UpDateAt;
-                        })
-                        .catch(error => console.error('Lỗi khi tải dữ liệu:', error));
-                });
-            });
-        });
-        </script>
-
 </body>
 </html>

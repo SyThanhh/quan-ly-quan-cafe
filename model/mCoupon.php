@@ -112,85 +112,136 @@
             }
         }
 
-        public function getCoupon($limit, $offset, $keyword = '') {
-            // Bắt đầu xây dựng truy vấn SQL cho bảng Coupon
-            $p = new Database();  // Tạo đối tượng kết nối
-            $con = $p->connect();  // Kết nối đến cơ sở dữ liệu
-            
-            // Bắt đầu truy vấn SQL
+        public function getCoupon($limit, $offset, $keyword = '', $startDate = '', $endDate = '') {
+            global $conn;  // Sử dụng kết nối toàn cục
+        
+            // Xây dựng truy vấn SQL
             $query = "SELECT * FROM Coupon WHERE Status = 1";
             
-            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho CouponName
+            // Thêm điều kiện tìm kiếm từ khóa
             if (!empty($keyword)) {
                 $query .= " AND CouponName LIKE ?";
             }
             
-            // Thêm phần LIMIT và OFFSET
+            // Thêm điều kiện ngày bắt đầu nếu có
+            if (!empty($startDate)) {
+                $query .= " AND StartDate >= ?";
+            }
+            
+            // Thêm điều kiện ngày kết thúc nếu có
+            if (!empty($endDate)) {
+                $query .= " AND EndDate <= ?";
+            }
+            
+            // Thêm LIMIT và OFFSET
             $query .= " LIMIT ? OFFSET ?";
             
-            // Chuẩn bị truy vấn
-            $stmt = mysqli_prepare($con, $query); // Sử dụng $con thay vì $this->con
-        
+            // Chuẩn bị câu truy vấn
+            $stmt = mysqli_prepare($conn, $query);
+            
             if ($stmt) {
-                // Nếu có từ khóa tìm kiếm, gắn tham số tìm kiếm và LIMIT/OFFSET
+                // Xử lý tham số
+                $params = [];
+                $types = '';  // Chuỗi kiểu dữ liệu của các tham số
+                
                 if (!empty($keyword)) {
-                    $searchTerm = "%$keyword%";
-                    mysqli_stmt_bind_param($stmt, "ssii", $searchTerm, $searchTerm, $limit, $offset);
-                } else {
-                    // Nếu không có từ khóa tìm kiếm, chỉ gắn LIMIT và OFFSET
-                    mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
+                    $params[] = "%$keyword%";
+                    $types .= 's';  // 's' cho kiểu dữ liệu string
                 }
-        
+                if (!empty($startDate)) {
+                    $params[] = $startDate;
+                    $types .= 's';  // 's' cho kiểu dữ liệu string
+                }
+                if (!empty($endDate)) {
+                    $params[] = $endDate;
+                    $types .= 's';  // 's' cho kiểu dữ liệu string
+                }
+                
+                // Thêm tham số cho LIMIT và OFFSET
+                $params[] = $limit;
+                $params[] = $offset;
+                $types .= 'ii';  // 'i' cho kiểu dữ liệu integer
+                
+                // Gắn tham số vào câu truy vấn
+                mysqli_stmt_bind_param($stmt, $types, ...$params);
+                
                 // Thực thi truy vấn
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
-        
-                // Lấy kết quả
-                $Coupon = [];
+                
+                // Lấy dữ liệu kết quả
+                $coupons = [];
                 while ($row = mysqli_fetch_assoc($result)) {
-                    $Coupon[] = $row;
+                    $coupons[] = $row;
                 }
-        
+                
                 // Đóng statement
                 mysqli_stmt_close($stmt);
-        
-                return $Coupon;  // Trả về danh sách sản phẩm
+                
+                return $coupons;  // Trả về danh sách phiếu giảm giá
             }
-        
+            
             return [];  // Nếu không có dữ liệu, trả về mảng rỗng
         }
-        public function getTotalCoupon($keyword = '') {
-            // Xây dựng truy vấn đếm tổng số sản phẩm trong bảng Coupon
-            $p = new Database();  // Tạo đối tượng kết nối
-            $con = $p->connect(); 
+        
+        public function getTotalCoupon($keyword = '', $startDate = '', $endDate = '') {
+            global $conn;  // Sử dụng kết nối toàn cục
+            
+            // Xây dựng truy vấn đếm tổng số phiếu giảm giá
             $query = "SELECT COUNT(*) as total FROM Coupon WHERE Status = 1";
             
-            // Nếu có từ khóa tìm kiếm, thêm vào điều kiện LIKE cho CouponName
+            // Thêm điều kiện tìm kiếm từ khóa
             if (!empty($keyword)) {
                 $query .= " AND CouponName LIKE ?";
             }
-        
-            // Chuẩn bị truy vấn
-            $stmt = mysqli_prepare($con, $query);
-        
+            
+            // Thêm điều kiện ngày bắt đầu nếu có
+            if (!empty($startDate)) {
+                $query .= " AND StartDate >= ?";
+            }
+            
+            // Thêm điều kiện ngày kết thúc nếu có
+            if (!empty($endDate)) {
+                $query .= " AND EndDate <= ?";
+            }
+            
+            // Chuẩn bị câu truy vấn
+            $stmt = mysqli_prepare($conn, $query);
+            
             if ($stmt) {
-                // Nếu có từ khóa tìm kiếm, gắn tham số tìm kiếm
+                // Xử lý tham số
+                $params = [];
+                $types = '';  // Chuỗi kiểu dữ liệu của các tham số
+                
                 if (!empty($keyword)) {
-                    $searchTerm = "%$keyword%";
-                    mysqli_stmt_bind_param($stmt, "s", $searchTerm);
+                    $params[] = "%$keyword%";
+                    $types .= 's';  // 's' cho kiểu dữ liệu string
                 }
-        
+                if (!empty($startDate)) {
+                    $params[] = $startDate;
+                    $types .= 's';  // 's' cho kiểu dữ liệu string
+                }
+                if (!empty($endDate)) {
+                    $params[] = $endDate;
+                    $types .= 's';  // 's' cho kiểu dữ liệu string
+                }
+                
+                // Gắn tham số vào câu truy vấn
+                mysqli_stmt_bind_param($stmt, $types, ...$params);
+                
                 // Thực thi truy vấn
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
                 $data = mysqli_fetch_assoc($result);
-        
+                
+                // Đóng statement
                 mysqli_stmt_close($stmt);
-        
-                return $data['total'];  // Trả về tổng số sản phẩm
+                
+                return $data['total'];  // Trả về tổng số phiếu giảm giá
             }
-        
-            return 0;  // Nếu không có sản phẩm, trả về 0
+            
+            return 0;  // Nếu không có phiếu giảm giá, trả về 0
         }
+        
     }
 ?>

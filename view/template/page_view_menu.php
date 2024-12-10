@@ -392,19 +392,19 @@
                                     <nav>
                                         <ul class="pagination">
                                             <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
-                                                <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
+                                                <a class="page-link" href="index.php?page=page_view_menu&page_number=<?php echo $page - 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
                                                     &laquo;
                                                 </a>
                                             </li>
                                             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                                 <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                                                    <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $i; ?>&search=<?php echo urlencode($searchKeyword); ?>">
+                                                    <a class="page-link" href="index.php?page=page_view_menu&page_number=<?php echo $i; ?>&search=<?php echo urlencode($searchKeyword); ?>">
                                                         <?php echo $i; ?>
                                                     </a>
                                                 </li>
                                             <?php endfor; ?>
                                             <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
-                                                <a class="page-link" href="index.php?page=page_menu&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
+                                                <a class="page-link" href="index.php?page=page_view_menu&page_number=<?php echo $page + 1; ?>&search=<?php echo urlencode($searchKeyword); ?>">
                                                     &raquo;
                                                 </a>
                                             </li>

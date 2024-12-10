@@ -74,8 +74,8 @@
     </div>
     <div class="row mb-5">
     <div class="container mt-5">
-    <h2 class="text-center">Sản phẩm nổi bật</h2>
-    <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+        <h2 class="text-center">Sản phẩm nổi bật</h2>
+        <div id="productCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
         <div class="carousel-inner">
             <?php 
             if ($carouselResult->num_rows > 0) {
@@ -109,7 +109,6 @@
             }
             ?>
         </div>
-
             <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="sr-only">Previous</span>
@@ -122,8 +121,8 @@
     </div>
     <div class="row">
         <div class="container mt-5">
-            <div class="product-review">
-                <h3>Đánh giá sản phẩm</h3>
+            <div class="product-review" style="margin-left: 10px">
+                <h3>Đánh giá sản phẩm</h3><br>
                 <?php
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
@@ -242,8 +241,8 @@
                 mysqli_stmt_close($stmt);
             ?>
     <!-- Footer Start -->
-    <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top">
-        <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
+    <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top" style="width:1500px; margin-left:-200px;">
+            <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
             <div class="col-lg-3 col-md-6 mb-5">
                 <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">LIÊN HỆ</h4>
                 <p><i class="fa fa-map-marker-alt mr-2"></i>Nguyễn Văn Bảo, P4, Gò Vấp, TP.HCM</p>
