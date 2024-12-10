@@ -128,7 +128,7 @@
             die("Connection failed: " . mysqli_connect_error());
         }
         
-        $customerID = $_SESSION['id']; 
+        $customerID = $_SESSION['idCustomer'];  
 
         // Lấy dữ liệu từ bảng customer
         $sql = "SELECT p.ProductID, p.ProductName, p.UnitPrice, p.ProductImage, p.UnitsInStock, p.Status, c.Rating, c.Content 
