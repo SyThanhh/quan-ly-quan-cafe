@@ -54,20 +54,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
-                    <!-- <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form> -->
-
+                  
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -101,12 +88,12 @@
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="index.php?page=page_profile">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
+                                    Thông tin cá nhân
                                 </a>
                                 
                                 <a class="dropdown-item" href="index.php?page=logout" >
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Đăng xuất
                                 </a>
                             </div>
                         </li>
@@ -199,11 +186,11 @@ if ($result_supplier === false) {
         </div>
     <?php endif; ?>
 
-    <form action="" method="POST">
+    <form action="" method="POST" id="myFormRequest">
         <!-- Chọn tên sản phẩm -->
         <div class="form-group">
             <label for="product">Tên sản phẩm</label>
-            <select class="form-control" id="product" name="product" required>
+            <select class="form-control" id="product" name="product" >
                 <option value="">Chọn sản phẩm</option>
                 <?php
                 if ($result_product->num_rows > 0) {
@@ -214,19 +201,22 @@ if ($result_supplier === false) {
                     echo "<option value=''>Không có sản phẩm nào</option>";
                 }
                 ?>
+
             </select>
+            <small class="text-danger error-message" style="display: none;">Vui lòng chọn sản phẩm</small>
         </div>
 
         <!-- Số lượng -->
         <div class="form-group">
             <label for="quantity">Số lượng</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" required>
+            <input type="number" class="form-control" id="quantity" name="quantity" >
+            <small class="text-danger error-message" style="display: none;">Vui lòng nhập số lượng</small>
         </div>
 
         <!-- Chọn nhà cung cấp -->
         <div class="form-group">
             <label for="supplier">Nhà cung cấp</label>
-            <select class="form-control" id="supplier" name="supplier" required>
+            <select class="form-control" id="supplier" name="supplier">
                 <option value="">Chọn nhà cung cấp</option>
                 <?php
                 if ($result_supplier->num_rows > 0) {
@@ -238,6 +228,7 @@ if ($result_supplier === false) {
                 }
                 ?>
             </select>
+            <small class="text-danger error-message" style="display: none;">Vui lòng chọn nhà cung cấp</small>
         </div>
 
         <!-- Ghi chú -->
@@ -270,6 +261,50 @@ $conn->close();
             
 
         }
+       
+
+        $(document).ready(function () {
+        $('#myFormRequest').on('submit', function (e) {
+            let isValid = true;
+
+            const product = $('#product');
+            const productError = product.next('.error-message'); // Thẻ <small> hiển thị lỗi
+            if (product.val() === "") {
+                isValid = false;
+                productError.show(); // Hiển thị thông báo lỗi
+            } else {
+                productError.hide(); // Ẩn thông báo lỗi nếu hợp lệ
+            }
+
+            // Kiểm tra trường "quantity"
+            const quantity = $('#quantity');
+            const quantityError = quantity.next('.error-message'); // Thẻ <small> hiển thị lỗi
+            if (quantity.val() === "" || quantity.val() <= 0) {
+                isValid = false;
+                quantityError.show(); // Hiển thị thông báo lỗi
+            } else {
+                quantityError.hide(); 
+            }
+
+            const supplier = $('#supplier');
+            const supplierError = supplier.next('.error-message'); // Thẻ <small> hiển thị lỗi
+            if (supplier.val() === "") {
+                isValid = false;
+                supplierError.show(); 
+            } else {
+                supplierError.hide();
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        // Ẩn lỗi khi người dùng sửa lại giá trị
+        $('#product, #quantity, #supplier').on('change', function () {
+            $(this).next('.error-message').hide();
+        });
+    });
     </script>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
