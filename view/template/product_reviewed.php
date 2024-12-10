@@ -136,7 +136,7 @@
         JOIN comment_product cp ON cp.ProductID = p.ProductID 
         JOIN comment c ON c.CommentID = cp.CommentID
         WHERE c.CustomerID = ?";
-        $result = mysqli_query($conn, $sql);
+        // $result = mysqli_query($conn, $sql);
 
         if ($stmt = mysqli_prepare($conn, $sql)) {
             //Liên kết ID khách hàng của người dùng đã đăng nhập với truy vấn SQL
