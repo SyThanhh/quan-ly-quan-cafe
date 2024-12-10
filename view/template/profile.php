@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $notification = "Số điện thoại không thay đổi.";
                 }
             } else {
-                $notification = "Có lỗi khi cập nhật số điện thoại.";
+                $notification = "Số điện thoại đã tồn tại.";
             }
             $stmt->close();
         }
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $notification = "Email không thay đổi.";
                 }
             } else {
-                $notification = "Có lỗi khi cập nhật email.";
+                $notification = "Email đã tồn tại.";
             }
             $stmt->close();
         }

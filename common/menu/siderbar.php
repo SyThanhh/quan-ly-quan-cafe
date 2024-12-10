@@ -100,7 +100,6 @@ function isPageAllowed($page, $userRole, $allowedPages) {
         </a>
         <div id="manageCustomer" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
                 <a class="collapse-item" href="index.php?page=page_customer">Xem thông tin</a>
                 <a class="collapse-item" href="index.php?page=page_statisticalCustomer">Thống kê thông tin</a>
             </div>
@@ -119,7 +118,6 @@ function isPageAllowed($page, $userRole, $allowedPages) {
         <div id="manageEmployee" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
                 <a class="collapse-item" href="index.php?page=page_employee">Quản lý thông tin nhân viên</a>
                 <a class="collapse-item" href="index.php?page=page_shift">Quản lý lịch làm việc</a>
             </div>

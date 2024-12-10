@@ -9,34 +9,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="assets/css/table.css">
-    <style>
-    /* Khi hover vào phần tử dropdown */
-.nav-item.dropdown:hover .dropdown-menu {
-    display: block;  /* Hiển thị menu khi hover */
-}
-
-/* Mặc định ẩn menu dropdown */
-.dropdown-menu {
-    display: none; /* Ẩn menu khi không hover */
-}
-
-/* Các hiệu ứng chuyển động */
-.dropdown-menu {
-    transition: opacity 0.3s ease;  /* Thêm hiệu ứng mờ dần */
-    opacity: 0;
-}
-
-/* Khi dropdown hiển thị */
-.nav-item.dropdown:hover .dropdown-menu {
-    opacity: 1;  /* Hiển thị khi hover */
-}
-
-</style>
-    <!-- Đầu trang -->
-    
+   
     
     <style>
-      
+            /* Khi hover vào phần tử dropdown */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;  /* Hiển thị menu khi hover */
+        }
+
+        /* Mặc định ẩn menu dropdown */
+        .dropdown-menu {
+            display: none; /* Ẩn menu khi không hover */
+        }
+
+        /* Các hiệu ứng chuyển động */
+        .dropdown-menu {
+            transition: opacity 0.3s ease;  /* Thêm hiệu ứng mờ dần */
+            opacity: 0;
+        }
+
+        /* Khi dropdown hiển thị */
+        .nav-item.dropdown:hover .dropdown-menu {
+            opacity: 1;  /* Hiển thị khi hover */
+        }
         
         @media (max-width: 600px) {
             .table, .table thead, .table tbody, .table th, .table td, .table tr {
@@ -225,6 +220,29 @@
      
     <?php include_once('./common/script/default.php'); ?>
     <script>
+        $(document).ready(function () {
+        // Lấy form
+        const $form = $("#filter-date");
+
+
+        const $inputs = $form.find("input[name='from-date']");
+
+        $inputs.each(function () {
+            const $input = $(this);
+
+            $input.on("invalid", function () {
+                if (!$input.val()) {
+                    $input[0].setCustomValidity("Vui lòng nhập thông tin này.");
+                } else {
+                    $input[0].setCustomValidity("");
+                }
+            });
+
+            $input.on("input", function () {
+                $input[0].setCustomValidity("");
+            });
+        });
+
         $('#btn-clear').on('click', function(e) {
             $('#from-date').val('');
                 
@@ -247,6 +265,8 @@
                 }
             });
         }
+    });
+        
     </script>
 </body>
 </html>
