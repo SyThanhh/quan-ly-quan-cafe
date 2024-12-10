@@ -23,36 +23,43 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     ?>
     <style>
-        .table-custom {
-        border: 2px solid black; /* Đặt độ dày của đường viền bảng */
-    }
-
-    .table-custom th,
-    .table-custom td {
-        border: 2px solid black; /* Đặt độ dày của đường viền cho từng ô */
-    }
-
-    .table-custom th {
-        background-color: #f8f9fa; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
-    }
-    input[type="text"],
-    input[type="datetime-local"],
-    select {
-        width: 100%;
-        padding: 8px; 
-        margin: 5px 0;
-        box-sizing: border-box; 
-    }
-    #search-form .btn-outline-secondary {
-            border: 1px solid #ced4da;
-            padding: 0.5rem 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-            margin-bottom: 5px;
-            margin-top: 5px;
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 6px; /* Bo tròn các góc của bảng */
+            overflow: hidden; /* Đảm bảo các góc bo tròn không bị vỡ */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
         }
+
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid lightgrey; /* Đặt độ dày của đường viền cho từng ô */
+        }
+
+        .table-custom th {
+            background-color:royalblue;
+            border: 1px solid lightgrey; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+            color: white;/* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+            
+        }
+        input[type="text"],
+        input[type="datetime-local"],
+        select {
+            width: 100%;
+            padding: 8px; 
+            margin: 5px 0;
+            box-sizing: border-box; 
+        }
+        #search-form .btn-outline-secondary {
+                border: 1px solid #ced4da;
+                padding: 0.5rem 0.75rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.3s ease;
+                margin-bottom: 5px;
+                margin-top: 5px;
+            }
 
         #search-form .search-button i {
             font-size: 0.75 rem;
@@ -288,7 +295,7 @@ $totalPages = ceil($totalCoupons / $limit);
                 <th>Giảm Giá</th>
                 <th>Trạng Thái</th>
                 <th>Thời Điểm Cập Nhật Cuối Cùng</th>
-                <th colspan="2">Điều chỉnh</th>
+                <th colspan="2">Điều Chỉnh</th>
             </tr>
         </thead>
         <tbody>

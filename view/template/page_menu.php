@@ -23,20 +23,25 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     ?>
     <style>
-    .table-custom {
-        border: 2px solid black; /* Đặt độ dày của đường viền bảng */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 6px; /* Bo tròn các góc của bảng */
+        overflow: hidden; /* Đảm bảo các góc bo tròn không bị vỡ */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
     }
 
     .table-custom th{
-        border: 2px solid black;
+        border: 1px solid lightgrey;
     }
     .table-custom td {
-        border: 2px solid black;
+        border: 1px solid lightgrey;
     }
 
     .table-custom th {
-        background-color: #f8f9fa;
-        border: 2px solid black; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+        background-color:royalblue;
+        border: 1px solid lightgrey; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+        color: white;
     }
     input[type="text"],
         input[type="datetime-local"],
@@ -227,7 +232,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                             <th>Trạng Thái</th>
                                             <th>Mô Tả</th>
                                             <th>Loại Sản Phẩm</th>
-                                            <th colspan="2">Điều chỉnh</th>
+                                            <th colspan="2">Điều Chỉnh</th>
                                         </tr>
                                     </thead>
                                     <tbody>
