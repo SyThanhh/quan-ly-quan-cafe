@@ -232,7 +232,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <div class="row">
         <div class="col-md-12">
             <div class="header text-left">
-                <h4>QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
+                <h4>XEM CHƯƠNG TRÌNH KHUYẾN MÃI</h4>
             </div>
             <form method="POST" id="search-form" class="d-flex mb-3 align-items-center">
     <div class="input-group mr-2">
@@ -291,11 +291,11 @@ $totalPages = ceil($totalCoupons / $limit);
 
 ?>
     <?php if ($coupons && mysqli_num_rows($coupons) > 0): ?>
-    <div style="text-align: right;">
+    <!-- <div style="text-align: right;">
         <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addCouponModal">
             <i class="fas fa-plus-square"></i> Thêm Mã Giảm Giá
         </button>
-    </div>
+    </div> -->
     <table class="table table-bordered table-custom">
         <thead>
             <tr>
