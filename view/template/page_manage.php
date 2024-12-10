@@ -107,7 +107,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="index.php?page=page_profile">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Thông tin nhân viên
                             </a>
@@ -291,7 +291,7 @@ if ($result && $result->num_rows > 0) {
     }
 
     // Hiển thị tổng doanh thu
-    $formattedTotalRevenue = number_format($totalRevenue, 2);
+    $formattedTotalRevenue = number_format($totalRevenue, 3, '.', '.');
 
     // Hiển thị hàng tổng cộng
     echo "<tr>";
@@ -377,64 +377,64 @@ if ($result && $result->num_rows > 0) {
         </div>
     </div>
     <?php
-// Khởi tạo mảng rỗng cho biểu đồ
-$dates = [];
-$totalRevenueBar = [];
-$productNames = [];
-$totalRevenueDonut = [];
+    // Khởi tạo mảng rỗng cho biểu đồ
+    $dates = [];
+    $totalRevenueBar = [];
+    $productNames = [];
+    $totalRevenueDonut = [];
 
-// Xử lý thống kê khi nhận yêu cầu
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $start_date = $_POST['start_date'];
-    $end_date = $_POST['end_date'];
+    // Xử lý thống kê khi nhận yêu cầu
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
 
-    // Validate dữ liệu ngày tháng
-    if (isset($start_date, $end_date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $start_date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $end_date)) {
-        try {
-            // Truy vấn dữ liệu cho biểu đồ Bar
-            $barQuery = $conn->prepare("
-                SELECT DATE(CreateDate) AS Date, SUM(TotalAmount) AS TotalRevenue
-                FROM `order`
-                WHERE DATE(CreateDate) BETWEEN ? AND ?
-                GROUP BY DATE(CreateDate)
-            ");
-            $barQuery->bind_param("ss", $start_date, $end_date); // Gắn tham số
-            $barQuery->execute();
-            $barResult = $barQuery->get_result();
+        // Validate dữ liệu ngày tháng
+        if (isset($start_date, $end_date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $start_date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $end_date)) {
+            try {
+                // Truy vấn dữ liệu cho biểu đồ Bar
+                $barQuery = $conn->prepare("
+                    SELECT DATE(CreateDate) AS Date, SUM(TotalAmount) AS TotalRevenue
+                    FROM `order`
+                    WHERE DATE(CreateDate) BETWEEN ? AND ?
+                    GROUP BY DATE(CreateDate)
+                ");
+                $barQuery->bind_param("ss", $start_date, $end_date); // Gắn tham số
+                $barQuery->execute();
+                $barResult = $barQuery->get_result();
 
-            while ($data = $barResult->fetch_assoc()) {
-                $dates[] = $data['Date'];
-                $totalRevenueBar[] = $data['TotalRevenue'];
+                while ($data = $barResult->fetch_assoc()) {
+                    $dates[] = $data['Date'];
+                    $totalRevenueBar[] = $data['TotalRevenue'];
+                }
+
+                // Truy vấn dữ liệu cho biểu đồ Doughnut
+                $donutQuery = $conn->prepare("
+                    SELECT p.ProductName, SUM(od.Quantity * od.UnitPrice) AS TotalRevenue
+                    FROM product p
+                    JOIN orderdetail od ON p.ProductID = od.ProductID
+                    JOIN `order` o ON od.OrderID = o.OrderID
+                    WHERE DATE(o.CreateDate) BETWEEN ? AND ?
+                    GROUP BY p.ProductName
+                ");
+                $donutQuery->bind_param("ss", $start_date, $end_date); // Gắn tham số
+                $donutQuery->execute();
+                $donutResult = $donutQuery->get_result();
+
+                while ($data = $donutResult->fetch_assoc()) {
+                    $productNames[] = $data['ProductName'];
+                    $totalRevenueDonut[] = $data['TotalRevenue'];
+                }
+            } catch (mysqli_sql_exception $e) {
+                echo "Lỗi truy vấn SQL: " . $e->getMessage();
+                exit;
             }
-
-            // Truy vấn dữ liệu cho biểu đồ Doughnut
-            $donutQuery = $conn->prepare("
-                SELECT p.ProductName, SUM(od.Quantity * od.UnitPrice) AS TotalRevenue
-                FROM product p
-                JOIN orderdetail od ON p.ProductID = od.ProductID
-                JOIN `order` o ON od.OrderID = o.OrderID
-                WHERE DATE(o.CreateDate) BETWEEN ? AND ?
-                GROUP BY p.ProductName
-            ");
-            $donutQuery->bind_param("ss", $start_date, $end_date); // Gắn tham số
-            $donutQuery->execute();
-            $donutResult = $donutQuery->get_result();
-
-            while ($data = $donutResult->fetch_assoc()) {
-                $productNames[] = $data['ProductName'];
-                $totalRevenueDonut[] = $data['TotalRevenue'];
-            }
-        } catch (mysqli_sql_exception $e) {
-            echo "Lỗi truy vấn SQL: " . $e->getMessage();
+        } else {
+            echo "Dữ liệu ngày không hợp lệ.";
             exit;
         }
-    } else {
-        echo "Dữ liệu ngày không hợp lệ.";
-        exit;
     }
-}
 
-?>
+  ?>
 
 
 

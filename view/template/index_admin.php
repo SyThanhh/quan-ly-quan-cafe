@@ -112,21 +112,14 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="profile.php">
+                                <a class="dropdown-item" href="index.php?page=page_profile">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
+                                    Thông tin nhân viên
                                 </a>
-                                <a class="dropdown-item" href="settings.php">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Settings
-                                </a>
-                                <a class="dropdown-item" href="activity_log.php">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
-                                </a>
+                               
                                 <a class="dropdown-item" href="index.php?page=logout" >
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Đăng xuất
                                 </a>
                             </div>
                         </li>
@@ -167,8 +160,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 foreach ($total as $row) {
                                                     $totalRevenue += $row['TotalAmount'];
                                                 }
-                                                // Định dạng tổng doanh thu thành dạng số có 2 chữ số thập phân
-                                                $formattedTotalRevenue = number_format($totalRevenue, );
+                                                // Định dạng tổng doanh thu thành dạng số có 3 chữ số thập phân
+                                                $formattedTotalRevenue = number_format($totalRevenue,3, '.', '.' );
                                                 // Hiển thị tổng doanh thu
                                                 echo '<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">' . $formattedTotalRevenue . ' VND</div>';
 
@@ -354,7 +347,9 @@ $totalRevenue = [];
 
 foreach ($query1 as $data) {
     $date[] = $data['Date'];
-    $totalRevenue[] = $data['TotalRevenue'];
+    $totalRevenue[] = number_format($data['TotalRevenue'], 3, '.', '.');
+
+
 }
 
 // Giả sử dữ liệu thứ hai là doanh thu theo khách hàng, bạn có thể thay thế bằng truy vấn thực tế của mình

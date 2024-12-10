@@ -62,8 +62,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     </style>
 </head>
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
-   
+
+    // require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
+    include_once("./payment/config.php");
+
+
     include_once('./connect/database.php'); 
     include_once('./controller/CustomerController.php'); 
     include_once('./controller/cCoupon.php'); 
@@ -73,8 +76,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
     $employeeController = new EmployeeController();
 
     $invoiceData = isset($_SESSION['invoiceData']) ? $_SESSION['invoiceData'] : [];
-    $database = new Database();
-    $conn = $database->connect(); // Lấy kết nối   
+    // $database = new Database();
+    // $conn = $database->connect(); // Lấy kết nối   
     $CustomerController = new CustomerController();
     $CouponController = new cCoupon();
     $searchKeyword = '';
@@ -225,7 +228,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="index.php?page=page_profile">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Thông tin nhân viên
                             </a>
@@ -308,6 +311,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                                     <?php
                                         $point = isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0';
                                         $coupons = $CouponController->getCouponByPoint($point);
+                                        // var_dump($coupons);
+                                        echo $point;
                                         if ($coupons) {
                                             while ($cpon = mysqli_fetch_assoc($coupons)) {
                                                 echo "<option value='".$cpon["CouponID"]."'>".$cpon["CouponCode"]."</option>";
@@ -349,8 +354,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                                 </tbody>
                             </table>
                             <div class="text-right d-flex justify-content-end">
-                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0</span> VNĐ</h5> 
-                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0.0</span>VNĐ</h5>
+                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0.0</span> đ</h5> 
+                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0.0</span> đ</h5>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <!-- <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button> -->
@@ -654,12 +659,11 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
             grandTotal += total;
         });
         grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
-        $totalAmountDisplay.text(grantToTalDiscount.toLocaleString());
+        $totalAmountDisplay.text(grantToTalDiscount.toFixed(2));
         let discount = (grandTotal* ($reductionDisplay/100));
-        console.log("grantToTalDiscount" ,grantToTalDiscount);
-        console.log("discount" ,discount);
+        
 
-        $totalAmountDiscount.text(discount.toLocaleString());
+        $totalAmountDiscount.text(discount.toFixed(2));
     }
     function validateEmail(email) {
         var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -890,8 +894,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                 type: 'GET',
                 data: { couponID: couponID },  // Gửi CouponID qua GET
                 success: function(response) {
-                    // Kiểm tra nếu server trả về dữ liệu hợp lệ
-                    console.log(response);
 
                     if (response.success) {
                         var couponDiscount = response.couponDiscount;  // Nhận CouponDiscount từ phản hồi
@@ -918,13 +920,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
             $('#couponCode').text('');
         }
     });
-    function convertToNumber(priceString) {
-        if (typeof priceString !== 'string') {
-            priceString = String(priceString); 
-        }
-        
-        priceString = priceString.replace(/[^0-9]/g, '');
 
+    function convertToNumber(priceString) {
+      
         return parseFloat(priceString);
     }
     function extractDiscount(value) {
@@ -959,6 +957,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
      $(document).ready(function() {
             $('#bank').change(function() {
                 if ($(this).is(':checked')) {
+                    fetchLatestOrderID();
                     $(".modal-footer").hide();
                     // Điều hướng đến trang thanh toán
                     // window.location.href = 'payment/index.php'; // Đường dẫn đến file PHP
@@ -979,15 +978,16 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                         $('#txt_billing_email').val(email);
                         $('#txt_billing_mobile').val(customerPhone);
                    
-                   
                 } else {
-                    $('#bankDetails').hide(); 
-                    $('#order_id').val('');
+                   
+                    $('#bankDetails').hide();
                     $('#amount').val('');
                     $('#order_desc').val('');
                     $('#txt_billing_fullname').val('');
                     $('#txt_billing_email').val('');
                     $('#txt_billing_mobile').val('');
+                    $('#reduction').val('');
+                    $('#total-amount').text('0'); // Reset tổng tiền về mặc định (nếu cần)
                 }
             });
             $("#cash").change(function() {
@@ -998,12 +998,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
                 let totalAmount = $("#total-amount").text().replace(/,/g, ''); // Lấy giá trị từ thẻ <span>
                 $('#amount').val(totalAmount); // Cập nhật giá trị trong form thanh toán
 
-                // Bạn có thể thêm các xử lý khác ở đây nếu cần
             }
 
            
             $("#btnPaymentModal").click(function() {
-               
                 updatePaymentInfo(); 
             });
 
@@ -1069,8 +1067,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
         const totalAmount = $("#total-amount"); 
 
 
-        console.log("orderData : ", orderData);
-        
         $.ajax({
             type: 'POST',
             url: 'index.php?page=processing_order',  // URL để xử lý lưu trữ đơn hàng
@@ -1078,16 +1074,16 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
             contentType: 'application/json',
             success: function(response, status, xhr) {
                 if (xhr.status === 200) {
-                    showAlert('success', 'Đơn hàng đã được lưu thành công! <br> Tiền thối lại: ' + amountReturn.val() + ' VNĐ.');
+                    showAlert('success', 'Đơn hàng đã được lưu thành công! <br> Tiền thối lại: ' + amountReturn.val() + ' đ.');
     
                     // Gọi deleteSession và chờ nó hoàn tất
                     deleteSession()
                         .done(function() {
-                            // Reset các trường nhập liệu
                            
                             $('#paymentModal').modal('hide');
 
                             updateUIForNoData();
+                            
                         })
                         .fail(function() {
                             console.log('Có lỗi xảy ra khi xóa session.');
@@ -1171,12 +1167,31 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php"
         const totalAmount = $("#total-amount"); 
         cashAmount.val("");
         amountReturn.val("");
-        totalAmount.text("0.000");
+        totalAmount.text("0.0");
         $invoiceListBody.empty(); // Xóa nội dung bảng
         $totalAmountDiscount.text("");
     }
 
-        
+    function fetchLatestOrderID() {
+        $.ajax({
+            url: 'index.php?page=getLatestOrderID', // Đường dẫn tới PHP API
+            method: 'GET',
+            dataType: 'json', 
+            success: function(response) {
+                if (response && response.orderID) {
+                    $('#order_id').val(response.orderID);
+                   
+                } else {
+                    console.error('Không nhận được Order ID từ server.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Lỗi khi lấy Order ID mới:', error);
+            }
+        });
+    }
+
+   
     </script>
     <!-- Bootstrap core JavaScript-->
     <?php 

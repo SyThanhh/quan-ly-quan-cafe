@@ -2,7 +2,7 @@
 
 
 // Kiểm tra nếu người dùng đã đăng nhập thì chuyển hướng về trang chủ
-if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+if (isset($_SESSION['loggedinCustomer']) && $_SESSION['loggedinCustomer'] === true) {
     header("Location: index.php");
     exit();
 }
@@ -67,7 +67,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="phone">Phone</label>
+                                <label for="phone">Số điện thoại</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-phone"></i></i></span>
