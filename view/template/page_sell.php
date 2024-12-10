@@ -659,11 +659,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             grandTotal += total;
         });
         grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
-        $totalAmountDisplay.text(grantToTalDiscount.toLocaleString());
+        $totalAmountDisplay.text(grantToTalDiscount.toFixed(2));
         let discount = (grandTotal* ($reductionDisplay/100));
         
 
-        $totalAmountDiscount.text(discount.toLocaleString());
+        $totalAmountDiscount.text(discount.toFixed(2));
     }
     function validateEmail(email) {
         var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -920,13 +920,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             $('#couponCode').text('');
         }
     });
-    function convertToNumber(priceString) {
-        if (typeof priceString !== 'string') {
-            priceString = String(priceString); 
-        }
-        
-        priceString = priceString.replace(/[^0-9]/g, '');
 
+    function convertToNumber(priceString) {
+      
         return parseFloat(priceString);
     }
     function extractDiscount(value) {
@@ -961,6 +957,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
      $(document).ready(function() {
             $('#bank').change(function() {
                 if ($(this).is(':checked')) {
+                    fetchLatestOrderID();
                     $(".modal-footer").hide();
                     // Điều hướng đến trang thanh toán
                     // window.location.href = 'payment/index.php'; // Đường dẫn đến file PHP
@@ -981,15 +978,16 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                         $('#txt_billing_email').val(email);
                         $('#txt_billing_mobile').val(customerPhone);
                    
-                   
                 } else {
-                    $('#bankDetails').hide(); 
-                    $('#order_id').val('');
+                   
+                    $('#bankDetails').hide();
                     $('#amount').val('');
                     $('#order_desc').val('');
                     $('#txt_billing_fullname').val('');
                     $('#txt_billing_email').val('');
                     $('#txt_billing_mobile').val('');
+                    $('#reduction').val('');
+                    $('#total-amount').text('0'); // Reset tổng tiền về mặc định (nếu cần)
                 }
             });
             $("#cash").change(function() {
@@ -1000,12 +998,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 let totalAmount = $("#total-amount").text().replace(/,/g, ''); // Lấy giá trị từ thẻ <span>
                 $('#amount').val(totalAmount); // Cập nhật giá trị trong form thanh toán
 
-                // Bạn có thể thêm các xử lý khác ở đây nếu cần
             }
 
            
             $("#btnPaymentModal").click(function() {
-               
                 updatePaymentInfo(); 
             });
 
@@ -1071,8 +1067,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         const totalAmount = $("#total-amount"); 
 
 
-        console.log("orderData : ", orderData);
-        
         $.ajax({
             type: 'POST',
             url: 'index.php?page=processing_order',  // URL để xử lý lưu trữ đơn hàng
@@ -1085,11 +1079,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     // Gọi deleteSession và chờ nó hoàn tất
                     deleteSession()
                         .done(function() {
-                            // Reset các trường nhập liệu
                            
                             $('#paymentModal').modal('hide');
 
                             updateUIForNoData();
+                            
                         })
                         .fail(function() {
                             console.log('Có lỗi xảy ra khi xóa session.');
@@ -1173,12 +1167,31 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         const totalAmount = $("#total-amount"); 
         cashAmount.val("");
         amountReturn.val("");
-        totalAmount.text("0.000");
+        totalAmount.text("0.0");
         $invoiceListBody.empty(); // Xóa nội dung bảng
         $totalAmountDiscount.text("");
     }
 
-        
+    function fetchLatestOrderID() {
+        $.ajax({
+            url: 'index.php?page=getLatestOrderID', // Đường dẫn tới PHP API
+            method: 'GET',
+            dataType: 'json', 
+            success: function(response) {
+                if (response && response.orderID) {
+                    $('#order_id').val(response.orderID);
+                   
+                } else {
+                    console.error('Không nhận được Order ID từ server.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Lỗi khi lấy Order ID mới:', error);
+            }
+        });
+    }
+
+   
     </script>
     <!-- Bootstrap core JavaScript-->
     <?php 

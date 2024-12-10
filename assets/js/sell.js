@@ -14,29 +14,13 @@ $(document).ready(function() {
 
 
     function convertToNumber(priceString) {
-        if (typeof priceString !== 'string') {
-            priceString = String(priceString); // Chuyển đổi thành chuỗi
-        }
-        return parseInt(priceString); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
+        // if (typeof priceString !== 'string') {
+        //     priceString = String(priceString); // Chuyển đổi thành chuỗi
+        // }
+        return parseFloat(priceString); // Loại bỏ dấu phẩy và chuyển đổi sang số nguyên
         // return priceString
     }
 
-    function updateGrandTotal() {
-        let grandTotal = 0;
-        let grantToTalDiscount = 0;
-        $invoiceListBody.find('tr').each(function() {
-            const total = convertToNumber($(this).find('.total-price').text());
-            grandTotal += total;
-        });
-        grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
-        $totalAmountDisplay.text(grantToTalDiscount.toLocaleString());
-        let discount = (grandTotal* ($reductionDisplay/100));
-        
-        $("#total-amount-discount").text(discount.toLocaleString());
-    }
-
-
-  
 
     // xáo session
     function deleteSession() {
@@ -72,10 +56,11 @@ $(document).ready(function() {
                 $quantityInput.val(quantity);
                 $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
                 updateSession();
-                console.log("productPrice 1", productPrice);
+                updateGrandTotal();
             } else {
                 showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
             }
+
         } else {
             const $row = $(`
                 <tr data-id="${product.id}" data-name="${product.name}" data-stock="${product.stock}">
@@ -95,7 +80,7 @@ $(document).ready(function() {
             $invoiceListBody.append($row);
     
             updateSession();
-            
+            updateGrandTotal();
             const $quantityInput = $row.find('.quantity-display');
             const stock = parseInt(product.stock);
             const productPrice = parseFloat(product.price);
@@ -113,9 +98,9 @@ $(document).ready(function() {
                 }
                 const totalPrice = quantity * productPrice;
                 $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
-                console.log("productPrice 2", productPrice);
                 updateGrandTotal();
                 updateSession();
+
             });
     
             $row.find('.btn-plus').on('click', function(e) {
@@ -127,9 +112,9 @@ $(document).ready(function() {
                     const totalPrice = quantity * productPrice;
                     $quantityInput.val(quantity);
                     $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
-                    console.log("productPrice 3", productPrice);
                     updateGrandTotal();
                     updateSession();
+
                 } else {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
@@ -140,22 +125,27 @@ $(document).ready(function() {
                 let quantity = parseInt($quantityInput.val());
                 if (quantity > 1) {
                     quantity--;
+                    console.log("quantity : ", quantity);
+                    $quantityInput.val(quantity);
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
                     $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
-                    console.log("productPrice 4", productPrice);
                     updateGrandTotal();
                     updateSession();
+
+                 
                 }
             });
     
             $row.find('.btn-remove').on('click', function() {
                 $row.remove();
                 updateGrandTotal();
+
             });
         }
     
         updateGrandTotal();
+
     }
 
 
@@ -218,7 +208,7 @@ $(document).ready(function() {
 
     // Gắn sự kiện cho các nút trong modal
     $('#paymentModal').on('shown.bs.modal', function() {
-        $(this).find("#total-amount").val($totalAmountDisplay.text());
+        $(this).find("#total-amount").val($totalAmountDisplay.text() + " đ");
     
         let totalAmount = parseFloat($(this).find("#total-amount").val().replace(/,/g, ''));
     
@@ -388,8 +378,10 @@ $(document).ready(function() {
                     $quantityInput.val(quantity);
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
-                    $existingRow.find('.total-price').text(totalPrice);
+                    
+                    $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
                     updateSession();
+
                 } else {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
@@ -414,6 +406,7 @@ $(document).ready(function() {
                 const $quantityInput = $row.find('.quantity-display');
                 const stock = product.stock;
                 updateSession();
+
     
                 // Xử lý sự kiện thay đổi số lượng
                 $quantityInput.on('input', function(e) {
@@ -430,10 +423,11 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
     
-                    $row.find('.total-price').text(totalPrice);
+                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
                     updated = true;
                     updateGrandTotal();
                     updateSession();
+
                 });
     
                 // Xử lý sự kiện tăng số lượng
@@ -445,9 +439,10 @@ $(document).ready(function() {
                         $quantityInput.val(quantity);
                         const productPrice = parseFloat(product.price);
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice);
+                        $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
                         updateGrandTotal();
                         updateSession();
+
                     } else {
                         showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                     }
@@ -462,9 +457,10 @@ $(document).ready(function() {
                         $quantityInput.val(quantity);
                         const productPrice = parseFloat(product.price);
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice);
+                        $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
                         updateGrandTotal();
                         updateSession();
+
                     }
                 });
     
@@ -473,6 +469,7 @@ $(document).ready(function() {
                     $row.remove();
                     updateGrandTotal();
                     updateSession();
+
                 });
             }
     

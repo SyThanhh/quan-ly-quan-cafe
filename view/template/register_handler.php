@@ -39,7 +39,7 @@
 
 
 
-1<?php
+<?php
 // Kiểm tra nếu có dữ liệu POST từ form đăng ký
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Lấy dữ liệu từ form và kiểm tra đầu vào
@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (!preg_match("/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/", $email)) {
        
-        showError("Email không hợp lệ. Vui lòng nhập lại!");
+        showError("Email không hợp lệ. Vui lòng nhập lại!");    
     }
 
     // Kiểm tra định dạng số điện thoại (chỉ cho phép số và độ dài từ 10-15 ký tự)
