@@ -281,7 +281,7 @@ if ($result && $result->num_rows > 0) {
         echo "<td>{$stt}</td>";
         echo "<td>{$row['CreateDate']}</td>";
         echo "<td>{$row['PaymentMethod']}</td>";
-        echo "<td>{$row['TotalAmount']}</td>";
+        echo "<td>" . number_format($row['TotalAmount']) . " VNĐ</td>";
             
         // Cộng tổng doanh thu
         $totalRevenue += $row['TotalAmount'];
@@ -291,12 +291,12 @@ if ($result && $result->num_rows > 0) {
     }
 
     // Hiển thị tổng doanh thu
-    $formattedTotalRevenue = number_format($totalRevenue, 3, '.', '.');
+    $formattedTotalRevenue = number_format($totalRevenue);
 
     // Hiển thị hàng tổng cộng
     echo "<tr>";
     echo "<td colspan='3'></td>";
-    echo "<td><strong>Tổng doanh thu:</strong> {$formattedTotalRevenue}</td>";
+    echo "<td><strong>Tổng doanh thu:</strong> {$formattedTotalRevenue} VNĐ</td>";
     echo "</tr>";
 } else {
     // Xử lý trường hợp không có dữ liệu hoặc có lỗi trong câu truy vấn
@@ -493,14 +493,30 @@ document.getElementById("stats-btn").addEventListener("click", function() {
                     'rgba(54, 162, 235, 0.2)',
                     'rgba(255, 206, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(201, 203, 207, 0.2)',
+                    'rgba(100, 149, 237, 0.2)',
+                    'rgba(255, 127, 80, 0.2)',
+                    'rgba(124, 252, 0, 0.2)',
+                    'rgba(72, 209, 204, 0.2)',
+                    'rgba(240, 230, 140, 0.2)',
+                    'rgba(147, 112, 219, 0.2)'
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(201, 203, 207, 1)',
+                    'rgba(100, 149, 237, 1)',
+                    'rgba(255, 127, 80, 1)',
+                    'rgba(124, 252, 0, 1)',
+                    'rgba(72, 209, 204, 1)',
+                    'rgba(240, 230, 140, 1)',
+                    'rgba(147, 112, 219, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -529,16 +545,32 @@ document.getElementById("stats-btn").addEventListener("click", function() {
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(252, 206, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(201, 203, 207, 0.2)',
+                    'rgba(100, 149, 237, 0.2)',
+                    'rgba(255, 127, 80, 0.2)',
+                    'rgba(124, 252, 0, 0.2)',
+                    'rgba(72, 209, 204, 0.2)',
+                    'rgba(240, 230, 140, 0.2)',
+                    'rgba(147, 112, 219, 0.2)'
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
+                    'rgba(252, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(201, 203, 207, 1)',
+                    'rgba(100, 149, 237, 1)',
+                    'rgba(255, 127, 80, 1)',
+                    'rgba(124, 252, 0, 1)',
+                    'rgba(72, 209, 204, 1)',
+                    'rgba(240, 230, 140, 1)',
+                    'rgba(147, 112, 219, 1)'
                 ],
                 borderWidth: 1
             }]

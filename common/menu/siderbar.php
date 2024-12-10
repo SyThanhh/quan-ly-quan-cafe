@@ -200,36 +200,20 @@ function isPageAllowed($page, $userRole, $allowedPages) {
     <?php if (isPageAllowed('page_requestform', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Quản lý phiếu gửi yêu cầu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageRequest"
-            aria-expanded="true" aria-controls="manageRequest">
+        <a class="nav-link collapsed" href="index.php?page=page_requestform">
             <i class="fas fa-file-alt"></i>
             <span>Quản lý phiếu gửi yêu cầu</span>
         </a>
-        <div id="manageRequest" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <?php if ($userRole == 1): ?>
-                <a class="collapse-item" href="index.php?page=page_requestform">Quản lý phiếu</a>
-                <?php endif; ?>
-            </div>
-        </div>
     </li>
     <?php endif; ?>
 
     <?php if (isPageAllowed('page_manage', $userRole, $allowedPages)): ?>
     <!-- Nav Item - Thống kê doanh thu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageStatistical"
-            aria-expanded="true" aria-controls="manageStatistical">
+        <a class="nav-link collapsed" href="index.php?page=page_manage">
             <i class="fas fa-chart-bar"></i>
             <span>Thống kê doanh thu</span>
         </a>
-        <div id="manageStatistical" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="index.php?page=page_manage">Thống kê</a>
-            </div>
-        </div>
     </li>
     <?php endif; ?>
 

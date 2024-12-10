@@ -161,7 +161,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                     $totalRevenue += $row['TotalAmount'];
                                                 }
                                                 // Định dạng tổng doanh thu thành dạng số có 3 chữ số thập phân
-                                                $formattedTotalRevenue = number_format($totalRevenue,3, '.', '.' );
+                                                $formattedTotalRevenue = number_format($totalRevenue );
                                                 // Hiển thị tổng doanh thu
                                                 echo '<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">' . $formattedTotalRevenue . ' VND</div>';
 
@@ -347,7 +347,7 @@ $totalRevenue = [];
 
 foreach ($query1 as $data) {
     $date[] = $data['Date'];
-    $totalRevenue[] = number_format($data['TotalRevenue'], 3, '.', '.');
+    $totalRevenue[] = $data['TotalRevenue'];
 
 
 }
