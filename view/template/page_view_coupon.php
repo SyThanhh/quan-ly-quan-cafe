@@ -369,7 +369,14 @@ $totalPages = ceil($totalCoupons / $limit);
             </nav>
         </div>
     <?php else: ?>
-        <p class="text-center">Không có mã giảm giá nào.</p>
+        <p class="text-center">
+            <?php if (!empty($startDate)): ?>
+                Không có mã giảm giá nào từ <b><?php echo htmlspecialchars($startDate); ?></b>
+            <?php endif; ?>
+            <?php if (!empty($endDate)): ?>
+                đến <b><?php echo htmlspecialchars($endDate); ?></b>
+            <?php endif; ?>
+        </p>
     <?php endif; ?>
 <?php endif; ?>
 
