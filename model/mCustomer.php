@@ -40,45 +40,47 @@
             }
         }
 
-        public function selectCustomerByPhone($keyword) {
+        public function selectCustomerByPhoneAndEmail($keyword) {
             // Kiểm tra kết nối
             if (!$this->conn) {
                 return false; 
             }
         
             $keyword = trim($keyword);
-            $str = "SELECT * FROM customer WHERE Status = 1";
+            $query = "SELECT * FROM customer WHERE Status = 1";
         
             if (!empty($keyword)) {
-                $str .= " AND CustomerPhone = ?";
+                $query .= " AND (CustomerName LIKE ? OR CustomerPhone LIKE ?)";
             } else {
-                return null; // Hoặc return false để biểu thị lỗi
+                return null; // Không có từ khóa tìm kiếm, trả về null
             }
         
-            $stmt = mysqli_prepare($this->conn, $str);
-            if (!$stmt) {
-                return false; 
-            }
-        
-            if (!empty($keyword)) {
-                mysqli_stmt_bind_param($stmt, "s", $keyword);
+            $stmt = mysqli_prepare($this->conn, $query);
+            if ($stmt) {
+                // Chuẩn bị giá trị tìm kiếm
+                $searchTerm = "%$keyword%";
+                mysqli_stmt_bind_param($stmt, "ss", $searchTerm, $searchTerm);
+            } else {
+                return false; // Lỗi chuẩn bị câu lệnh
             }
         
             // Thực thi truy vấn
             if (mysqli_stmt_execute($stmt)) {
                 // Lấy kết quả trả về
                 $result = mysqli_stmt_get_result($stmt);
-                $customer = mysqli_fetch_assoc($result); 
-                
+                $customer = mysqli_fetch_assoc($result);
+        
                 // Đóng câu lệnh
                 mysqli_stmt_close($stmt);
-                
+        
                 return $customer ?: null; // Trả về null nếu không tìm thấy
             }
         
+            // Đóng câu lệnh trong trường hợp xảy ra lỗi
             mysqli_stmt_close($stmt);
             return null; // Trả về null nếu có lỗi xảy ra
         }
+        
         
         
 
