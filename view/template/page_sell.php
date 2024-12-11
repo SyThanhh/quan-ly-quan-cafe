@@ -387,8 +387,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     <label for="category-select">Danh Mục Sản Phẩm:</label>
                                     <select class="form-control" id="category-select" name="category">
                                         <option value="">Chọn danh mục</option>
-                                        <option value="1">Cafe pha máy</option>
-                                        <option value="2">Cafe pha phin</option>
+                                        <option value="1">Cafe</option>
+                                        <option value="2">Soda</option>
                                         <option value="3">Nước ép</option>
                                         <option value="4">Trà</option>
                                         <option value="5">Nước ngọt</option>
