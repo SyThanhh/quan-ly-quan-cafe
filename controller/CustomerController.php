@@ -23,8 +23,8 @@
             }
         }
 
-        public function getAllCustomersByPhone($keyword) {
-            $tblCustomer = $this->mCustomer->selectCustomerByPhone($keyword);
+        public function getAllCustomersByPhoneAndEmail($keyword) {
+            $tblCustomer = $this->mCustomer->selectCustomerByPhoneAndEmail($keyword);
         
             if ($tblCustomer !== null) {
                 return $tblCustomer; 
