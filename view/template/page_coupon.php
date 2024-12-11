@@ -34,7 +34,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         #wrapper{
             margin-left: 220px;
             margin-top: -810px;
-            width: 1120px;
         }
 
         .table-custom th,
@@ -129,24 +128,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 .input-group input:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-/* Đảm bảo các phần tử không bị co lại quá mức */
-@media (max-width: 768px) {
-    .input-group,
-    .input-group-append {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .input-group input
-    {
-        width: 100%; /* Cho phép các input và button chiếm toàn bộ chiều rộng */
-        margin-bottom: 10px; /* Khoảng cách giữa các phần tử */
-    }
-    .search-button {
-        width: 50px;
-    }
 }
 
 

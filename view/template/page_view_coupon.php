@@ -24,6 +24,17 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     ?>
     <style>
+        .sidebar {
+            height: 100%; /* Chiếm toàn bộ chiều cao màn hình */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; /* Chiều rộng của sidebar */
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient màu nền */
+            color: white;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -32,9 +43,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
         }
         #wrapper{
-            margin-left: 220px;
-            margin-top: -800px;
-            width: 1120px;
+            margin-left: 230px;
+            margin-top: 0px;
         }
 
         .table-custom th,
