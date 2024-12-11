@@ -15,7 +15,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');    
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+        include_once('./connect/database.php');
+        include_once('./common/menu/siderbar.php');  // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
@@ -23,12 +24,27 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     ?>
     <style>
+        .sidebar {
+            height: 100%; /* Chiếm toàn bộ chiều cao màn hình */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; /* Chiều rộng của sidebar */
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient màu nền */
+            color: white;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
         .table {
             width: 100%;
             border-collapse: collapse;
             border-radius: 6px; /* Bo tròn các góc của bảng */
             overflow: hidden; /* Đảm bảo các góc bo tròn không bị vỡ */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
+        }
+        #wrapper{
+            margin-left: 230px;
+            margin-top: 0px;
         }
 
         .table-custom th,
@@ -158,12 +174,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             document.getElementById('ThoiDiemCapNhat').value = dateTimeString;
         }
     </script>
+    <?php include_once('./common/menu/siderbar.php'); ?>
 </head>
 
 <body onload="updateCurrentTime()">
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
-        <?php include_once('./common/menu/siderbar.php'); ?>
 
         <!-- Giao diện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -313,7 +329,7 @@ $totalPages = ceil($totalCoupons / $limit);
                     <th>Giảm Giá</th>
                     <th>Trạng Thái</th>
                     <th>Thời Điểm Cập Nhật Cuối Cùng</th>
-                    <th colspan="2">Điều Chỉnh</th>
+                    <!-- <th colspan="2">Điều Chỉnh</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -326,7 +342,7 @@ $totalPages = ceil($totalCoupons / $limit);
                         <td><?php echo number_format($r['CouponDiscount'], 0, ',', '.'); ?> %</td>
                         <td><?php echo ($r['Status'] == 1) ? 'Còn hạn sử dụng' : 'Hết hạn sử dụng'; ?></td>
                         <td><?php echo htmlspecialchars($r['UpdateAt']); ?></td>
-                        <td>
+                        <!-- <td>
                             <a href="index.php?page=page_update_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-success">
                                 <i class="fas fa-edit"></i>
                             </a>
@@ -335,7 +351,7 @@ $totalPages = ceil($totalCoupons / $limit);
                             <a href="index.php?page=page_delete_coupon&CouponID=<?php echo $r['CouponID']; ?>" class="btn btn-danger" onclick="return confirm('Bạn có thực sự muốn xóa mã giảm giá này không?')">
                                 <i class="fas fa-trash"></i>
                             </a>
-                        </td>
+                        </td> -->
                     </tr>
                 <?php endwhile; ?>
             </tbody>

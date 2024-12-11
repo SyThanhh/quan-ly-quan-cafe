@@ -54,7 +54,7 @@ $(document).ready(function() {
                 quantity++;
                 const totalPrice = quantity * productPrice;
                 $quantityInput.val(quantity);
-                $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                $existingRow.find('.total-price').text(totalPrice + " đ");
                 updateSession();
                 updateGrandTotal();
             } else {
@@ -97,7 +97,7 @@ $(document).ready(function() {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
                 const totalPrice = quantity * productPrice;
-                $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                $row.find('.total-price').text(totalPrice + " đ");
                 updateGrandTotal();
                 updateSession();
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
                     $quantityInput.val(quantity);
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $row.find('.total-price').text(totalPrice + " đ");
                     updateGrandTotal();
                     updateSession();
 
@@ -129,7 +129,7 @@ $(document).ready(function() {
                     $quantityInput.val(quantity);
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $row.find('.total-price').text(totalPrice + " đ");
                     updateGrandTotal();
                     updateSession();
 
@@ -379,7 +379,7 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
                     
-                    $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $existingRow.find('.total-price').text(totalPrice + " đ");
                     updateSession();
 
                 } else {
@@ -423,7 +423,7 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
     
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $row.find('.total-price').text(totalPrice + " đ");
                     updated = true;
                     updateGrandTotal();
                     updateSession();
@@ -439,7 +439,7 @@ $(document).ready(function() {
                         $quantityInput.val(quantity);
                         const productPrice = parseFloat(product.price);
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                        $row.find('.total-price').text(totalPrice + " đ");
                         updateGrandTotal();
                         updateSession();
 
@@ -457,7 +457,7 @@ $(document).ready(function() {
                         $quantityInput.val(quantity);
                         const productPrice = parseFloat(product.price);
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                        $row.find('.total-price').text(totalPrice + " đ");
                         updateGrandTotal();
                         updateSession();
 

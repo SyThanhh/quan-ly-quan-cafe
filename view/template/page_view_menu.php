@@ -1,5 +1,10 @@
 
-<?php ?>
+<?php
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php?page=login");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +15,8 @@
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');    
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+        include_once('./connect/database.php');
+        include_once('./common/menu/siderbar.php'); // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
@@ -18,20 +24,41 @@
 
     ?>
     <style>
-    .table-custom {
-        border: 2px solid black; /* Đặt độ dày của đường viền bảng */
+    .sidebar {
+            height: 100%; /* Chiếm toàn bộ chiều cao màn hình */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; /* Chiều rộng của sidebar */
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient màu nền */
+            color: white;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 6px; /* Bo tròn các góc của bảng */
+        overflow: hidden; /* Đảm bảo các góc bo tròn không bị vỡ */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
     }
 
+    #wrapper{
+            margin-left: 230px;
+            margin-top: 0px;
+        }
+
     .table-custom th{
-        border: 2px solid black;
+        border: 1px solid lightgrey;
     }
     .table-custom td {
-        border: 2px solid black;
+        border: 1px solid lightgrey;
     }
 
     .table-custom th {
-        background-color: #f8f9fa;
-        border: 2px solid black; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+        background-color:royalblue;
+        border: 1px solid lightgrey; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
+        color: white;
     }
     input[type="text"],
         input[type="datetime-local"],
@@ -111,32 +138,12 @@
 <body onload="updateCurrentTime()">
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
-        <?php include_once('./common/menu/siderbar.php'); ?>
 
         <!-- Giao diện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
                 <!-- Thanh điều hướng ngang -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-                    <!-- Topbar Search -->
-                    <!-- <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form> -->
-
-                    <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
                     <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -145,13 +152,12 @@
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-search fa-fw"></i>
                         </a>
-                       
-
+                        
                     <div class="topbar-divider d-none d-sm-block"></div>
 
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <!-- Nav Item - User Information -->
+                    <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <!-- Hiển thị tên người dùng từ session -->
                                 <input type="text" id="employeeIdByRole" value="<?php echo htmlspecialchars($employeeID); ?>" hidden/>
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
@@ -179,6 +185,7 @@
                             </a>
                             </div>
                         </li>
+
                     </ul>
                 </nav>
 
@@ -225,11 +232,11 @@
 
                             if ($tbl):
                             ?>
-                                <!-- <div style="text-align: right;">
+                                <div style="text-align: right;">
                                     <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addMenuModal">
                                         <i class="fas fa-plus-square"></i> Thêm Món Trong Menu
                                     </button>
-                                </div> -->
+                                </div>
                                 <table class="table table-bordered table-custom">
                                     <thead>
                                         <tr>
@@ -241,7 +248,7 @@
                                             <th>Trạng Thái</th>
                                             <th>Mô Tả</th>
                                             <th>Loại Sản Phẩm</th>
-                                            <!-- <th colspan="2">Điều chỉnh</th> -->
+                                            <!-- <th colspan="2">Điều Chỉnh</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -358,10 +365,6 @@
                                         <td><input type="datetime-local"  name="ThoiGianTaoSanPham" id="ThoiGianTaoSanPham" required readonly></td>
                                     </tr>
                                     <tr>
-                                        <td>Mã Yêu Cầu</td>
-                                        <td><input type="int"  name="MaYeuCau" required></td>
-                                    </tr>
-                                    <tr>
                                         <td>Loại Sản Phẩm</td>
                                         <td>
                                             <?php
@@ -410,7 +413,6 @@
                                                 $_REQUEST['MoTa'],
                                                 $_REQUEST['ThoiGianTaoSanPham'],
                                                 $_REQUEST['ThoiDiemCapNhat'],
-                                                $_REQUEST['MaYeuCau'],
                                                 $_REQUEST['cboLoaiSP']
                                             );
                                             
