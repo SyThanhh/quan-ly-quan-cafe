@@ -212,7 +212,7 @@
                                         while ($row = $result->fetch_assoc()) {
                                             echo '<tr>';
                                             echo '<td>' . htmlspecialchars($row['CustomerName']) . '</td>'; // Tên khách hàng
-                                            echo '<td>' . format_currency_vnd($row['TotalPurchase']) .'</td>'; // Tổng lượng mua
+                                            echo '<td>' . number_format($row['TotalPurchase'], 0, ',', '.') . ' đ</td>';// Tổng lượng mua
                                             echo '<td><a href="?page=page_viewDetailCustomer&customerId=' . $row['CustomerID'] . '" class="btn btn-primary btn-sm" style="border: none;
     background: #683c08bf;">Xem</a></td>'; // Nút xem chi tiết
                                             echo '</tr>';

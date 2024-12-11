@@ -287,7 +287,7 @@
                                     echo '<p class="card-text">Email: <span id="customer-email">' . ($row['Email']) . '</span></p>';
                                     echo '<p class="card-text">Số điện thoại: <span id="customer-phone">' . ($row['CustomerPhone']) . '</span></p>';
                                     echo '<p class="card-text">Tổng số đơn hàng: <span id="total-orders">' . $row['TotalOrders'] . '</span></p>';
-                                    echo '<p class="card-text">Tổng chi tiêu: <span id="total-spent">' . format_currency_vnd($row['TotalSpent']) . '</span></p>';
+                                    echo '<p class="card-text">Tổng chi tiêu: <span id="total-spent">' . number_format($row['TotalSpent'], 0, ',', '.') . ' đ</span></p>';
                                     echo '<p class="card-text">Điểm tích lũy: <span id="reward-points">' . ($row['CustomerPoint']) . '</span></p>';
                                 } 
                             
@@ -325,7 +325,7 @@
                                         echo "<tr>";
                                             echo '<td>' . $row['ProductName'] . '</td>';
                                             echo '<td>' . $row['Quantity'] . '</td>';
-                                            echo '<td>' . format_currency_vnd($row['UnitPrice']) . '</td>';
+                                            echo '<td>' . number_format($row['UnitPrice'], 0, ',', '.') . ' đ</td>';
                                             echo '<td>' . date('d/m/Y', strtotime($row['CreateDate'])) . '</td>';
                                         echo " </tr>";
                                     }
