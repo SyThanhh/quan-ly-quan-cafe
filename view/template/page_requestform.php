@@ -134,7 +134,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             ?>
 
             <table class="table table-striped table-bordered">
-                <thead class="thead-dark text-center">
+                <thead class="text-center" style="background-color: #683c08bf; border: none; color:#fff;" >
                 <tr>
                         <th>Mã</th>
                         <th>Tên sản phẩm</th>
