@@ -107,6 +107,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     opacity: 1;  /* Hiển thị khi hover */
 }
 
+.page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+        }
 </style>
 </head>
 
@@ -222,13 +228,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             <!-- Danh sách lịch -->
                             <div class="mt-8">
                                 <table class="table table-bordered">
-                                    <thead align="center">
+                                    <thead align="center" style="background-color: #683c08bf; border:none; color:white">
                                         <tr>
                                             <th>Mã</th>
                                             <th>Loại ca</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th colspan="2">Thao tác</th>
+                                            <th>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -242,8 +248,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                             echo "<td>{$row['StartDate']}</td>";
                                             echo "<td>{$row['EndDate']}</td>";
                                             echo "<td>
-                                                <button type='button' class='btn btn-info' data-toggle='modal' data-target='#detailsModal{$row['ShiftID']}'>
-                                                    <i class='fas fa-eye'></i>
+                                                <button type='button' style='color: #683c08bf; border:none' data-toggle='modal' data-target='#detailsModal{$row['ShiftID']}'>
+                                                    Xem chi tiết
                                                 </button>
                                                 </td>";
                                             // echo "<td>
