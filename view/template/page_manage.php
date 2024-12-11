@@ -449,6 +449,10 @@ document.getElementById("stats-btn").addEventListener("click", function() {
         alert('Vui lòng nhập ngày bắt đầu và ngày kết thúc.');
         return;
     }
+    if (new Date(startDate) >= new Date(endDate)) {
+    alert('Ngày bắt đầu phải nhỏ hơn ngày kết thúc.');
+    return;
+    }
 
     // Reload lại trang với POST để thực hiện thống kê
     const form = document.createElement('form');
