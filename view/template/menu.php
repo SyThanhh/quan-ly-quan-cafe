@@ -377,7 +377,9 @@
                 echo "</div>";
             }
         } else {
-            echo "<p>Không tìm thấy sản phẩm.</p>";
+           // echo "<p>Không tìm thấy sản phẩm.</p>";
+            echo '<div style="text-align: center; color: red;">Không tìm thấy sản phẩm.</div>';
+
         }
 
         // Close database connection
