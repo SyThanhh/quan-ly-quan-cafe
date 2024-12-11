@@ -244,13 +244,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             <!-- Danh sách lịch -->
                             <div class="mt-8">
                                 <table class="table table-bordered">
-                                    <thead align="center">
+                                    <thead align="center" style="background-color: #683c08bf; border:none; color:white">
                                         <tr>
                                             <th>Mã</th>
                                             <th>Loại ca</th>
                                             <th>Ngày bắt đầu</th>
                                             <th>Ngày kết thúc</th>
-                                            <th colspan="2">Thao tác</th>
+                                            <th colspan="3">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>

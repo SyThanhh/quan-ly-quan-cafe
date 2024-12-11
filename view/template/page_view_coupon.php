@@ -35,6 +35,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             padding-top: 20px;
             overflow-y: auto;
         }
+        .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+    }
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -53,7 +59,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         }
 
         .table-custom th {
-            background-color:royalblue;
+            background-color:#8e6d46;
             border: 1px solid lightgrey; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
             color: white;/* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
             
@@ -315,7 +321,7 @@ $totalPages = ceil($totalCoupons / $limit);
 <?php else: ?>
     <?php if ($coupons && mysqli_num_rows($coupons) > 0): ?>
         <div style="text-align: right;">
-            <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addCouponModal">
+            <button type="button" class="btn btn-primary btn-add mb-3" style="background-color: #683c08bf; border:none" data-toggle="modal" data-target="#addCouponModal">
                 <i class="fas fa-plus-square"></i> Thêm Mã Giảm Giá
             </button>
         </div>

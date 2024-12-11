@@ -37,9 +37,15 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     .table-custom td {
         border: 1px solid lightgrey;
     }
+    .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+    }
 
     .table-custom th {
-        background-color:royalblue;
+        background-color: #683c08bf;
         border: 1px solid lightgrey; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
         color: white;
     }
@@ -224,7 +230,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 if ($tbl && mysqli_num_rows($tbl) > 0): // Kiểm tra nếu có dữ liệu
                             ?>
                                     <div style="text-align: right;">
-                                        <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addMenuModal">
+                                        <button type="button" class="btn btn-primary btn-add mb-3" style="background-color: #683c08bf; border:none"
+                                        data-toggle="modal" data-target="#addMenuModal">
                                             <i class="fas fa-plus-square"></i> Thêm Món Trong Menu
                                         </button>
                                     </div>

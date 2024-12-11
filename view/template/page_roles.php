@@ -190,7 +190,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             <!-- Danh sách nhân viên -->
                             <div class="mt-8">
                                 <table class="table table-bordered">
-                                    <thead>
+                                    <thead style="background-color: #683c08bf; border:none; color:white">
                                         <tr>
                                             <th>Mã</th>
                                             <th>Họ</th>

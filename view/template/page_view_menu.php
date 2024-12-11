@@ -35,6 +35,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             padding-top: 20px;
             overflow-y: auto;
         }
+    .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+    }
     .table {
         width: 100%;
         border-collapse: collapse;
@@ -56,7 +62,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     }
 
     .table-custom th {
-        background-color:royalblue;
+        background-color:#8e6d46;
         border: 1px solid lightgrey; /* Tùy chọn: Thay đổi màu nền cho tiêu đề bảng */
         color: white;
     }
@@ -233,7 +239,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             if ($tbl):
                             ?>
                                 <div style="text-align: right;">
-                                    <button type="button" class="btn btn-primary btn-add mb-3" data-toggle="modal" data-target="#addMenuModal">
+                                    <button type="button" class="btn btn-primary btn-add mb-3" style="background-color: #683c08bf; border:none" data-toggle="modal" data-target="#addMenuModal">
                                         <i class="fas fa-plus-square"></i> Thêm Món Trong Menu
                                     </button>
                                 </div>
