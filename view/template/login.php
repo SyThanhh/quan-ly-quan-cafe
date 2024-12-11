@@ -155,7 +155,7 @@ mysqli_close($conn);
                             <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
                         </form>
                         <div class="text-center mt-3">
-                            <p>Bạn chưa có tài khoản? <a href="index.php?page=register" class="btn btn-link">Tạo tài khoản</a></p>
+                            <p>Bạn chưa có tài khoản? <a href="index.php?page=register" class="btn btn-link">Đăng ký tài khoản</a></p>
                         </div>
                         <div>
                          <span class="text-center" style="color: green;">Lưu ý : Khi khách hàng đăng nhập lần đầu mật khẩu là 123456</span>
