@@ -226,13 +226,13 @@
 }
 
 .product-card p:nth-of-type(3) {
-    color: #E74C3C;
+    color: red;
     font-size: 16px;
     font-weight: bold;
 }
 
 .product-card p:nth-of-type(4) {
-    color: #2ecc71;
+    color: red;
     font-weight: bold;
 }
 
@@ -371,8 +371,8 @@
                 echo "</a>";
 
                 echo "<p><strong>Giá:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
-                echo "<p><strong>Tồn kho:</strong> " . $row['UnitsInStock'] . "</p>";
-                echo "<p><strong>Trạng thái:</strong> " . ($row['Status'] == 1 ? 'Có sẵn' : 'Out of Stock') . "</p>";
+                //echo "<p><strong>Tồn kho:</strong> " . $row['UnitsInStock'] . "</p>";
+                echo '<p><strong>Trạng thái:</strong> ' . ($row['Status'] == 1 ? 'Có sẵn' : 'Không có sẵn') . "</p>";
                 // echo "<p><strong>Danh mục:</strong> " . htmlspecialchars($row['CategoryName']) . "</p>";
                 echo "</div>";
             }

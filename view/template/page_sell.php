@@ -354,8 +354,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 </tbody>
                             </table>
                             <div class="text-right d-flex justify-content-end">
-                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0.0</span> đ</h5> 
-                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0.0</span> đ</h5>
+                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0</span> đ</h5> 
+                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0</span> đ</h5>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <!-- <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button> -->
@@ -387,8 +387,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     <label for="category-select">Danh Mục Sản Phẩm:</label>
                                     <select class="form-control" id="category-select" name="category">
                                         <option value="">Chọn danh mục</option>
-                                        <option value="1">Cafe pha máy</option>
-                                        <option value="2">Cafe pha phin</option>
+                                        <option value="1">Cafe</option>
+                                        <option value="2">Soda</option>
                                         <option value="3">Nước ép</option>
                                         <option value="4">Trà</option>
                                         <option value="5">Nước ngọt</option>
@@ -423,7 +423,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
                                                 echo '<p>' . $product['ProductName'] . '</p>';
                                                 echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                                echo '<p class="price">Giá: ' . $product['UnitPrice']. '₫</p>';
+                                                echo "<p class='price'>Giá: " . number_format($product['UnitPrice'], 0, ',', '.') . " ₫</p>";
                                                 echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
                                                 echo '</div>';
                                             }
@@ -679,11 +679,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             grandTotal += total;
         });
         grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
-        $totalAmountDisplay.text(grantToTalDiscount.toFixed(2));
+        $totalAmountDisplay.text(grantToTalDiscount);
         let discount = (grandTotal* ($reductionDisplay/100));
         
 
-        $totalAmountDiscount.text(discount.toFixed(2));
+        $totalAmountDiscount.text(discount);
     }
     function validateEmail(email) {
         var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -1187,7 +1187,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         const totalAmount = $("#total-amount"); 
         cashAmount.val("");
         amountReturn.val("");
-        totalAmount.text("0.0");
+        totalAmount.text("0");
         $invoiceListBody.empty(); // Xóa nội dung bảng
         $totalAmountDiscount.text("");
     }
