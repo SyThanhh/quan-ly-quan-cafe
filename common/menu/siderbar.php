@@ -42,7 +42,7 @@ if (!isPageAllowed($currentPage, $userRole)) {
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">3S Admin <sup></sup></div>
+        <div class="sidebar-brand-text mx-3">3S COFFEE <sup></sup></div>
     </a>
 
     <!-- Divider -->

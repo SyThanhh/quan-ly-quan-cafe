@@ -64,15 +64,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Kiểm tra đăng nhập nhân viên trước
+    
     if (loginEmployee($conn, 'employee','LastName' ,  'PhoneNumber','password', 'Roles', 'EmployeeID',$phone_input ,$password_input)) {
-     $role = $_SESSION['role'];
+        $role = $_SESSION['role'];
         if (in_array($role, ['1', '2', '3', '4'])) {
-            header("Location: index.php?page=index_admin");
+            if($role === 1) {
+                echo "<script>alert('Bạn đăng nhập thành công với vai trò người Quản Lý'); window.location.href='index.php?page=index_admin';</script>";
+            } else if($role === 2) {
+                echo "<script>alert('Bạn đăng nhập thành công với vai trò Nhân Viên Quầy'); window.location.href='index.php?page=index_admin';</script>";
+            } else if($role === 3) {
+                echo "<script>alert('Bạn đăng nhập thành công với vai trò Nhân Viên Kế Toán'); window.location.href='index.php?page=index_admin';</script>";
+            } else if($role === 4) {
+                echo "<script>alert('Bạn đăng nhập thành công với vai trò Nhân viên Pha Chế'); window.location.href='index.php?page=index_admin';</script>";
+            }
         } else {
-            header("Location: index.php");
+            echo "<script>window.location.href='index.php';</script>";
         }
-         exit();
+        exit();
     }
+    
 
     // Nếu không phải nhân viên, kiểm tra khách hàng
     if (loginCustomer($conn, 'customer', 'CustomerName','CustomerPhone', 'CustomerPassword', 'CustomerID', $phone_input, $password_input)) {
@@ -145,7 +155,7 @@ mysqli_close($conn);
                             <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
                         </form>
                         <div class="text-center mt-3">
-                            <p>Bạn chưa có tài khoản? <a href="index.php?page=register" class="btn btn-link">Tạo tài khoản</a></p>
+                            <p>Bạn chưa có tài khoản? <a href="index.php?page=register" class="btn btn-link">Đăng ký tài khoản</a></p>
                         </div>
                         <div>
                          <span class="text-center" style="color: green;">Lưu ý : Khi khách hàng đăng nhập lần đầu mật khẩu là 123456</span>

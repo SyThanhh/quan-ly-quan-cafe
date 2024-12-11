@@ -228,7 +228,7 @@ $(document).ready(function() {
             }
     
             if (cashAmount < totalAmount) {
-                errorSpan.html('Vui lòng nhập số tiền > Số tiền phải trả.<br>').show();
+                errorSpan.html('Vui lòng nhập số tiền >= Số tiền phải trả.<br>').show();
                 $(this).val(''); 
                 return;
             }
@@ -549,7 +549,6 @@ $(document).ready(function() {
         const amountReturn = $('#amountReturn');
         const totalAmount = $("#total-amount"); 
 
-        console.log("orderData : ", orderData);
         
         $.ajax({
             type: 'POST',
@@ -582,7 +581,7 @@ $(document).ready(function() {
             },
             error: function(error) {
                 console.error("Error: " + error);
-                showAlert('error', 'Có lỗi xảy ra khi kết nối với server.');
+                showAlert('error', 'Vui lòng chọn sản phẩm !');
             }
         });
     }

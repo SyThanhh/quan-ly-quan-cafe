@@ -165,7 +165,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
                                     <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add" name="updateEmployee">Cập nhật</button>
+                                    <button type="submit" class="btn btn-primary btn-add" name="updateEmployee" style="background-color: #683c08bf; border:none">Cập nhật</button>
                                 </div>
                             </form>        
                         </div>

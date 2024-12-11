@@ -197,7 +197,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 <div class="button-group">
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
-                                    <button type="submit" class="btn btn-primary" name="editShift">Lưu Thay Đổi</button>
+                                    <button type="submit" class="btn btn-primary" name="editShift" style="background-color: #683c08bf; border:none">Lưu Thay Đổi</button>
                                 </div>
                             </form>
                         </div>

@@ -88,7 +88,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         if (isset($_POST['search-sell'])) {
             $_SESSION['searchKeywordSell'] = $_POST['search-sell']; // Lưu từ khóa tìm kiếm
             $searchKeyword = $_SESSION['searchKeywordSell'];
-            $customerBySearch = $CustomerController->getAllCustomersByPhone($searchKeyword);
+            $customerBySearch = $CustomerController->getAllCustomersByPhoneAndEmail($searchKeyword);
             if (is_array($customerBySearch)) {
                 $_SESSION["CustomerName"] =  $customerBySearch['CustomerName'] ?  $customerBySearch['CustomerName'] : "";
                 $_SESSION["CustomerPhone"] =  $customerBySearch['CustomerPhone'] ?  $customerBySearch['CustomerPhone'] : "";
@@ -1165,7 +1165,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             },
             error: function(error) {
                 console.error("Error: " + error);
-                showAlert('error', 'Có lỗi xảy ra khi kết nối với server.');
+                showAlert('error', 'Vui lòng chọn sản phẩm !');
             }
         });
     }
