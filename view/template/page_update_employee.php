@@ -288,6 +288,79 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                         </div>
                     </div>
                 </div>
+
+                <!-- Kiểm tra dữ liệu nhập -->
+                <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const form = document.querySelector('form');
+                    const email = document.getElementById('email');
+                    const phoneNumber = document.getElementById('phoneNumber');
+
+                    // Hiển thị lỗi
+                    function showError(input, message) {
+                        const errorElement = input.nextElementSibling; // Giả định có `span` lỗi ngay sau input
+                        if (errorElement && errorElement.classList.contains('error-message')) {
+                            errorElement.textContent = message;
+                        } else {
+                            const errorSpan = document.createElement('span');
+                            errorSpan.className = 'error-message text-danger';
+                            errorSpan.textContent = message;
+                            input.parentNode.appendChild(errorSpan);
+                        }
+                        input.classList.add('is-invalid');
+                    }
+
+                    // Xóa lỗi
+                    function clearError(input) {
+                        const errorElement = input.nextElementSibling;
+                        if (errorElement && errorElement.classList.contains('error-message')) {
+                            errorElement.textContent = '';
+                        }
+                        input.classList.remove('is-invalid');
+                    }
+
+                    // Kiểm tra email
+                    function checkEmail(input) {
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(input.value.trim())) {
+                            showError(input, 'Email không hợp lệ. Vui lòng nhập đúng định dạng email.');
+                            return false;
+                        }
+                        clearError(input);
+                        return true;
+                    }
+
+                    // Kiểm tra số điện thoại
+                    function checkPhoneNumber(input) {
+                        const phoneRegex = /^[0-9]{10}$/;
+                        if (!phoneRegex.test(input.value.trim())) {
+                            showError(input, 'Số điện thoại phải có đúng 10 chữ số.');
+                            return false;
+                        }
+                        clearError(input);
+                        return true;
+                    }
+
+                    // Gắn sự kiện 'blur' để kiểm tra khi rời khỏi trường
+                    email.addEventListener('blur', () => checkEmail(email));
+                    phoneNumber.addEventListener('blur', () => checkPhoneNumber(phoneNumber));
+
+                    // Xử lý khi form được gửi
+                    form.addEventListener('submit', function (e) {
+                        let isValid = true;
+
+                        // Kiểm tra từng trường
+                        if (!checkEmail(email)) isValid = false;
+                        if (!checkPhoneNumber(phoneNumber)) isValid = false;
+
+                        // Nếu không hợp lệ, ngăn gửi form
+                        if (!isValid) {
+                            e.preventDefault();
+                        }
+                    });
+                });
+                </script>
+                
                 <!-- Xử lý cập nhật thông tin nhân viên -->
                 <?php
                     if (isset($_POST['updateEmployee'])) {
