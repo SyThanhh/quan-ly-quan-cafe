@@ -88,7 +88,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         if (isset($_POST['search-sell'])) {
             $_SESSION['searchKeywordSell'] = $_POST['search-sell']; // Lưu từ khóa tìm kiếm
             $searchKeyword = $_SESSION['searchKeywordSell'];
-            $customerBySearch = $CustomerController->getAllCustomersByPhone($searchKeyword);
+            $customerBySearch = $CustomerController->getAllCustomersByPhoneAndEmail($searchKeyword);
             if (is_array($customerBySearch)) {
                 $_SESSION["CustomerName"] =  $customerBySearch['CustomerName'] ?  $customerBySearch['CustomerName'] : "";
                 $_SESSION["CustomerPhone"] =  $customerBySearch['CustomerPhone'] ?  $customerBySearch['CustomerPhone'] : "";
@@ -261,7 +261,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <form method="POST" id="search-form" class="d-flex flex-column">
-                                        <label for="phone">Số điện thoại</label>
+                                        <label for="phone">Số điện thoại / Tên khách hàng</label>
                                        
                                         <?php
                                             if (isset($_SESSION['searchKeywordSell']) && !empty($_SESSION['searchKeywordSell'])) {
@@ -423,41 +423,49 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
                                                 echo '<p>' . $product['ProductName'] . '</p>';
                                                 echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
+<<<<<<< HEAD
                                                 echo "<p class='price'>Giá: " . number_format($product['UnitPrice'], 0, ',', '.') . " ₫</p>";
+=======
+                                                echo '<p class="price">Giá: ' . $product['UnitPrice'] . '₫</p>';
+>>>>>>> c37db6af70c17fd209860c02f1a835b61d0f5e24
                                                 echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
                                                 echo '</div>';
                                             }
-                                        } else {
-                                            echo "<p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>";
+                                        } 
+                                        
+                                        if ($products) {
+                                            echo "<p> </p>";
+                                            echo '<div style="text-align: center; color: red;">Không có dữ liệu.</div>';
                                         }
+                                        
                                     ?>
                                 </div>
                             </form>
 
                             <script>
-                                // Lọc sản phẩm theo tên và danh mục
-                                document.getElementById("category-select").addEventListener("change", filterProducts);
-                                document.getElementById("product-search").addEventListener("input", filterProducts);
+                                $(document).ready(function () {
+                                    $("#category-select").on("change", filterProducts);
+                                    $("#product-search").on("input", filterProducts);
 
-                                function filterProducts() {
-                                    const searchTerm = document.getElementById("product-search").value.toLowerCase();
-                                    const selectedCategory = document.getElementById("category-select").value;
-                                    const products = document.querySelectorAll(".product-item");
+                                    function filterProducts() {
+                                        const searchTerm = $("#product-search").val().toLowerCase();
+                                        const selectedCategory = $("#category-select").val();
 
-                                    products.forEach(product => {
-                                        const productName = product.getAttribute("data-name").toLowerCase();
-                                        const productCategory = product.getAttribute("data-category");
+                                        $(".product-item").each(function () {
+                                            const productName = $(this).data("name").toLowerCase();
+                                            const productCategory = $(this).data("category");
 
-                                        const matchesName = productName.includes(searchTerm);
-                                        const matchesCategory = !selectedCategory || productCategory === selectedCategory;
+                                            const matchesName = productName.includes(searchTerm);
+                                            const matchesCategory = !selectedCategory || productCategory == selectedCategory;
 
-                                        if (matchesName && matchesCategory) {
-                                            product.style.display = "block";
-                                        } else {
-                                            product.style.display = "none";
-                                        }
-                                    });
-                                }
+                                            if (matchesName && matchesCategory) {
+                                                $(this).show();
+                                            } else {
+                                                $(this).hide();
+                                            }
+                                        });
+                                    }
+                                });
                             </script>
 
                         </div>

@@ -1,48 +1,42 @@
 <?php
-ob_start(); // Bắt đầu output buffering
+ob_start();
 
-// Giả sử chúng ta đã có session start và kết nối database ở đây
 include_once('./connect/database.php');
 $database = new Database();
 $conn = $database->connect();
 
-// // Hàm kiểm tra vai trò của người dùng
-// function getUserRole($conn, $username) {
-//     $stmt = $conn->prepare("SELECT Roles FROM employee WHERE Lastname = ?");
-//     $stmt->bind_param("s", $username);
-//     $stmt->execute();
-//     $result = $stmt->get_result();
-//     if ($row = $result->fetch_assoc()) {
-//         return $row['Roles'];
-//     }
-//     return null;
-// }
+if (!isset($_SESSION['role'])) {
+    header("Location: index.php?page=login");
+    exit();
+}
 
-// Lấy vai trò của người dùng hiện tại
 $userRole = $_SESSION['role'];
 
-// Định nghĩa các trang được phép truy cập cho mỗi vai trò
 $allowedPages = [
     1 => ['all'],
-    2 => ['page_view_shift', 'page_view_coupon', 'page_view_menu', 'page_sell'],
-    3 => ['page_view_shift', 'page_viewOrder', 'page_manage'],
-    4 => ['page_view_shift', 'page_import_request']
+    2 => ['index_admin','page_view_shift', 'page_view_coupon', 'page_view_menu', 'page_sell'],
+    3 => ['index_admin','page_view_shift', 'page_viewOrder', 'page_manage'],
+    4 => ['index_admin','page_view_shift', 'page_import_request']
 ];
 
 $restrictedPagesForAdmin = ['page_view_shift', 'page_view_menu', 'page_view_coupon'];
 
-function isPageAllowed($page, $userRole, $allowedPages) {
-    global $restrictedPagesForAdmin; // Sử dụng biến toàn cục
+function isPageAllowed($page, $userRole) {
+    global $allowedPages, $restrictedPagesForAdmin;
     if ($userRole == 1) {
-        // Admin không được truy cập các trang trong danh sách cấm
         return !in_array($page, $restrictedPagesForAdmin);
     }
-    // Kiểm tra quyền truy cập với các role khác
-    return in_array($page, $allowedPages[$userRole]);
+    return in_array($page, $allowedPages[$userRole]) || in_array('all', $allowedPages[$userRole]);
+}
+
+$currentPage = $_GET['page'] ?? 'index_admin';
+if (!isPageAllowed($currentPage, $userRole)) {
+    header("Location: index.php?page=404.php");
+    exit();
 }
 ?>
 
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="height:800px;" id="accordionSidebar">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php?page=index_admin">
         <div class="sidebar-brand-icon rotate-n-15">

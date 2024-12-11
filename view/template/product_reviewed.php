@@ -177,7 +177,9 @@
             }
             echo "</table>";
         } else {
-            echo "0 results";
+            //echo "Không có sản phẩm nào.";
+            echo '<div style="text-align: center; color: red;">Không có sản phẩm nào.</div>';
+
         }
 
         // Đóng kết nối

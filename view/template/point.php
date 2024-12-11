@@ -163,7 +163,9 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
         }
         echo '</tbody></table>';
     } else {
-        echo "Không tìm thấy.";
+        // echo "Không tìm thấy.";
+        echo '<div style="text-align: center; color: red;">Bạn chưa có điểm tích lũy.</div>';
+
     }
 
     // Đóng câu lệnh đã chuẩn bị

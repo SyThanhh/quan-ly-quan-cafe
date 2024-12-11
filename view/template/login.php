@@ -45,8 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!$stmt) {
             die("SQL Error: " . mysqli_error($conn));
         }
-        var_dump($sql);
-        var_dump($phone_input);
         mysqli_stmt_bind_param($stmt, "s", $phone_input);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);

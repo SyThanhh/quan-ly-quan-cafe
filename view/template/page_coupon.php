@@ -15,7 +15,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <!-- Đầu trang -->
     <?php
         include_once('./common/head/head.php');    
-        include_once('./connect/database.php'); // Đường dẫn vào file kết nối database
+        include_once('./connect/database.php');
+        include_once('./common/menu/siderbar.php');  // Đường dẫn vào file kết nối database
 
         // Tạo một đối tượng Database để kết nối
         $database = new Database();
@@ -29,6 +30,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             border-radius: 6px; /* Bo tròn các góc của bảng */
             overflow: hidden; /* Đảm bảo các góc bo tròn không bị vỡ */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng cho bảng */
+        }
+        #wrapper{
+            margin-left: 220px;
+            margin-top: -810px;
+            width: 1120px;
         }
 
         .table-custom th,
@@ -133,7 +139,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         align-items: flex-start;
     }
 
-    .input-group input,
+    .input-group input
     {
         width: 100%; /* Cho phép các input và button chiếm toàn bộ chiều rộng */
         margin-bottom: 10px; /* Khoảng cách giữa các phần tử */
@@ -163,7 +169,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 <body onload="updateCurrentTime()">
     <div id="wrapper">
         <!-- Thanh điều hướng dọc -->
-        <?php include_once('./common/menu/siderbar.php'); ?>
 
         <!-- Giao diện trang -->
         <div id="content-wrapper" class="d-flex flex-column">
