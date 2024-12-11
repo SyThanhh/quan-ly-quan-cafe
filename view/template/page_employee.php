@@ -54,6 +54,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     opacity: 1;  /* Hiển thị khi hover */
 }
 
+.page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+        }
+
 </style>
 </head>
 
@@ -191,7 +198,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                         </form>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <a class="btn btn-primary btn-add" style="color:white" href="index.php?page=page_add_employee">
+                                        <a class="btn btn-primary btn-add" style="color:white; background-color:#683c08bf; border:none" href="index.php?page=page_add_employee">
                                             <i class="fas fa-plus"></i> &nbsp; Thêm nhân viên mới
                                         </a>
                                     </div>

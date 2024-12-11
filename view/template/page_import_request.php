@@ -133,7 +133,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $note = $_POST['note'];  // Lấy ghi chú từ form
 
     // Tạo RequestID tự động
-    $requestID = 'RQ' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);  // Ví dụ: RQ0001
+    // Lấy RequestID mới nhất từ bảng requestform
+$sql_latest_request = "SELECT RequestID FROM requestform ORDER BY RequestID DESC LIMIT 1";
+$result_latest_request = $conn->query($sql_latest_request);
+
+if ($result_latest_request->num_rows > 0) {
+    $row = $result_latest_request->fetch_assoc();
+    $latestID = $row['RequestID'];
+
+    // Tách phần số từ RequestID (giả sử định dạng là 'RQxxxx')
+    $latestNumber = (int)substr($latestID, 2); // Bỏ 'RQ' và lấy số
+
+    // Tăng giá trị
+    $newNumber = $latestNumber + 1;
+
+    // Định dạng RequestID mới
+    $requestID = 'RQ' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+} else {
+    // Nếu chưa có RequestID nào trong cơ sở dữ liệu
+    $requestID = 'RQ0001';
+}
+
 
     // Lấy ID nhân viên từ session
     $employeeID = $_SESSION['id'];
@@ -243,7 +263,7 @@ if ($result_supplier === false) {
             <textarea class="form-control" id="note" name="note" rows="3"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Gửi yêu cầu</button>
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #683c08bf; border:none">Gửi yêu cầu</button>
     </form>
 </div>
 
@@ -312,7 +332,9 @@ $conn->close();
         });
     });
     </script>
+    
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
+    <?php include_once('./common/footer/footer.php') ?>
 </body>
 </html>

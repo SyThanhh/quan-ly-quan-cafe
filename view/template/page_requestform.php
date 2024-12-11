@@ -260,6 +260,7 @@ if (isset($_GET['RequestID'])) {
     echo "<script>href = 'index.php?page=page_requestform';</script>";
 }
 ?>
+<?php include_once('./common/footer/footer.php') ?>
     <!-- Bootstrap core JavaScript-->
      
     <?php include_once('./common/script/default.php'); ?>
