@@ -49,7 +49,8 @@
             </form>
         </div>
         <div class="col-md-6 text-right">
-            <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#addCustomerModal">
+            <button type="button" class="btn btn-primary btn-add" data-toggle="modal" data-target="#addCustomerModal" style="border: none;
+    background: #683c08bf;">
                 <i class="fas fa-plus-square"></i> Thêm Mới Khách hàng
             </button>
         </div>
@@ -59,7 +60,8 @@
 
 <!-- Danh sách khách hàng -->
 <table class="table">
-    <thead>
+    <thead style="border: none;
+    background: #683c08bf;">
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Tên</th>
@@ -103,7 +105,7 @@
 
 <!-- Phân trang -->
 <div class="row justify-content-end mr-1">
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example" >
         <ul class="pagination">
             <!-- Nút Previous -->
             <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">

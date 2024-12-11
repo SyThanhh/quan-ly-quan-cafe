@@ -10,6 +10,12 @@
     
     
     <style>
+        .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+        }
         #search-form {
             max-width: 600px;
             /* margin: auto; */
@@ -261,7 +267,8 @@
                                     </div>
                                     <div class="d-flex justify-content-end">
                                         <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Hủy</button>
-                                        <button type="submit" class="btn btn-primary" id="btnAddCustomer">Xác Nhận</button>
+                                        <button type="submit" class="btn btn-primary" id="btnAddCustomer" style="border: none;
+    background: #683c08bf;">Xác Nhận</button>
                                     </div>
                                 </form>
                             </div>

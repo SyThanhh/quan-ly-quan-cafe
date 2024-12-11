@@ -70,18 +70,7 @@
                     </button>
 
                     <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                  
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -148,8 +137,10 @@
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">
-                                        <button class="btn btn-primary btn-sm stats-btn" data-type="products">Thống kê theo sản phẩm</button>
-                                        <button class="btn btn-primary btn-sm stats-btn" data-type="points">Thống kê theo mức điểm và chi tiêu</button>
+                                        <button class="btn btn-primary btn-sm stats-btn" data-type="products" style="border: none;
+    background: #683c08bf;">Thống kê theo sản phẩm</button>
+                                        <button class="btn btn-primary btn-sm stats-btn" data-type="points" style="border: none;
+    background: #683c08bf;">Thống kê theo mức điểm và chi tiêu</button>
                                     </h6>
                 
                                 </div>
@@ -222,7 +213,8 @@
                                             echo '<tr>';
                                             echo '<td>' . htmlspecialchars($row['CustomerName']) . '</td>'; // Tên khách hàng
                                             echo '<td>' . format_currency_vnd($row['TotalPurchase']) .'</td>'; // Tổng lượng mua
-                                            echo '<td><a href="?page=page_viewDetailCustomer&customerId=' . $row['CustomerID'] . '" class="btn btn-primary btn-sm">Xem</a></td>'; // Nút xem chi tiết
+                                            echo '<td><a href="?page=page_viewDetailCustomer&customerId=' . $row['CustomerID'] . '" class="btn btn-primary btn-sm" style="border: none;
+    background: #683c08bf;">Xem</a></td>'; // Nút xem chi tiết
                                             echo '</tr>';
                                         }
                                     } else {
