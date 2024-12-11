@@ -400,41 +400,49 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 </div>
                             </form>
                             <div class="product-list" id="product-list">
-                                <?php
+                            <?php
+                                $database = new Database();
+                                $conn = $database->connect(); // Lấy kết nối
 
-                                    // Lấy từ khóa tìm kiếm và danh mụquery: c từ form
-                                    $searchKeyword = isset($_POST['tim']) ? $_POST['tim'] : '';
-                                    $categoryID = isset($_POST['category']) ? (int)$_POST['category'] : null;
+                                // Lấy từ khóa tìm kiếm và danh mục từ form
+                                $searchKeyword = isset($_POST['tim']) ? $_POST['tim'] : '';
+                                $categoryID = isset($_POST['category']) ? (int)$_POST['category'] : null;
 
-                                    // Truy vấn cơ sở dữ liệu với prepared statements
-                                    $query = "SELECT ProductID, ProductName, UnitsInStock, UnitPrice, ProductImage, CategoryID FROM product WHERE 1=1";
-                                    $params = [];
-                                    $types = ""; // Biến để lưu các kiểu dữ liệu
+                                // Truy vấn cơ sở dữ liệu với prepared statements
+                                $query = "SELECT ProductID, ProductName, UnitsInStock, UnitPrice, ProductImage, CategoryID FROM product WHERE 1=1";
+                                $params = [];
+                                $types = ""; // Biến để lưu các kiểu dữ liệu
 
-                                    // Nếu có từ khóa tìm kiếm, thêm vào điều kiện tìm kiếm
-                                    if (!empty($searchKeyword)) {decimals: 
-                                        $query .= " AND ProductName LIKE ?";
-                                        $params[] = "%" . $searchKeyword . "%"; // Chuẩn bị từ khóa tìm kiếm với dấu %
-                                        $types .= "s"; // "s" là kiểu dữ liệu cho string
-                                    }
+                                // Nếu có từ khóa tìm kiếm, thêm vào điều kiện tìm kiếm
+                                if (!empty($searchKeyword)) {
+                                    $query .= " AND ProductName LIKE ?";
+                                    $params[] = "%" . $searchKeyword . "%"; // Chuẩn bị từ khóa tìm kiếm với dấu %
+                                    $types .= "s"; // "s" là kiểu dữ liệu cho string
+                                }
 
-                                    // Nếu có category, thêm vào điều kiện tìm kiếm theo danh mục
-                                    if (!empty($categoryID)) {
-                                        $query .= " AND CategoryID = ?";
-                                        $params[] = $categoryID; // Thêm ID của danh mục
-                                        $types .= "i"; // "i" là kiểu dữ liệu cho integer
-                                    }
+                                // Nếu có category, thêm vào điều kiện tìm kiếm theo danh mục
+                                if (!empty($categoryID)) {
+                                    $query .= " AND CategoryID = ?";
+                                    $params[] = $categoryID; // Thêm ID của danh mục
+                                    $types .= "i"; // "i" là kiểu dữ liệu cho integer
+                                }
 
-                                    // In ra câu lệnh SQL để kiểm tra (chỉ in khi cần debug)
-                                    // echo "Câu lệnh SQL: " . $query . "<br>";
+                                // Chuẩn bị câu truy vấn
+                                $stmt = $conn->prepare($query);
 
-                                    // Bind parameters vào câu truy vấn
-                                    if ($params) {
-                                        $stmt->bind_param($types, ...$params); // Bind tham số với các kiểu dữ liệu tương ứng
-                                    }
-                                    // Thực thi câu truy vấn
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
+                                // Kiểm tra lỗi câu lệnh
+                                if ($stmt === false) {
+                                    die('Lỗi chuẩn bị câu lệnh: ' . $conn->error);
+                                }
+
+                                // Bind parameters vào câu truy vấn
+                                if ($params) {
+                                    $stmt->bind_param($types, ...$params); // Bind tham số với các kiểu dữ liệu tương ứng
+                                }
+
+                                // Thực thi câu truy vấn
+                                $stmt->execute();
+                                $result = $stmt->get_result();
 
                                     // Kiểm tra nếu có sản phẩm
                                     if ($result && mysqli_num_rows($result) > 0): ?>
