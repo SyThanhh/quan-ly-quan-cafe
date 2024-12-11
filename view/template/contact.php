@@ -40,13 +40,13 @@
                 </div>
                 <div class="col-sm-4 text-center mb-3">
                     <i class="fa fa-2x fa-phone-alt mb-3 text-primary"></i>
-                    <h4 class="font-weight-bold">Phone</h4>
+                    <h4 class="font-weight-bold">Số điện thoại</h4>
                     <p>+012 345 6789</p>
                 </div>
                 <div class="col-sm-4 text-center mb-3">
                     <i class="far fa-2x fa-envelope mb-3 text-primary"></i>
                     <h4 class="font-weight-bold">Email</h4>
-                    <p>info@example.com</p>
+                    <p>3scoffee@example.com</p>
                 </div>
             </div>
             <div class="row">
@@ -59,29 +59,28 @@
                         <div id="success"></div>
                         <form name="sentMessage" id="contactForm" novalidate="novalidate">
                             <div class="control-group">
-                                <input type="text" class="form-control bg-transparent p-4" id="name" placeholder="Your Name"
-                                    required="required" data-validation-required-message="Please enter your name" />
+                                <input type="text" class="form-control bg-transparent p-4" id="name" placeholder="Tên của bạn"
+                                    required="required" data-validation-required-message="Vui lòng điền vào tên của bạn" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="email" class="form-control bg-transparent p-4" id="email" placeholder="Your Email"
-                                    required="required" data-validation-required-message="Please enter your email" />
+                                <input type="email" class="form-control bg-transparent p-4" id="email" placeholder="Email của bạn"
+                                    required="required" data-validation-required-message="Vui lòng điền vào email của bạn" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control bg-transparent p-4" id="subject" placeholder="Subject"
-                                    required="required" data-validation-required-message="Please enter a subject" />
+                                <input type="text" class="form-control bg-transparent p-4" id="subject" placeholder="Tiêu đề"
+                                    required="required" data-validation-required-message="Vui lòng điền vào tiêu đề" />
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
                                 <textarea class="form-control bg-transparent py-3 px-4" rows="5" id="message" placeholder="Message"
                                     required="required"
-                                    data-validation-required-message="Please enter your message"></textarea>
+                                    data-validation-required-message="Vui lòng điền vào message của bạn"></textarea>
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div>
-                                <button class="btn btn-primary font-weight-bold py-3 px-5" type="submit" id="sendMessageButton">Send
-                                    Message</button>
+                                <button class="btn btn-primary font-weight-bold py-3 px-5" type="submit" id="sendMessageButton">Gửi tin nhắn</button>
                             </div>
                         </form>
                     </div>
@@ -99,7 +98,7 @@
                 <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">LIÊN HỆ</h4>
                 <p><i class="fa fa-map-marker-alt mr-2"></i>Nguyễn Văn Bảo, P4, Gò Vấp, TP.HCM</p>
                 <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                <p class="m-0"><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                <p class="m-0"><i class="fa fa-envelope mr-2"></i>3scoffee@example.com</p>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
                 <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">Theo dõi chúng tôi</h4>
@@ -125,9 +124,14 @@
                 <p>Đăng ký nhận những ưu đãi hấp dẫn</p>
                 <div class="w-100">
                     <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="Your Email">
                         <div class="input-group-append">
-                            <button class="btn btn-primary font-weight-bold px-3">Đăng ký</button>
+                            <?php if (isset($_SESSION['loggedinCustomer']) && $_SESSION['loggedinCustomer'] === true): ?>
+                            <a class="btn btn-primary font-weight-bold px-4 py-2 text-white text-center rounded shadow-sm" style="margin-left: 132px;" href="#">
+                                <i class="fas fa-check-circle mr-2"></i> Đã đăng ký
+                            </a>
+                            <?php else: ?>
+                                <a class="btn btn-secondary font-weight-bold px-3" href="index.php?page=register" style="margin-left: 60px; background-color: #DA9F5B;">Đăng ký ngay</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

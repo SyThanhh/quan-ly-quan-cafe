@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cashAmount = $orderData['cashAmount'] ?? '';
         $amountReturn = $orderData['amountReturn'] ?? '';
 
-        $customer = $CustomerController->getAllCustomersByPhone($phone);
+        $customer = $CustomerController->getAllCustomersByPhoneAndEmail($phone);
         if($customer) {
             $customerID = $customer['CustomerID'];
         } else {

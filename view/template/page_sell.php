@@ -261,7 +261,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <form method="POST" id="search-form" class="d-flex flex-column">
-                                        <label for="phone">Số điện thoại / Tên khách hàng</label>
+                                        <label for="phone">Số điện thoại</label>
                                        
                                         <?php
                                             if (isset($_SESSION['searchKeywordSell']) && !empty($_SESSION['searchKeywordSell'])) {
@@ -354,8 +354,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 </tbody>
                             </table>
                             <div class="text-right d-flex justify-content-end">
-                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0.0</span> đ</h5> 
-                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0.0</span> đ</h5>
+                                <h5 class="mr-4">Giảm : <span id="total-amount-discount">0</span> đ</h5> 
+                                <h5 id="grand-total">Tổng tất cả:</span> <span id="total-amount">0</span> đ</h5>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <!-- <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button> -->
@@ -423,45 +423,41 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                                 echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
                                                 echo '<p>' . $product['ProductName'] . '</p>';
                                                 echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                                echo '<p class="price">Giá: ' . $product['UnitPrice'] . '₫</p>';
+                                                echo "<p class='price'>Giá: " . number_format($product['UnitPrice'], 0, ',', '.') . " ₫</p>";
                                                 echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
                                                 echo '</div>';
                                             }
-                                        } 
-                                        
-                                        if ($products) {
-                                            echo "<p> </p>";
-                                            echo '<div style="text-align: center; color: red;">Không có dữ liệu.</div>';
+                                        } else {
+                                            echo "<p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>";
                                         }
-                                        
                                     ?>
                                 </div>
                             </form>
 
                             <script>
-                                $(document).ready(function () {
-                                    $("#category-select").on("change", filterProducts);
-                                    $("#product-search").on("input", filterProducts);
+                                // Lọc sản phẩm theo tên và danh mục
+                                document.getElementById("category-select").addEventListener("change", filterProducts);
+                                document.getElementById("product-search").addEventListener("input", filterProducts);
 
-                                    function filterProducts() {
-                                        const searchTerm = $("#product-search").val().toLowerCase();
-                                        const selectedCategory = $("#category-select").val();
+                                function filterProducts() {
+                                    const searchTerm = document.getElementById("product-search").value.toLowerCase();
+                                    const selectedCategory = document.getElementById("category-select").value;
+                                    const products = document.querySelectorAll(".product-item");
 
-                                        $(".product-item").each(function () {
-                                            const productName = $(this).data("name").toLowerCase();
-                                            const productCategory = $(this).data("category");
+                                    products.forEach(product => {
+                                        const productName = product.getAttribute("data-name").toLowerCase();
+                                        const productCategory = product.getAttribute("data-category");
 
-                                            const matchesName = productName.includes(searchTerm);
-                                            const matchesCategory = !selectedCategory || productCategory == selectedCategory;
+                                        const matchesName = productName.includes(searchTerm);
+                                        const matchesCategory = !selectedCategory || productCategory === selectedCategory;
 
-                                            if (matchesName && matchesCategory) {
-                                                $(this).show();
-                                            } else {
-                                                $(this).hide();
-                                            }
-                                        });
-                                    }
-                                });
+                                        if (matchesName && matchesCategory) {
+                                            product.style.display = "block";
+                                        } else {
+                                            product.style.display = "none";
+                                        }
+                                    });
+                                }
                             </script>
 
                         </div>
@@ -683,11 +679,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             grandTotal += total;
         });
         grantToTalDiscount = grandTotal - (grandTotal* ($reductionDisplay/100))
-        $totalAmountDisplay.text(grantToTalDiscount.toFixed(2));
+        $totalAmountDisplay.text(grantToTalDiscount);
         let discount = (grandTotal* ($reductionDisplay/100));
         
 
-        $totalAmountDiscount.text(discount.toFixed(2));
+        $totalAmountDiscount.text(discount);
     }
     function validateEmail(email) {
         var regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -1123,7 +1119,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             },
             error: function(error) {
                 console.error("Error: " + error);
-                showAlert('error', 'Có lỗi xảy ra khi kết nối với server.');
+                showAlert('error', 'Vui lòng chọn sản phẩm !');
             }
         });
     }
@@ -1191,7 +1187,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         const totalAmount = $("#total-amount"); 
         cashAmount.val("");
         amountReturn.val("");
-        totalAmount.text("0.0");
+        totalAmount.text("0");
         $invoiceListBody.empty(); // Xóa nội dung bảng
         $totalAmountDiscount.text("");
     }

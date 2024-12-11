@@ -121,7 +121,7 @@
     </div>
     <div class="row">
         <div class="container mt-5">
-            <div class="product-review" style="margin-left: 10px">
+            <div class="product-review" style="margin-left: 200px">
                 <h3>Đánh giá sản phẩm</h3><br>
                 <?php
                     if (session_status() == PHP_SESSION_NONE) {
@@ -241,7 +241,7 @@
                 mysqli_stmt_close($stmt);
             ?>
     <!-- Footer Start -->
-    <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top" style="width:1500px; margin-left:-200px;">
+    <div class="container-fluid footer text-white mt-5 pt-5 px-0 position-relative overlay-top" style="width:1500px; margin-left:0px;">
             <div class="row mx-0 pt-5 px-sm-3 px-lg-5 mt-4">
             <div class="col-lg-3 col-md-6 mb-5">
                 <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">LIÊN HỆ</h4>

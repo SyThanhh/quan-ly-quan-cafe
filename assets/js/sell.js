@@ -54,7 +54,7 @@ $(document).ready(function() {
                 quantity++;
                 const totalPrice = quantity * productPrice;
                 $quantityInput.val(quantity);
-                $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                $existingRow.find('.total-price').text(totalPrice + " đ");
                 updateSession();
                 updateGrandTotal();
             } else {
@@ -97,7 +97,7 @@ $(document).ready(function() {
                     showAlert('warning', 'Số lượng sản phẩm đã đạt tối đa tồn kho.');
                 }
                 const totalPrice = quantity * productPrice;
-                $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                $row.find('.total-price').text(totalPrice + " đ");
                 updateGrandTotal();
                 updateSession();
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
                     $quantityInput.val(quantity);
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $row.find('.total-price').text(totalPrice + " đ");
                     updateGrandTotal();
                     updateSession();
 
@@ -129,7 +129,7 @@ $(document).ready(function() {
                     $quantityInput.val(quantity);
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $row.find('.total-price').text(totalPrice + " đ");
                     updateGrandTotal();
                     updateSession();
 
@@ -228,7 +228,7 @@ $(document).ready(function() {
             }
     
             if (cashAmount < totalAmount) {
-                errorSpan.html('Vui lòng nhập số tiền > Số tiền phải trả.<br>').show();
+                errorSpan.html('Vui lòng nhập số tiền >= Số tiền phải trả.<br>').show();
                 $(this).val(''); 
                 return;
             }
@@ -379,7 +379,7 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
                     
-                    $existingRow.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $existingRow.find('.total-price').text(totalPrice + " đ");
                     updateSession();
 
                 } else {
@@ -423,7 +423,7 @@ $(document).ready(function() {
                     const productPrice = parseFloat(product.price);
                     const totalPrice = quantity * productPrice;
     
-                    $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                    $row.find('.total-price').text(totalPrice + " đ");
                     updated = true;
                     updateGrandTotal();
                     updateSession();
@@ -439,7 +439,7 @@ $(document).ready(function() {
                         $quantityInput.val(quantity);
                         const productPrice = parseFloat(product.price);
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                        $row.find('.total-price').text(totalPrice + " đ");
                         updateGrandTotal();
                         updateSession();
 
@@ -457,7 +457,7 @@ $(document).ready(function() {
                         $quantityInput.val(quantity);
                         const productPrice = parseFloat(product.price);
                         const totalPrice = quantity * productPrice;
-                        $row.find('.total-price').text(totalPrice.toFixed(2) + " đ");
+                        $row.find('.total-price').text(totalPrice + " đ");
                         updateGrandTotal();
                         updateSession();
 
@@ -549,7 +549,6 @@ $(document).ready(function() {
         const amountReturn = $('#amountReturn');
         const totalAmount = $("#total-amount"); 
 
-        console.log("orderData : ", orderData);
         
         $.ajax({
             type: 'POST',
@@ -582,7 +581,7 @@ $(document).ready(function() {
             },
             error: function(error) {
                 console.error("Error: " + error);
-                showAlert('error', 'Có lỗi xảy ra khi kết nối với server.');
+                showAlert('error', 'Vui lòng chọn sản phẩm !');
             }
         });
     }

@@ -226,13 +226,13 @@
 }
 
 .product-card p:nth-of-type(3) {
-    color: #E74C3C;
+    color: red;
     font-size: 16px;
     font-weight: bold;
 }
 
 .product-card p:nth-of-type(4) {
-    color: #2ecc71;
+    color: red;
     font-weight: bold;
 }
 
@@ -372,12 +372,14 @@
 
                 echo "<p><strong>Giá:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
                 //echo "<p><strong>Tồn kho:</strong> " . $row['UnitsInStock'] . "</p>";
-                echo "<p><strong>Trạng thái:</strong> " . ($row['Status'] == 1 ? 'Có sẵn' : 'Out of Stock') . "</p>";
+                echo '<p><strong>Trạng thái:</strong> ' . ($row['Status'] == 1 ? 'Có sẵn' : 'Không có sẵn') . "</p>";
                 // echo "<p><strong>Danh mục:</strong> " . htmlspecialchars($row['CategoryName']) . "</p>";
                 echo "</div>";
             }
         } else {
-            echo "<p>Không tìm thấy sản phẩm.</p>";
+           // echo "<p>Không tìm thấy sản phẩm.</p>";
+            echo '<div style="text-align: center; color: red;">Không tìm thấy sản phẩm.</div>';
+
         }
 
         // Close database connection
@@ -420,7 +422,7 @@
                 <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">LIÊN HỆ</h4>
                 <p><i class="fa fa-map-marker-alt mr-2"></i>Nguyễn Văn Bảo, P4, Gò Vấp, TP.HCM</p>
                 <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
-                <p class="m-0"><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                <p class="m-0"><i class="fa fa-envelope mr-2"></i>3scoffee@example.com</p>
             </div>
             <div class="col-lg-3 col-md-6 mb-5">
                 <h4 class="text-white text-uppercase mb-4" style="letter-spacing: 3px;">Theo dõi chúng tôi</h4>
@@ -446,10 +448,13 @@
                 <p>Đăng ký nhận những ưu đãi hấp dẫn</p>
                 <div class="w-100">
                     <div class="input-group">
-                        <input type="text" class="form-control border-light" style="padding: 25px;" placeholder="Your Email">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary font-weight-bold px-3">Đăng ký</button>
-                        </div>
+                        <?php if (isset($_SESSION['loggedinCustomer']) && $_SESSION['loggedinCustomer'] === true): ?>
+                            <a class="btn btn-primary font-weight-bold px-4 py-2 text-white text-center rounded shadow-sm" style="margin-left: 132px;" href="#">
+                                <i class="fas fa-check-circle mr-2"></i> Đã đăng ký
+                            </a>
+                            <?php else: ?>
+                                <a class="btn btn-secondary font-weight-bold px-3" href="index.php?page=register" style="margin-left: 60px; background-color: #DA9F5B;">Đăng ký ngay</a>
+                            <?php endif; ?>
                     </div>
                 </div>
             </div>
