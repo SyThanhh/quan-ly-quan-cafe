@@ -371,69 +371,115 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 <h4>BỘ LỌC</h4>
                             </div>
                             
-                            <form id="formProduct" method="post">
-                                <div class="form-group">
-                                    <label for="product-search">Tên Sản Phẩm:</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="product-search" name="tim" placeholder="Nhập tên sản phẩm...">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary search-button m-0" type="button">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category-select">Danh Mục Sản Phẩm:</label>
-                                    <select class="form-control" id="category-select" name="category">
-                                        <option value="">Chọn danh mục</option>
-                                        <option value="1">Cafe</option>
-                                        <option value="2">Soda</option>
-                                        <option value="3">Nước ép</option>
-                                        <option value="4">Trà</option>
-                                        <option value="5">Nước ngọt</option>
-                                    </select>
-                                </div>
+                            <form id="formProduct" method="post" action="">
+    <div class="form-group">
+        <label for="product-search">Tên Sản Phẩm:</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="product-search" name="tim" placeholder="Nhập tên sản phẩm..." value="<?= htmlspecialchars($searchKeyword) ?>">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary search-button m-0" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="category-select">Danh Mục Sản Phẩm:</label>
+        <select class="form-control" id="category-select" name="category">
+            <option value="">Chọn danh mục</option>
+            <option value="1" >Cafe</option>
+            <option value="2" >Soda</option>
+            <option value="3" >Nước ép</option>
+            <option value="4" >Trà</option>
+            <option value="5" >Nước ngọt</option>
+        </select>
+    </div>
 
-                                <div class="header text-center">
-                                    <h4>Danh sách sản phẩm</h4>
-                                </div>
-                                <div class="product-list" id="product-list">
-                                    <?php
-                                        // Lấy từ khóa tìm kiếm và danh mục từ form
-                                        $searchKeyword = isset($_POST['tim']) ? $_POST['tim'] : '';
-                                        $categoryID = isset($_POST['category']) ? (int)$_POST['category'] : null;
+    <div class="header text-center">
+        <h4>Danh sách sản phẩm</h4>
+    </div>
+</form>
+<div class="product-list" id="product-list">
+    <?php
+        // Cấu hình kết nối cơ sở dữ liệu (nếu chưa kết nối)
+        $servername = "localhost"; // Địa chỉ máy chủ cơ sở dữ liệu
+        $username = "admin";        // Tên đăng nhập MySQL
+        $password = "123456";            // Mật khẩu MySQL
+        $dbname = "db_ql3scoffee"; // Tên cơ sở dữ liệu
 
-                                        // Truy vấn cơ sở dữ liệu
-                                        $query = "SELECT ProductID, ProductName, UnitsInStock, UnitPrice, ProductImage, CategoryID FROM product WHERE 1=1";
+        // Kết nối MySQLi
+        $mysqli = new mysqli($servername, $username, $password, $dbname);
 
-                                        if (!empty($searchKeyword)) {
-                                            $query .= " AND ProductName LIKE '%$searchKeyword%'";
-                                        }
+        // Kiểm tra kết nối
+        if ($mysqli->connect_error) {
+            die("Connection failed: " . $mysqli->connect_error);
+        }
 
-                                        if (!empty($categoryID)) {
-                                            $query .= " AND CategoryID = $categoryID";
-                                        }
+        // Lấy từ khóa tìm kiếm và danh mục từ form
+        $searchKeyword = isset($_POST['tim']) ? $_POST['tim'] : '';
+        $categoryID = isset($_POST['category']) ? (int)$_POST['category'] : null;
 
-                                        $products = $database->select($query);
+        // Truy vấn cơ sở dữ liệu với prepared statements
+        $query = "SELECT ProductID, ProductName, UnitsInStock, UnitPrice, ProductImage, CategoryID FROM product WHERE 1=1";
+        $params = [];
+        $types = ""; // Biến để lưu các kiểu dữ liệu
 
-                                        if ($products && $products->num_rows > 0) {
-                                            while ($product = $products->fetch_assoc()) {
-                                                echo '<div class="product-item" data-name="' . $product['ProductName'] . '" data-stock="' . $product['UnitsInStock'] . '" data-price="' . $product['UnitPrice'] . '" data-category="' . $product['CategoryID'] . '">';
-                                                echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
-                                                echo '<p>' . $product['ProductName'] . '</p>';
-                                                echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                                echo "<p class='price'>Giá: " . number_format($product['UnitPrice'], 0, ',', '.') . " ₫</p>";
-                                                echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
-                                                echo '</div>';
-                                            }
-                                        } else {
-                                            echo "<p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>";
-                                        }
-                                    ?>
-                                </div>
-                            </form>
+        // Nếu có từ khóa tìm kiếm, thêm vào điều kiện tìm kiếm
+        if (!empty($searchKeyword)) {
+            $query .= " AND ProductName LIKE ?";
+            $params[] = "%" . $searchKeyword . "%"; // Chuẩn bị từ khóa tìm kiếm với dấu %
+            $types .= "s"; // "s" là kiểu dữ liệu cho string
+        }
 
+        // Nếu có category, thêm vào điều kiện tìm kiếm theo danh mục
+        if (!empty($categoryID)) {
+            $query .= " AND CategoryID = ?";
+            $params[] = $categoryID; // Thêm ID của danh mục
+            $types .= "i"; // "i" là kiểu dữ liệu cho integer
+        }
+
+        // In ra câu lệnh SQL để kiểm tra (chỉ in khi cần debug)
+        // echo "Câu lệnh SQL: " . $query . "<br>";
+
+        // Chuẩn bị câu truy vấn
+        $stmt = $mysqli->prepare($query);
+
+        // Kiểm tra lỗi câu lệnh
+        if ($stmt === false) {
+            die('Lỗi chuẩn bị câu lệnh: ' . $mysqli->error);
+        }
+
+        // Bind parameters vào câu truy vấn
+        if ($params) {
+            $stmt->bind_param($types, ...$params); // Bind tham số với các kiểu dữ liệu tương ứng
+        }
+        // Thực thi câu truy vấn
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Kiểm tra nếu có sản phẩm
+        if ($result && mysqli_num_rows($result) > 0): ?>
+            <!-- Có sản phẩm, hiển thị thông tin sản phẩm -->
+            <?php while ($r = $result->fetch_assoc()): ?>
+                <div class="product-item" data-name="<?= htmlspecialchars($r['ProductName']) ?>" 
+                    data-stock="<?= $r['UnitsInStock'] ?>" 
+                    data-price="<?= $r['UnitPrice'] ?>" 
+                    data-category="<?= $r['CategoryID'] ?>">
+                    <img src="assets/img/products/<?= htmlspecialchars($r['ProductImage']) ?>" alt="<?= htmlspecialchars($r['ProductName']) ?>">
+                    <p><?= htmlspecialchars($r['ProductName']) ?></p>
+                    <p class="stock">Tồn kho: <?= $r['UnitsInStock'] ?></p>
+                    <p class="price">Giá: <?= number_format($r['UnitPrice'], 0, ',', '.') ?> ₫</p>
+                    <input type="text" name="productID" id="productID" value="<?= $r['ProductID'] ?>" hidden/>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <!-- Thông báo không tìm thấy sản phẩm -->
+             <p></p>
+            <p class="text-center" style="color:red;">
+                Không có dữ liệu</b>
+            </p>
+        <?php endif; ?>
+</div>
                             <script>
                                 // Lọc sản phẩm theo tên và danh mục
                                 document.getElementById("category-select").addEventListener("change", filterProducts);
