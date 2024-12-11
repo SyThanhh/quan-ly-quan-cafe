@@ -38,9 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return false;
     }
 
-    function loginEmployee($conn, $table, $username_col,$phone_col, $password_col ,$role_col, $id_col, $phone_input, $password_input) {
+    function loginEmployee($conn, $table, $username_col, $phone_col, $password_col, $role_col, $status_col, $id_col, $phone_input, $password_input) {
         $password_input = md5($password_input);
-        $sql = "SELECT $id_col, $username_col, $password_col, $role_col FROM $table WHERE $phone_col = ?";
+        $sql = "SELECT $id_col, $username_col, $password_col, $role_col, $status_col FROM $table WHERE $phone_col = ?";
         $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
             die("SQL Error: " . mysqli_error($conn));
@@ -49,8 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         
-
         if ($row = mysqli_fetch_assoc($result)) {
+            if ($row[$status_col] == 0) { // Kiểm tra trạng thái
+                echo "<script>alert('Tài khoản của bạn đã ngừng hoạt động. Vui lòng liên hệ quản trị viên để biết thêm chi tiết.'); window.location.href='index.php';</script>";
+                return false;
+            }
             if ($password_input === $row[$password_col]) {
                 $_SESSION['loggedin'] = true;
                 $_SESSION['username'] = $row[$username_col];
@@ -62,19 +65,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_close($stmt);
         return false;
     }
+    
 
     // Kiểm tra đăng nhập nhân viên trước
     
-    if (loginEmployee($conn, 'employee','LastName' ,  'PhoneNumber','password', 'Roles', 'EmployeeID',$phone_input ,$password_input)) {
+    if (loginEmployee($conn, 'employee', 'LastName', 'PhoneNumber', 'password', 'Roles', 'status', 'EmployeeID', $phone_input, $password_input)) {
         $role = $_SESSION['role'];
         if (in_array($role, ['1', '2', '3', '4'])) {
-            if($role === 1) {
+            if ($role == 1) {
                 echo "<script>alert('Bạn đăng nhập thành công với vai trò người Quản Lý'); window.location.href='index.php?page=index_admin';</script>";
-            } else if($role === 2) {
+            } else if ($role == 2) {
                 echo "<script>alert('Bạn đăng nhập thành công với vai trò Nhân Viên Quầy'); window.location.href='index.php?page=index_admin';</script>";
-            } else if($role === 3) {
+            } else if ($role == 3) {
                 echo "<script>alert('Bạn đăng nhập thành công với vai trò Nhân Viên Kế Toán'); window.location.href='index.php?page=index_admin';</script>";
-            } else if($role === 4) {
+            } else if ($role == 4) {
                 echo "<script>alert('Bạn đăng nhập thành công với vai trò Nhân viên Pha Chế'); window.location.href='index.php?page=index_admin';</script>";
             }
         } else {
