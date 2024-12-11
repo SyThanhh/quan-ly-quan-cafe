@@ -416,38 +416,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                         }
 
                                         $products = $database->select($query);
-<<<<<<< HEAD
-                                        if ($products) {
-                                            if ($products->num_rows > 0) {
-                                                while ($product = $products->fetch_assoc()) {
-                                                    echo '<div class="product-item" data-name="' . $product['ProductName'] . '" data-stock="' . $product['UnitsInStock'] . '" data-price="' . $product['UnitPrice'] . '" data-category="' . $product['CategoryID'] . '">';
-                                                    echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
-                                                    echo '<p>' . $product['ProductName'] . '</p>';
-                                                    echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                                    echo '<p class="price">Giá: ' . $product['UnitPrice']. '₫</p>';
-                                                    echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
-                                                    echo '</div>';
-                                                }
-                                            } else {
-                                                echo "<div>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</div>";
-                                            }
-                                        } else {
-                                            echo "<div>Không thể thực hiện truy vấn. Kiểm tra SQL hoặc kết nối cơ sở dữ liệu.</div>";
-=======
 
-                                        // if ($products && $products->num_rows > 0) {
-                                        //     while ($product = $products->fetch_assoc()) {
-                                        //         echo '<div class="product-item" data-name="' . $product['ProductName'] . '" data-stock="' . $product['UnitsInStock'] . '" data-price="' . $product['UnitPrice'] . '" data-category="' . $product['CategoryID'] . '">';
-                                        //         echo '<img src="assets/img/products/' . $product["ProductImage"] . '" alt="' . $product['ProductName'] . '">';
-                                        //         echo '<p>' . $product['ProductName'] . '</p>';
-                                        //         echo '<p class="stock">Tồn kho: ' . $product['UnitsInStock'] . '</p>';
-                                        //         echo '<p class="price">Giá: ' . $product['UnitPrice']. '₫</p>';
-                                        //         echo '<input type="text" name="productID" id="productID" value="' . $product['ProductID'] . '" hidden/>';
-                                        //         echo '</div>';
-                                        //     }
-                                        // } else {
-                                        //     echo "<p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>";
-                                        // }
                                         if ($products && $products->num_rows > 0) {
                                             while ($product = $products->fetch_assoc()) {
                                                 echo '<div class="product-item" data-name="' . $product['ProductName'] . '" data-stock="' . $product['UnitsInStock'] . '" data-price="' . $product['UnitPrice'] . '" data-category="' . $product['CategoryID'] . '">';
@@ -463,7 +432,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                         if ($products) {
                                             echo "<p> </p>";
                                             echo '<div style="text-align: center; color: red;">Không có dữ liệu.</div>';
->>>>>>> 5a9f06efd7a9a2dae16612a06276d917b12f0040
                                         }
                                         
                                     ?>
