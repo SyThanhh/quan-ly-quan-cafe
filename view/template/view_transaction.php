@@ -173,7 +173,9 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
         }
         echo '</tbody></table>';
     } else {
-        echo "Không tìm thấy hồ sơ giao dịch.";
+        // echo "Không tìm thấy hồ sơ giao dịch.";
+        echo '<div style="text-align: center;">Không tìm thấy hồ sơ giao dịch.</div>';
+
     }
 
     // Đóng câu lệnh đã chuẩn bị

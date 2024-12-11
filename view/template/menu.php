@@ -371,7 +371,7 @@
                 echo "</a>";
 
                 echo "<p><strong>Giá:</strong> " . number_format($row['UnitPrice'], 0, ',', '.') . " VND</p>";
-                echo "<p><strong>Tồn kho:</strong> " . $row['UnitsInStock'] . "</p>";
+                //echo "<p><strong>Tồn kho:</strong> " . $row['UnitsInStock'] . "</p>";
                 echo "<p><strong>Trạng thái:</strong> " . ($row['Status'] == 1 ? 'Có sẵn' : 'Out of Stock') . "</p>";
                 // echo "<p><strong>Danh mục:</strong> " . htmlspecialchars($row['CategoryName']) . "</p>";
                 echo "</div>";
