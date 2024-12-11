@@ -1123,7 +1123,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             },
             error: function(error) {
                 console.error("Error: " + error);
-                showAlert('error', 'Có lỗi xảy ra khi kết nối với server.');
+                showAlert('error', 'Vui lòng chọn sản phẩm !');
             }
         });
     }
