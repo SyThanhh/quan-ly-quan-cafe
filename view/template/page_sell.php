@@ -280,7 +280,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                             <button class="btn btn-outline-secondary search-button" id="btn-clear">
                                                 <i class="fas fa-eraser"></i>
                                             </button>
-                                            <button type="button" id="btnAddCustomerPageSell" class="btn btn-primary btn-add">
+                                            <button type="button" id="btnAddCustomerPageSell" class="btn btn-primary btn-add" style="border: none;
+    background: #683c08bf;">
                                                 <i class="fas fa-plus-square"></i>
                                                 Tạo tài khoản khách hàng
                                             </button>
@@ -340,7 +341,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 <h4>THÔNG TIN HÓA ĐƠN</h4>
                             </div>
                             <table class="table table-bordered mt-3" id="invoice-list">
-                                <thead class="table-header">
+                                <thead class="table-header" style="border: none;
+    background: #683c08bf;">
                                     <tr>
                                         <th>Tên SP</th>
                                         <th>Đơn Giá</th>
@@ -359,7 +361,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <!-- <button class="btn btn-danger me-2" style="transform: translate(-12px, 0px);">HỦY</button> -->
-                                <button type="button" id="btnPaymentModal" class="btn btn-primary" data-toggle="modal" data-target="#paymentModal">THANH TOÁN</button>
+                                <button type="button" id="btnPaymentModal" class="btn btn-primary" data-toggle="modal" data-target="#paymentModal" style="border: none;
+    background: #683c08bf;">THANH TOÁN</button>
                             </div>
             
                         </div>
@@ -494,7 +497,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     </div>
                                     <div class="d-flex justify-content-end">
                                         <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Hủy</button>
-                                        <button type="button" class="btn btn-primary" id="btnConFirmAddCustomerSell">Xác Nhận</button>
+                                        <button type="button" class="btn btn-primary" id="btnConFirmAddCustomerSell" style="border: none;
+    background: #683c08bf;">Xác Nhận</button>
                                     </div>
                                 </form>
                             </div>
@@ -628,7 +632,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                 
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-secondary mr-3" data-dismiss="modal">Đóng</button>
-                                    <button type="submit" name="redirect" id="redirect" class="btn btn-default btn-primary">Xác nhận Thanh toán</button>
+                                    <button type="submit" name="redirect" id="redirect" class="btn btn-default btn-primary" style="border: none;
+    background: #683c08bf;">Xác nhận Thanh toán</button>
 
                                 </div>
                                 </form>
@@ -639,7 +644,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                   </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="processPayment">Xác nhận Thanh Toán</button>
+                    <button type="button" class="btn btn-primary" id="processPayment" style="border: none;
+    background: #683c08bf;">Xác nhận Thanh Toán</button>
                 </div>
             </div>
         </div>

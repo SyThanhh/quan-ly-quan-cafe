@@ -57,7 +57,8 @@
                         <label for="to-date">Đến ngày:</label>
                         <input type="date" id="to-date" name="to-date" placeholder="mm/dd/yyyy" value="<?php echo isset($_SESSION['to-date']) ? $_SESSION['to-date'] : ''; ?>" >
                     </div>
-                    <button class="filter-button mr-2" id="btn-filter" type="submit">Lọc</button>
+                    <button class="filter-button mr-2" id="btn-filter" type="submit" style="border: none;
+    background: #683c08bf;">Lọc</button>
                     <button class="btn filter-button btn-light" id="btn-clear">
                         <i class="fas fa-eraser"></i>
                     </button>
@@ -73,7 +74,8 @@
 
 <!-- Danh sách nhân viên -->
 <table class="table">
-    <thead>
+    <thead style="border: none;
+    background: #683c08bf;">
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Tên Khách hàng</th> 
@@ -108,7 +110,8 @@
                         echo "<span class='badge badge-danger'>Chưa thanh toán</span>";
                     }
                     echo "</td>";
-                    echo "<td><a href='index.php?page=page_viewOrderDetail&OrderID={$row['OrderID']}' class='btn btn-primary btn-sm view-invoice'>Xem chi tiết</a></td>";
+                    echo "<td><a href='index.php?page=page_viewOrderDetail&OrderID={$row['OrderID']}' class='btn btn-primary btn-sm view-invoice' style='border: none;
+    background: #683c08bf;'>Xem chi tiết</a></td>";
                     echo "</tr>";
                 }
             } else {
