@@ -243,7 +243,7 @@ if ($result_supplier === false) {
             <textarea class="form-control" id="note" name="note" rows="3"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Gửi yêu cầu</button>
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #683c08bf; border:none">Gửi yêu cầu</button>
     </form>
 </div>
 

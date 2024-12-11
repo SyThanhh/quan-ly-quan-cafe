@@ -182,7 +182,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     </br>
                                     <button type="button" class='btn btn-danger' onclick="window.history.back();">Hủy</button>
                                     <button class="btn btn-secondary" type="reset">Làm Lại</button>
-                                    <button type="submit" class="btn btn-primary btn-add" name="addShift">Thêm Lịch</button>
+                                    <button type="submit" class="btn btn-primary btn-add" name="addShift" style="background-color: #683c08bf; border:none">Thêm Lịch</button>
                                 </div>
                             </form>
                         </div>
@@ -236,10 +236,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 }
                 ?>
             
-            <!-- Cuối trang -->
-            <?php include_once('./common/footer/footer.php'); ?>
+            
         </div>    
-
+        <!-- Cuối trang -->
+        <?php include_once('./common/footer/footer.php'); ?>
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
 </body>

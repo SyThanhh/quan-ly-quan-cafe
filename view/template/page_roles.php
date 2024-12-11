@@ -41,6 +41,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     opacity: 1;  /* Hiển thị khi hover */
 }
 
+.page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #8e6d46 !important;
+            border-color: #8e6d46 !important;
+        }
+
 </style>
 </head>
 
