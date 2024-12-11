@@ -212,7 +212,7 @@
                 $customerID = trim($customerID);
                 $invoiceAmount = trim($invoiceAmount);
         
-                $invoiceAmount = intval($invoiceAmount);
+                $invoiceAmount = $invoiceAmount;
         
                 // Nếu thiếu dữ liệu cần thiết, trả về 
                 if (empty($customerID) || $invoiceAmount <= 0) {

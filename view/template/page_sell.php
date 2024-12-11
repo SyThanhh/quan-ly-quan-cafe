@@ -3,6 +3,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: index.php?page=login");
     exit();
 }
+
+function unsetSessionCoupon() {
+    unset($_SESSION['CouponID']);
+    unset($_SESSION['CouponDiscount']);
+    unset($_SESSION['CouponCode']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,7 +68,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     </style>
 </head>
 <?php
-
     // require_once($_SERVER['DOCUMENT_ROOT'] . "/quan-ly-quan-cafe/payment/config.php");
     include_once("./payment/config.php");
 
@@ -103,9 +108,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             $_SESSION['CustomerEmail'] = null;
             unset($_SESSION['searchKeywordSell']); 
 
+            unset($_SESSION['CouponID']);
+            unset($_SESSION['CouponCode']);
+            unset($_SESSION['CouponDiscount']);
+
         }
     }
-
    
     if (isset($_SESSION['customerID'])) {
         $customerID = $_SESSION['customerID'];
@@ -127,6 +135,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
             $customer['CustomerEmail'] = null;
             unset($_SESSION['CustomerEmail']); 
+
+            unset($_SESSION['CouponID']);
+            unset($_SESSION['CouponDiscount']);
+            unset($_SESSION['CouponCode']);
         } else {
             if(is_array($customer)) {
                 $_SESSION["CustomerName"] = $customer['CustomerName'] ? $customer['CustomerName'] : "";
@@ -312,11 +324,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     <?php
                                         $point = isset($_SESSION["CustomerPoint"]) ? $_SESSION["CustomerPoint"] : '0';
                                         $coupons = $CouponController->getCouponByPoint($point);
-                                        // var_dump($coupons);
                                         echo $point;
                                         if ($coupons) {
                                             while ($cpon = mysqli_fetch_assoc($coupons)) {
-                                                echo "<option value='".$cpon["CouponID"]."'>".$cpon["CouponCode"]."</option>";
+                                                echo "<option value='".$cpon["CouponID"]."'>".$cpon["CouponCode"]."</option>"; 
+                                                echo "<input value='" . (isset($_SESSION['CouponID']) ? $_SESSION['CouponID'] : "") . "' id='discountCodeHiden' hidden>";
+
                                             }
                                         } else {
                                             echo "<option>Không đủ điểm</option>";
@@ -328,7 +341,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
                                 <div class="form-group col-md-6">
                                     <label for="reduction">Giảm Giá (%) </label>
-                                    <input type="text" class="form-control" id="reduction" value="" placeholder="" readonly>
+                                    <input type="text" class="form-control" id="reduction" value="<?php echo isset($cpDis) ?  $cpDis : ''; ?>" placeholder="" readonly>
+                                    <input type="text" class="form-control" id="reductionHiden" value="<?php echo isset($_SESSION["CouponDiscount"]) ? $_SESSION["CouponDiscount"] : '0'; ?>" placeholder="" readonly hidden>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -449,7 +463,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
                                     // Kiểm tra nếu có sản phẩm
                                     if ($result && mysqli_num_rows($result) > 0): ?>
-                                        <!-- Có sản phẩm, hiển thị thông tin sản phẩm -->
                                         <?php while ($r = $result->fetch_assoc()): ?>
                                             <div class="product-item" data-name="<?= htmlspecialchars($r['ProductName']) ?>" 
                                                 data-stock="<?= $r['UnitsInStock'] ?>" 
@@ -463,12 +476,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                             </div>
                                         <?php endwhile; ?>
                                     <?php else: ?>
-                                        <!-- Thông báo không tìm thấy sản phẩm -->
                                         <p></p>
                                         <p class="text-center" style="color:red;">
-                                            Không có dữ liệu</b>
+                                            Không có dữ liệu
                                         </p>
+                                        <p></p>
                                     <?php endif; ?>
+                                    
                             </div>
                             <script>
                                 // Lọc sản phẩm theo tên và danh mục
@@ -579,98 +593,98 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                                     <div id="bankFields" class="payment-fields mt-3">
                                     <div class="container">
 
-                            <h3>Tạo mới đơn hàng</h3>
-                            <div class="table-responsive">
-                                <form action="/quan-ly-quan-cafe/payment/vnpay_create_payment.php" id="create_form" method="post">       
+                                    <h3>Tạo mới đơn hàng</h3>
+                                    <div class="table-responsive">
+                                        <form action="/quan-ly-quan-cafe/payment/vnpay_create_payment.php" id="create_form" method="post">       
 
-                                    <div class="form-group">
-                                        <label for="language">Loại hàng hóa </label>
-                                        <select name="order_type" id="order_type" class="form-control">
-                                            <option value="billpayment" selected>Thanh toán hóa đơn</option>
-                                            <option value="other">Khác - Xem thêm tại VNPAY</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="order_id">Mã hóa đơn</label>
-                                        <input class="form-control" id="order_id" name="order_id" type="text" value="<?php echo date("YmdHis") ?>"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="amount">Số tiền</label>
-                                        <input class="form-control" id="amount"
-                                            name="amount" type="number" value="10000"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="order_desc">Nội dung thanh toán</label>
-                                        <textarea class="form-control" cols="20" id="order_desc" name="order_desc" rows="2">Noi dung thanh toan</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="bank_code">Ngân hàng</label>
-                                        <select name="bank_code" id="bank_code" class="form-control">
-                                            <option value="">Không chọn</option>
-                                            <option value="NCB"> Ngan hang NCB</option>
-                                            <option value="AGRIBANK"> Ngan hang Agribank</option>
-                                            <option value="SCB"> Ngan hang SCB</option>
-                                            <option value="SACOMBANK">Ngan hang SacomBank</option>
-                                            <option value="EXIMBANK"> Ngan hang EximBank</option>
-                                            <option value="MSBANK"> Ngan hang MSBANK</option>
-                                            <option value="NAMABANK"> Ngan hang NamABank</option>
-                                            <option value="VNMART"> Vi dien tu VnMart</option>
-                                            <option value="VIETINBANK">Ngan hang Vietinbank</option>
-                                            <option value="VIETCOMBANK"> Ngan hang VCB</option>
-                                            <option value="HDBANK">Ngan hang HDBank</option>
-                                            <option value="DONGABANK"> Ngan hang Dong A</option>
-                                            <option value="TPBANK"> Ngân hàng TPBank</option>
-                                            <option value="OJB"> Ngân hàng OceanBank</option>
-                                            <option value="BIDV"> Ngân hàng BIDV</option>
-                                            <option value="TECHCOMBANK"> Ngân hàng Techcombank</option>
-                                            <option value="VPBANK"> Ngan hang VPBank</option>
-                                            <option value="MBBANK"> Ngan hang MBBank</option>
-                                            <option value="ACB"> Ngan hang ACB</option>
-                                            <option value="OCB"> Ngan hang OCB</option>
-                                            <option value="IVB"> Ngan hang IVB</option>
-                                            <option value="VISA"> Thanh toan qua VISA/MASTER</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="language">Ngôn ngữ</label>
-                                        <select name="language" id="language" class="form-control">
-                                            <option value="vn">Tiếng Việt</option>
-                                            <option value="en">English</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label >Thời hạn thanh toán</label>
-                                        <input class="form-control" id="txtexpire"
-                                            name="txtexpire" type="text" value="<?php echo $expire; ?>"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <h3>Thông tin hóa đơn (Billing)</h3>
-                                    </div>
-                                    <div class="form-group">
-                                        <label >Họ tên (*)</label>
-                                        <input class="form-control" id="txt_billing_fullname"
-                                            name="txt_billing_fullname" type="text" value="NGUYEN VAN XO"/>             
-                                    </div>
-                                    <div class="form-group">
-                                        <label >Email (*)</label>
-                                        <input class="form-control" id="txt_billing_email"
-                                            name="txt_billing_email" type="text" value="xonv@vnpay.vn"/>   
-                                    </div>
-                                    <div class="form-group">
-                                        <label >Số điện thoại (*)</label>
-                                        <input class="form-control" id="txt_billing_mobile"
-                                            name="txt_billing_mobile" type="text" value="0934998386"/>   
-                                    </div>
-                                    
-                                
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-secondary mr-3" data-dismiss="modal">Đóng</button>
-                                    <button type="submit" name="redirect" id="redirect" class="btn btn-default btn-primary" style="border: none;
-    background: #683c08bf;">Xác nhận Thanh toán</button>
+                                            <div class="form-group">
+                                                <label for="language">Loại hàng hóa </label>
+                                                <select name="order_type" id="order_type" class="form-control">
+                                                    <option value="billpayment" selected>Thanh toán hóa đơn</option>
+                                                    <option value="other">Khác - Xem thêm tại VNPAY</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_id">Mã hóa đơn</label>
+                                                <input class="form-control" id="order_id" name="order_id" type="text" value="<?php echo date("YmdHis") ?>"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="amount">Số tiền</label>
+                                                <input class="form-control" id="amount"
+                                                    name="amount" type="number" value="10000"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="order_desc">Nội dung thanh toán</label>
+                                                <textarea class="form-control" cols="20" id="order_desc" name="order_desc" rows="2">Noi dung thanh toan</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="bank_code">Ngân hàng</label>
+                                                <select name="bank_code" id="bank_code" class="form-control">
+                                                    <option value="">Không chọn</option>
+                                                    <option value="NCB"> Ngan hang NCB</option>
+                                                    <option value="AGRIBANK"> Ngan hang Agribank</option>
+                                                    <option value="SCB"> Ngan hang SCB</option>
+                                                    <option value="SACOMBANK">Ngan hang SacomBank</option>
+                                                    <option value="EXIMBANK"> Ngan hang EximBank</option>
+                                                    <option value="MSBANK"> Ngan hang MSBANK</option>
+                                                    <option value="NAMABANK"> Ngan hang NamABank</option>
+                                                    <option value="VNMART"> Vi dien tu VnMart</option>
+                                                    <option value="VIETINBANK">Ngan hang Vietinbank</option>
+                                                    <option value="VIETCOMBANK"> Ngan hang VCB</option>
+                                                    <option value="HDBANK">Ngan hang HDBank</option>
+                                                    <option value="DONGABANK"> Ngan hang Dong A</option>
+                                                    <option value="TPBANK"> Ngân hàng TPBank</option>
+                                                    <option value="OJB"> Ngân hàng OceanBank</option>
+                                                    <option value="BIDV"> Ngân hàng BIDV</option>
+                                                    <option value="TECHCOMBANK"> Ngân hàng Techcombank</option>
+                                                    <option value="VPBANK"> Ngan hang VPBank</option>
+                                                    <option value="MBBANK"> Ngan hang MBBank</option>
+                                                    <option value="ACB"> Ngan hang ACB</option>
+                                                    <option value="OCB"> Ngan hang OCB</option>
+                                                    <option value="IVB"> Ngan hang IVB</option>
+                                                    <option value="VISA"> Thanh toan qua VISA/MASTER</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="language">Ngôn ngữ</label>
+                                                <select name="language" id="language" class="form-control">
+                                                    <option value="vn">Tiếng Việt</option>
+                                                    <option value="en">English</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label >Thời hạn thanh toán</label>
+                                                <input class="form-control" id="txtexpire"
+                                                    name="txtexpire" type="text" value="<?php echo $expire; ?>"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <h3>Thông tin hóa đơn (Billing)</h3>
+                                            </div>
+                                            <div class="form-group">
+                                                <label >Họ tên (*)</label>
+                                                <input class="form-control" id="txt_billing_fullname"
+                                                    name="txt_billing_fullname" type="text" value="NGUYEN VAN XO"/>             
+                                            </div>
+                                            <div class="form-group">
+                                                <label >Email (*)</label>
+                                                <input class="form-control" id="txt_billing_email"
+                                                    name="txt_billing_email" type="text" value="xonv@vnpay.vn"/>   
+                                            </div>
+                                            <div class="form-group">
+                                                <label >Số điện thoại (*)</label>
+                                                <input class="form-control" id="txt_billing_mobile"
+                                                    name="txt_billing_mobile" type="text" value="0934998386"/>   
+                                            </div>  
+                                            
+                                        
+                                            <div class="d-flex justify-content-end">
+                                                <button type="button" class="btn btn-secondary mr-3" data-dismiss="modal">Đóng</button>
+                                                <button type="submit" name="redirect" id="redirect" class="btn btn-default btn-primary" style="border: none;
+                background: #683c08bf;">Xác nhận Thanh toán</button>
 
-                                </div>
-                                </form>
-                            </div>
+                                            </div>
+                                        </form>
+                                    </div>
                         </div>  
                     
                         </div>
@@ -946,7 +960,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     }
 
     $('#discountCode').on('change', function() {
+      
         var couponID = $(this).val(); 
+
         if (couponID) {
             $.ajax({
                 url: '?page=processing_coupon',  
@@ -1012,14 +1028,14 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
         // gửi data để lưu session
 
-
+       
      $(document).ready(function() {
             $('#bank').change(function() {
                 if ($(this).is(':checked')) {
-                    fetchLatestOrderID();
                     $(".modal-footer").hide();
                     // Điều hướng đến trang thanh toán
                     // window.location.href = 'payment/index.php'; // Đường dẫn đến file PHP
+                    fetchLatestOrderID();
                     var orderType = $(this).val();
                     let totalAmount = $("#total-amount").text().replace(/,/g, '');
                     let phone = replaceWhitespace($('#name-search').val());
@@ -1045,7 +1061,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     $('#txt_billing_fullname').val('');
                     $('#txt_billing_email').val('');
                     $('#txt_billing_mobile').val('');
-                    $('#reduction').val('');
                     $('#total-amount').text('0'); // Reset tổng tiền về mặc định (nếu cần)
                 }
             });
@@ -1065,32 +1080,32 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             });
 
         });
-        
-        function collectOrderData() {
+        function collectOrderDataBank() {
             let phone = replaceWhitespace($('#name-search').val());
             let customerName = replaceWhitespace($('#customerNameSell').val());
-            let discountCode = replaceWhitespace($('#discountCode').val());
-            let reduction = replaceWhitespace($('#reduction').val());
+            // let discountCode = $('#discountCode').val();
+            let discountCode = $('#discountCodeHiden').val();
+            let reduction = $('#reductionHiden').val();
             let employeeIdByRole = $('#employeeIdByRole').val();
-            // Làm sạch dữ liệu
-            reduction = extractDiscount(reduction);  // Chỉ lấy phần trăm giảm giá
+            reduction = extractDiscount(reduction); // Chỉ lấy phần trăm giảm giá
+
 
             let orderData = {
-                employeeId : employeeIdByRole,
+                employeeId: employeeIdByRole,
                 phone: phone,
                 customerName: customerName,
                 couponID: discountCode,
-                reduction: reduction,  // Sử dụng giá trị phần trăm giảm giá đã làm sạch
+                reduction: reduction, // Sử dụng giá trị phần trăm giảm giá đã làm sạch
                 items: [],
-                paymentMethod: $('input[name="paymentMethod"]:checked').val(),
-                totalAmount: cleanPrice($totalAmountDisplay.text()), // Làm sạch tổng tiền
+                paymentMethod: "Chuyển khoản",
+                totalAmount: cleanPrice($totalAmountDisplay.text()) // Làm sạch tổng tiền
             };
 
-            $invoiceListBody.find('tr').each(function() {
+            $invoiceListBody.find('tr').each(function () {
                 // Lấy thêm productID từ thuộc tính data-id
-                const productID = replaceWhitespace($(this).data('id')); 
-                const productName = replaceWhitespace($(this).data('name')); 
-                const productStock = $(this).data('stock'); 
+                const productID = replaceWhitespace($(this).data('id'));
+                const productName = replaceWhitespace($(this).data('name'));
+                const productStock = $(this).data('stock');
                 const productPrice = cleanPrice(replaceWhitespace($(this).find('td').eq(1).text())); // Làm sạch giá sản phẩm
                 const quantity = replaceWhitespace($(this).find('.quantity-display').val());
                 const totalPrice = cleanPrice(replaceWhitespace($(this).find('.total-price').text())); // Làm sạch tổng giá trị sản phẩm
@@ -1112,19 +1127,17 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 orderData.accountInfo = $('#accountInfo').val();
             }
 
-            return orderData;
-    }
+        return orderData;
+    }   
 
-    
 
     // gửi data để lưu session
-    function sendOrderData() {
-        const orderData = collectOrderData();
+    function sendOrderDataBank() {
+        const orderData = collectOrderDataBank();
         const isCash = $('#cash').is(':checked');
         const cashAmount = $('#cashAmount');
         const amountReturn = $('#amountReturn');
         const totalAmount = $("#total-amount"); 
-
 
         $.ajax({
             type: 'POST',
@@ -1159,14 +1172,14 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             error: function(error) {
                 console.error("Error: " + error);
                 showAlert('error', 'Vui lòng chọn sản phẩm !');
-                       }
+            }
         });
     }
     <?php
         if (isset($_GET['vnp_ResponseCode']) && $_GET['vnp_ResponseCode'] == '00') {
             echo "
                     window.onload = function() {
-                        sendOrderData();
+                        sendOrderDataBank();
                         const newUrl = 'index.php?page=page_sell';
                         window.history.replaceState(null, null, newUrl);
                     }
@@ -1229,6 +1242,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         totalAmount.text("0");
         $invoiceListBody.empty(); // Xóa nội dung bảng
         $totalAmountDiscount.text("");
+        $('#reduction').val("");
     }
 
     function fetchLatestOrderID() {

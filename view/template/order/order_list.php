@@ -41,7 +41,6 @@
     $orders = $orderController->listOrders($fromDate, $toDate, $limit, $offset);
     $totalPages  = $orderController->getTotalPages($fromDate ,$toDate, $limit);
     
-    
 ?>
 <div class="col-md-12 text-center">
 <div class="row">
@@ -104,11 +103,11 @@
                     echo "<td>{$row['PaymentMethod']}</td>";
                     echo "<td>{$row['TotalAmount']} <span>đ</span> </td>";
                     echo "<td>";
-                    if ($row['Status']) {
-                        echo "<span class='badge badge-success'>Đã thanh toán</span>";
-                    } else {
-                        echo "<span class='badge badge-danger'>Chưa thanh toán</span>";
-                    }
+                        if ($row['Status']) {
+                            echo "<span class='badge badge-success'>Đã thanh toán</span>";
+                        } else {
+                            echo "<span class='badge badge-danger'>Chưa thanh toán</span>";
+                        }
                     echo "</td>";
                     echo "<td><a href='index.php?page=page_viewOrderDetail&OrderID={$row['OrderID']}' class='btn btn-primary btn-sm view-invoice' style='border: none;
     background: #683c08bf;'>Xem chi tiết</a></td>";

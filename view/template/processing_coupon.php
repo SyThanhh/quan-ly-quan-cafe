@@ -9,10 +9,15 @@ if (isset($_GET['couponID'])) {
     $result = $CouponController->get01CouponByID($couponID);
     if ($result && mysqli_num_rows($result) > 0) {
         $coupon = mysqli_fetch_assoc($result);  // Chuyển đổi kết quả thành mảng
+        $_SESSION['CouponID'] = $coupon['CouponID'];
+        $_SESSION['CouponDiscount'] = $coupon['CouponDiscount'];
+        $_SESSION['CouponCode'] = $coupon['CouponCode'];
+        
         echo json_encode([
             'success' => true,
-            'couponDiscount' => $coupon['CouponDiscount'],
-            'couponCode' => $coupon['CouponCode']
+            'couponID' =>  $_SESSION['CouponID'],
+            'couponDiscount' => $_SESSION['CouponDiscount'],
+            'couponCode' =>   $_SESSION['CouponCode']
         ]);
     } else {
         echo json_encode([

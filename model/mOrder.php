@@ -223,7 +223,14 @@
 
         public function getOrders($limit, $offset, $fromdate = '', $todate = '') {
             // Bắt đầu xây dựng truy vấn SQL
-            $query = "SELECT *
+            $query = "SELECT 
+                        o.OrderID,
+                        c.CustomerName,
+                        o.CreateDate,
+                        cp.CouponDiscount,
+                        o.PaymentMethod,
+                        o.TotalAmount,
+                        o.Status
                       FROM `order` o
                       JOIN customer c ON o.CustomerId = c.CustomerID
                       JOIN employee e ON o.EmployeeID = e.EmployeeID

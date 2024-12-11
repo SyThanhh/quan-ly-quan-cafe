@@ -541,7 +541,7 @@ $(document).ready(function() {
 
     
 
-    // gửi data để lưu session
+    // // gửi data để lưu session
     function sendOrderData() {
         const orderData = collectOrderData();
         const isCash = $('#cash').is(':checked');
