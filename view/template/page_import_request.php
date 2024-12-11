@@ -332,7 +332,9 @@ $conn->close();
         });
     });
     </script>
+    
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>
+    <?php include_once('./common/footer/footer.php') ?>
 </body>
 </html>
