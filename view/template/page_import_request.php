@@ -114,13 +114,7 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
-// Kết nối cơ sở dữ liệu
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "db_ql3scoffee";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Kiểm tra kết nối
 if ($conn->connect_error) {
@@ -209,9 +203,21 @@ if ($result_supplier === false) {
         <!-- Số lượng -->
         <div class="form-group">
             <label for="quantity">Số lượng</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" >
-            <small class="text-danger error-message" style="display: none;">Vui lòng nhập số lượng</small>
+            <input type="number" class="form-control" id="quantity" name="quantity" required 
+             oninput="validateQuantity(this)">
         </div>
+        <script>
+        function validateQuantity(input) {
+        // Chuyển giá trị sang số nguyên
+        let value = parseInt(input.value, 10);
+
+        // Nếu giá trị không hợp lệ hoặc nhỏ hơn 1, đặt lại giá trị thành trống
+        if (isNaN(value) || value < 1) {
+            input.value = '';
+        }
+    }
+    </script>
+
 
         <!-- Chọn nhà cung cấp -->
         <div class="form-group">

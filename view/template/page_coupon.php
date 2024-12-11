@@ -133,7 +133,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         align-items: flex-start;
     }
 
-    .input-group input,
+    .input-group input
     {
         width: 100%; /* Cho phép các input và button chiếm toàn bộ chiều rộng */
         margin-bottom: 10px; /* Khoảng cách giữa các phần tử */
