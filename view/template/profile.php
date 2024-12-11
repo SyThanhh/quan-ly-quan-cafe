@@ -38,62 +38,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Cập nhật thông tin nếu có thay đổi
     if (!empty($phone) || !empty($email) || !empty($newPassword)) {
-        // Cập nhật số điện thoại nếu có thay đổi
+        $notification = ""; // Đặt lại thông báo
         if (!empty($phone)) {
-            $sql = "UPDATE customer SET CustomerPhone = ? WHERE CustomerID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("si", $phone, $id_col);
-            if ($stmt->execute()) {
-                if ($stmt->affected_rows > 0) {
-                    $notification = "Cập nhật số điện thoại thành công!";
-                } else {
-                    $notification = "Số điện thoại không thay đổi.";
-                }
+            // Kiểm tra xem số điện thoại đã tồn tại trong cơ sở dữ liệu hay chưa
+            $checkPhoneSql = "SELECT CustomerID FROM customer WHERE CustomerPhone = ? AND CustomerID != ?";
+            $checkPhoneStmt = $conn->prepare($checkPhoneSql);
+            $checkPhoneStmt->bind_param("si", $phone, $id_col);
+            $checkPhoneStmt->execute();
+            $checkPhoneStmt->store_result();
+        
+            if ($checkPhoneStmt->num_rows > 0) {
+                $notification .= "Số điện thoại đã tồn tại. ";
             } else {
-                $notification = "Số điện thoại đã tồn tại.";
+                // Thực hiện cập nhật số điện thoại
+                $sql = "UPDATE customer SET CustomerPhone = ? WHERE CustomerID = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $phone, $id_col);
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows > 0) {
+                        $notification .= "Cập nhật số điện thoại thành công!  &nbsp;";
+                    } else {
+                        $notification .= "Số điện thoại không thay đổi. ";
+                    }
+                } else {
+                    $notification .= "Có lỗi khi cập nhật số điện thoại. ";
+                }
+                $stmt->close();
             }
-            $stmt->close();
+            $checkPhoneStmt->close();
         }
-
+        
         // Cập nhật email nếu có thay đổi
         if (!empty($email)) {
-            $sql = "UPDATE customer SET Email = ? WHERE CustomerID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("si", $email, $id_col);
-            if ($stmt->execute()) {
-                if ($stmt->affected_rows > 0) {
-                    $notification = "Cập nhật email thành công!";
-                } else {
-                    $notification = "Email không thay đổi.";
-                }
-            } else {
-                $notification = "Email đã tồn tại.";
-            }
-            $stmt->close();
-        }
-
-        // Cập nhật mật khẩu nếu có thay đổi
-        if (!empty($newPassword)) {
-            // Mã hóa mật khẩu bằng MD5
-            $hashedPassword = md5($newPassword);
+            // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu hay chưa
+            $checkEmailSql = "SELECT CustomerID FROM customer WHERE Email = ? AND CustomerID != ?";
+            $checkEmailStmt = $conn->prepare($checkEmailSql);
+            $checkEmailStmt->bind_param("si", $email, $id_col);
+            $checkEmailStmt->execute();
+            $checkEmailStmt->store_result();
         
+            if ($checkEmailStmt->num_rows > 0) {
+                $notification .= "Email đã tồn tại. ";
+            } else {
+                // Thực hiện cập nhật email
+                $sql = "UPDATE customer SET Email = ? WHERE CustomerID = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("si", $email, $id_col);
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows > 0) {
+                        $notification .= "Cập nhật email thành công!  &nbsp;";
+                    } else {
+                        $notification .= "Email không thay đổi. ";
+                    }
+                } else {
+                    $notification .= "Có lỗi khi cập nhật email. ";
+                }
+                $stmt->close();
+            }
+            $checkEmailStmt->close();
+        }
+        
+        // Cập nhật mật khẩu nếu có thay đổi
+        
+        if (!empty($newPassword)) {
+            $hashedPassword = md5($newPassword);
             $sql = "UPDATE customer SET CustomerPassword = ? WHERE CustomerID = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("si", $hashedPassword, $id_col);
             if ($stmt->execute()) {
                 if ($stmt->affected_rows > 0) {
-                    $notification = "Cập nhật mật khẩu thành công!";
+                    $notification .= "Cập nhật mật khẩu thành công! "; // Ghi nhận thành công
                 } else {
-                    $notification = "Mật khẩu không thay đổi.";
+                    $notification .= "Mật khẩu không thay đổi. ";
                 }
             } else {
-                $notification = "Có lỗi khi cập nhật mật khẩu.";
+                $notification .= "Có lỗi khi cập nhật mật khẩu. ";
             }
             $stmt->close();
         }
-    } else {
+        
+    } if (empty($phone) && empty($email) && empty($newPassword)) {
         $notification = "Cả số điện thoại, email và mật khẩu đều không thay đổi!";
-    }
+    }   
 }
 
 
