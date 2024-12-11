@@ -124,7 +124,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 <h4 class="font-weight-bold">QUẢN LÝ PHIẾU YÊU CẦU</h4>
             </div>
             <div class="mb-3">
-                <a href="index.php?page=page_requestform&status=0" class="btn btn-primary btn-lg mr-2">Xem phiếu chưa duyệt</a>
+                <a href="index.php?page=page_requestform&status=0" class="btn btn-primary btn-lg" style="background-color: #683c08bf; border: none;">Xem phiếu chưa duyệt</a>
                 <a href="index.php?page=page_requestform&status=1" class="btn btn-success btn-lg">Xem phiếu đã duyệt</a>
             </div>
 

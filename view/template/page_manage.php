@@ -163,7 +163,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                     </div>
                 </div>
             </div>
-            <button type="button" id="stats-btn" class="btn custom-btn">Thống kê</button>
+            <button type="button" id="stats-btn" class="btn " style="background-color: #683c08bf; border:none; color:#fff">Thống kê</button>
         </form>
         <br>
         </div>
@@ -232,8 +232,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 </button>
             </div> -->
             <table class="table table-bordered text-center">
-            <thead class="custom-thead"> 
-            <tr> <th class="text-white">STT</th> 
+            <thead class="custom" style="background-color: #683c08bf; border: none;">
+            <tr> <th class="text-white">Mã ID</th> 
                 <th class="text-white">Ngày bán</th> 
                 <th class="text-white">Hình thức thanh toán</th> 
                 <th class="text-white">Doanh thu</th> 
@@ -278,7 +278,7 @@ if ($result && $result->num_rows > 0) {
     $stt = 1; // Số thứ tự
     while ($row = $result->fetch_assoc()) {
         echo "<tr>";
-        echo "<td>{$stt}</td>";
+        echo "<td>{$row['OrderID']}</td>";
         echo "<td>{$row['CreateDate']}</td>";
         echo "<td>{$row['PaymentMethod']}</td>";
         echo "<td>" . number_format($row['TotalAmount']) . " VNĐ</td>";
