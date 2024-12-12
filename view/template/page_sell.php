@@ -273,7 +273,7 @@ function unsetSessionCoupon() {
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <form method="POST" id="search-form" class="d-flex flex-column">
-                                        <label for="phone">Số điện thoại / Tên khách hàng</label>
+                                        <label for="phone">Số điện thoại</label>
                                        
                                         <?php
                                             if (isset($_SESSION['searchKeywordSell']) && !empty($_SESSION['searchKeywordSell'])) {
