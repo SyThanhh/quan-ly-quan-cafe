@@ -328,9 +328,10 @@ function unsetSessionCoupon() {
                                         if ($coupons) {
                                             while ($cpon = mysqli_fetch_assoc($coupons)) {
                                                 echo "<option value='".$cpon["CouponID"]."'>".$cpon["CouponCode"]."</option>"; 
-                                                echo "<input value='" . (isset($_SESSION['CouponID']) ? $_SESSION['CouponID'] : "") . "' id='discountCodeHiden' hidden>";
+                                               
 
                                             }
+                                            echo "<input value='" . (isset($_SESSION['CouponID']) ? $_SESSION['CouponID'] : "") . "' id='discountCodeHiden' hidden>";
                                         } else {
                                             echo "<option>Không đủ điểm</option>";
                                         }
