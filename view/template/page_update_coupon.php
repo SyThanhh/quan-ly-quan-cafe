@@ -328,11 +328,11 @@
                                     $currentDate = date('Y-m-d\TH:i'); 
                                     $StartDate = $_REQUEST['NgayBatDau'];
                                     $EndDate = $_REQUEST['NgayKetThuc'];
-                                    if (strtotime($StartDate) < strtotime($currentDate)) {
-                                        echo "<script>alert('Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại!')</script>";
-                                    } elseif (strtotime($StartDate) >= strtotime($EndDate)) {
-                                        echo "<script>alert('Ngày kết thúc phải lớn hơn ngày bắt đầu!')</script>";
-                                    } else {
+                                    // if (strtotime($StartDate) < strtotime($currentDate)) {
+                                    //     echo "<script>alert('Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại!')</script>";
+                                    // } elseif (strtotime($StartDate) >= strtotime($EndDate)) {
+                                    //     echo "<script>alert('Ngày kết thúc phải lớn hơn ngày bắt đầu!')</script>";
+                                    // } else {
                                         $kq = $p->cUpdateCp($CouponID, $_REQUEST['MaGiamGia'], $_REQUEST['NgayBatDau'], $_REQUEST['NgayKetThuc'], $_REQUEST['MoTa'], $_REQUEST['GiamGia'], $_REQUEST['TrangThai'], $_REQUEST['ThoiDiemCapNhat']); 
                                         if ($kq) {
                                             echo "<script>alert('Cập nhật thành công!')</script>";
@@ -344,7 +344,7 @@
                                             exit();
                                         }
                                     }
-                                }
+                                // }
                             ?>
                         </div>
                     </div>
