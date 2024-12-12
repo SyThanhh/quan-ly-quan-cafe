@@ -300,12 +300,12 @@
                 </div>
                 </div>
                 
+            </div>
         </div>
     </div>
-            </div>
-            <!-- Cuối trang -->
-            <?php include_once('./common/footer/footer.php'); ?>
-        </div>   
+        <?php include_once('./common/footer/footer.php'); ?>
+        <!-- Cuối trang -->
+    </div>   
 
     <!-- Bootstrap core JavaScript-->
     <?php include_once('./common/script/default.php'); ?>

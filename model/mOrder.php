@@ -234,7 +234,8 @@
                       FROM `order` o
                       JOIN customer c ON o.CustomerId = c.CustomerID
                       JOIN employee e ON o.EmployeeID = e.EmployeeID
-                      LEFT JOIN coupon cp ON o.couponID = cp.couponID";
+                      LEFT JOIN coupon cp ON o.couponID = cp.couponID
+                      ";
             
             $conditions = [];
             $params = [];
@@ -262,7 +263,7 @@
             }
             
             // Thêm phần ORDER BY và LIMIT/OFFSET
-            $query .= " ORDER BY o.CreateDate DESC LIMIT ? OFFSET ?";
+            $query .= " ORDER BY o.OrderID DESC LIMIT ? OFFSET ?";
             
             // Gộp các tham số LIMIT và OFFSET vào mảng params
             $params[] = $limit;
