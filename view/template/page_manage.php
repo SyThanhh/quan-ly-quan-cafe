@@ -251,24 +251,25 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
             // Truy vấn dữ liệu từ cơ sở dữ liệu sử dụng SELECT thông thường
             $query = "
-                SELECT 
-                    p.ProductName, 
-                    SUM(od.Quantity) AS TotalQuantity, 
-                    SUM(od.Quantity * od.UnitPrice) AS TotalRevenue,
-                    o.* -- Lấy toàn bộ các cột từ bảng `order`
-                FROM 
-                    product p
-                JOIN 
-                    orderdetail od ON p.ProductID = od.ProductID
-                JOIN 
-                    `order` o ON od.OrderID = o.OrderID
-                WHERE 
-                    DATE(o.CreateDate) BETWEEN '$startDate' AND '$endDate'
-                GROUP BY 
-                    p.ProductName, o.OrderID -- Cần thêm `o.OrderID` vào GROUP BY để phù hợp với dữ liệu từ `o.*`
-            ";
-
-
+            SELECT 
+                p.ProductName, 
+                SUM(od.Quantity) AS TotalQuantity, 
+                SUM(od.Quantity * od.UnitPrice) AS TotalRevenue,
+                o.* -- Lấy toàn bộ các cột từ bảng `order`
+            FROM 
+                product p
+            JOIN 
+                orderdetail od ON p.ProductID = od.ProductID
+            JOIN 
+                `order` o ON od.OrderID = o.OrderID
+            WHERE 
+                DATE(o.CreateDate) BETWEEN '$startDate' AND '$endDate'
+            GROUP BY 
+                p.ProductName, o.OrderID -- Cần thêm `o.OrderID` vào GROUP BY để phù hợp với dữ liệu từ `o.*`
+            ORDER BY 
+                o.OrderID ASC -- Sắp xếp theo OrderID tăng dần
+        ";
+        
             $result = $database->select($query);
             $totalRevenue = 0; // Biến để tính tổng doanh thu
 
