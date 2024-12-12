@@ -65,8 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode([
                 // 'checkPointCustomerWithCoupon'=> $checkPointCustomerWithCoupon,
                 // 'checkProductInstock '=> $checkProductInstock,
-                // 'checkPointCustomer '=> $checkPointCustomer,
-                // 'checkOrderDetail '=> $checkOrderDetail,
+                'checkOrderDetail '=> $checkOrderDetail,
                 'success' => true,
                 'message' => 'Đơn hàng đã được lưu thành công!',
                 'data' => [
